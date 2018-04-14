@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Patch>
+  <Operation Class="PatchOperationAttributeSet">
+    <xpath>//thing[def='Shelf']</xpath>
+    <attribute>Class</attribute>
+  	<value>AdvancedStocking.Building_Shelf</value>
+  </Operation>
+
+  <Operation Class="PatchOperationAttributeSet">
+  	<xpath>//innerList/li[def='Shelf']</xpath>
+  	<attribute>Class</attribute>
+  	<value>AdvancedStocking.Building_Shelf</value>
+  </Operation>
+</Patch>

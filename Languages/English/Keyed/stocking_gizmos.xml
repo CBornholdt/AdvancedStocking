@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CommandCopyStockingSettingsLabel>Copy settings</CommandCopyStockingSettingsLabel>
+  <CommandCopyStockingSettingsDesc>Copy this Shelf's stock and storage settings to the clipboard so you can paste them onto another Stocking.</CommandCopyStockingSettingsDesc>
+
+  <CommandPasteStockingSettingsLabel>Paste settings</CommandPasteStockingSettingsLabel>
+  <CommandPasteStockingSettingsDesc>Overwrite this Shelf's stock and storage settings with those previously copied to the clipboard.</CommandPasteStockingSettingsDesc>
+</LanguageData>

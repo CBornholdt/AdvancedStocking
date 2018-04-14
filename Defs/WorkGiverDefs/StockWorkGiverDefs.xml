@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <WorkGiverDef>
+    <defName>OrganizeStock_High</defName>
+    <label>go organize stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_High</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>5</priorityInType>
+    <verb>organize stock</verb>
+    <gerund>organizing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>OrganizeStock_Normal</defName>
+    <label>go organize stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_Normal</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>4</priorityInType>
+    <verb>organize stock</verb>
+    <gerund>organizing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>OrganizeStock_Low</defName>
+    <label>go organize stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_Low</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>3</priorityInType>
+    <verb>organize stock</verb>
+    <gerund>organizing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>FillEmptyStock_High</defName>
+    <label>go fill stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_High</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>fill stock</verb>
+    <gerund>filling stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>FillEmptyStock_Normal</defName>
+    <label>go fill stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_Normal</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>fill stock</verb>
+    <gerund>filling stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>FillEmptyStock_Low</defName>
+    <label>go fill stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_Low</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>fill stock</verb>
+    <gerund>filling stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PushFullStock_High</defName>
+    <label>go push stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_PushFullStock_High</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>push stock</verb>
+    <gerund>pushing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>PushFullStock_Normal</defName>
+    <label>go push stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_PushFullStock_Normal</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>push stock</verb>
+    <gerund>pushing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>PushFullStock_Low</defName>
+    <label>go push stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_PushFullStock_Low</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>2</priorityInType>
+    <verb>push stock</verb>
+    <gerund>pushing stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+</Defs>

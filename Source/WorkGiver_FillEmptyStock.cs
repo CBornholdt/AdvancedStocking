@@ -1,0 +1,134 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using Verse;
+using Verse.AI;
+using RimWorld;
+
+namespace AdvancedStocking
+{
+	public abstract class WorkGiver_FillEmptyStock : WorkGiver_Scanner 
+	{
+		protected abstract StockingPriority Priority ();
+
+		public override ThingRequest PotentialWorkThingRequest {
+			get {
+				return ThingRequest.ForGroup (ThingRequestGroup.BuildingArtificial);
+			}
+		}
+
+		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+		{
+			Building_Shelf shelf = t as Building_Shelf;
+
+			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.FillEmptyStockPriority || !shelf.HasEmptyCell ())
+				return false;
+
+			foreach(SlotGroup sg in pawn.Map?.slotGroupManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
+				if(sg.Settings.Priority > shelf.settings.Priority 
+					|| ((sg.Settings.Priority == shelf.settings.Priority) && (sg.parent is Building_Shelf))
+					|| sg.parent == shelf)
+					continue;
+				else 
+					foreach(Thing thing in sg.HeldThings)
+						if((thing.stackCount >= thing.def.stackLimit || forced) && shelf.settings.filter.Allows(thing)
+							&& HaulAIUtility.PawnCanAutomaticallyHaul(pawn, thing, forced))
+							return true;
+			if(!JobFailReason.HaveReason)
+				JobFailReason.Is("FillEmptyStock_NoItemsFound_JobFailReason".Translate());
+			if(JobFailReason.Reason == "ForbiddenLower".Translate())
+				JobFailReason.Is("FillEmptyStock_AllItemsFoundAreForbidden_JobFailReason".Translate());
+			return false;
+		}
+
+		public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
+		{
+			Building_Shelf shelf = t as Building_Shelf;
+			List<Thing> potentials = new List<Thing> ();
+
+			if (shelf == null)
+				return null;
+
+			foreach(SlotGroup sg in pawn.Map?.slotGroupManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
+				if(sg.Settings.Priority > shelf.settings.Priority 
+					|| ((sg.Settings.Priority == shelf.settings.Priority) && (sg.parent is Building_Shelf)))
+					continue;
+				else 
+					foreach(Thing thing in sg.HeldThings)
+						if((thing.stackCount >= thing.def.stackLimit || forced) && shelf.settings.filter.Allows(thing)
+							&& HaulAIUtility.PawnCanAutomaticallyHaul(pawn, thing, forced))
+							potentials.Add(thing);
+
+			int minDist = 200000000;
+			float maxPartialFullStackFound = 0f;
+			Thing chosenThing = null;
+			foreach(Thing thing in potentials) {
+				int dist = (thing.Position - pawn.Position).LengthHorizontalSquared + (thing.Position - shelf.Position).LengthHorizontalSquared;
+				if(forced) {
+					float part = (float)thing.stackCount/(float)thing.def.stackLimit;
+					if(part < maxPartialFullStackFound)
+						continue;
+					if(part > maxPartialFullStackFound) {
+						maxPartialFullStackFound = part;
+						chosenThing = thing;
+						minDist = dist;
+						continue;
+					}
+				}
+				if(dist < minDist) {
+					minDist = dist;
+					chosenThing = thing;
+				}
+			}
+
+			if(chosenThing == null)
+				return null;
+
+			Job job = new Job(StockJobDefs.FillEmptyStock, chosenThing, shelf.slotGroup.EmptyCells().First(), shelf);
+			job.haulOpportunisticDuplicates = true;
+			job.haulMode = HaulMode.ToCellStorage;
+			job.count = chosenThing.stackCount;
+							
+			return job;
+		}
+
+		public override IEnumerable<Thing> PotentialWorkThingsGlobal (Pawn pawn)
+		{
+			List<SlotGroup> slotGroups = pawn.Map?.slotGroupManager?.AllGroupsListForReading;
+			List<Thing> result = new List<Thing>();
+			if(slotGroups == null)
+				return null;
+			for (int i = 0; i < slotGroups.Count; i++) {
+				Building_Shelf s = slotGroups[i].parent as Building_Shelf;
+				if(HasJobOnThing(pawn, s, false))
+					result.Add(s);
+			}
+			return result.Count == 0 ? null : result;
+		}
+	}
+
+	public class WorkGiver_FillEmptyStock_High : WorkGiver_FillEmptyStock 
+	{
+		protected override StockingPriority Priority()
+		{
+			return StockingPriority.High;
+		}
+	}
+
+	public class WorkGiver_FillEmptyStock_Normal : WorkGiver_FillEmptyStock 
+	{
+		protected override StockingPriority Priority()
+		{
+			return StockingPriority.Normal;
+		}
+	}
+
+	public class WorkGiver_FillEmptyStock_Low : WorkGiver_FillEmptyStock 
+	{
+		protected override StockingPriority Priority()
+		{
+			return StockingPriority.Low;
+		}
+	}
+}
+

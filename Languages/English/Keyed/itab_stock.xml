@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<TabStock>Stock</TabStock>
+	<InStockingMode_label>Stocking Mode</InStockingMode_label>
+	<InStockingMode_tooltip>Enables or disables all stocking related logic</InStockingMode_tooltip>
+	<InSingleThingMode_label>Single Item Type Mode</InSingleThingMode_label>
+	<InPriorityCyclingMode_label>Priority Cycling</InPriorityCyclingMode_label>
+	<InPriorityCyclingMode_tooltip>Will smartly increment storage priority when empty and decrement when full</InPriorityCyclingMode_tooltip>
+	<InForbiddenMode_label>Forbidden Mode</InForbiddenMode_label>
+	<InForbiddenMode_tooltip>Will auto forbid any items placed within. Very useful for caravan storage. Also full stock pushing will ignore forbidden items ...</InForbiddenMode_tooltip>
+	<InOverStockMode_label>Over Stock Mode</InOverStockMode_label>
+	<InOverStockMode_tooltip>Will combine two stacks of the same item into a larger stack</InOverStockMode_tooltip>
+	<StockingOrganizeMode_label>Stock Organize Mode</StockingOrganizeMode_label>
+	<StockingOrganizeMode_tooltip>Will determine under what conditions items should be Organized on top of each other in the same cell</StockingOrganizeMode_tooltip>
+	<SingleItem>Sameitem</SingleItem>
+	<Weapons>Weapons</Weapons>
+	<AutoOrganizeAfterFilling_label>Auto Organize</AutoOrganizeAfterFilling_label>
+	<AutoOrganizeAfterFilling_tooltip>Will automatically organize afer filling with an item</AutoOrganizeAfterFilling_tooltip>
+	<Low>Low</Low>
+	<Normal>Normal</Normal>
+	<High>High</High>
+	<Organize_Stock_Priority>Organize Stock Priority</Organize_Stock_Priority>
+	<Fill_Empty_Stock_Priority>Fill Empty Stock Priority</Fill_Empty_Stock_Priority>
+	<Push_Full_Stock_Priority>Push Full Stock Priority</Push_Full_Stock_Priority>
+	<Organize_Stock_Priority_Tooltip>Will combine multiple stacks of a similar item</Organize_Stock_Priority_Tooltip>
+	<Fill_Empty_Stock_Priority_Tooltip>Will attempt to gather items from other storage locations to fill empty spaces. Highest priority</Fill_Empty_Stock_Priority_Tooltip>
+	<Push_Full_Stock_Priority_Tooltip>Will push any full spaces to an equal or higher priority storage location</Push_Full_Stock_Priority_Tooltip> 
+	<FillEmptyStock_NoItemsFound_JobFailReason>No available items in lower priority storage</FillEmptyStock_NoItemsFound_JobFailReason>
+	<FillEmptyStock_AllItemsFoundAreForbidden_JobFailReason>All available items are forbidden</FillEmptyStock_AllItemsFoundAreForbidden_JobFailReason>
+</LanguageData>

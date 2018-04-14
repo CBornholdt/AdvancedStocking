@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{44621671-0A5A-4F2B-95C6-E8BF04BB8722}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AdvancedStocking</RootNamespace>
+    <AssemblyName>AdvancedStocking</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Assemblies</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\Assemblies</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\RimWorldLinux_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\RimWorldLinux_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\..\..\Projects\dotNet\Dll\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Building_Shelf.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="core_Thing_patch.cs" />
+    <Compile Include="TreeNode_UIOption.cs" />
+    <Compile Include="Listing_TreeUIOption.cs" />
+    <Compile Include="FloatMenuButton.cs" />
+    <Compile Include="TreeNode_UIOption_EnumMenuButton.cs" />
+    <Compile Include="WorkGiver_FillEmptyStock.cs" />
+    <Compile Include="StockJobDefs.cs" />
+    <Compile Include="StockWorkGiverDefs.cs" />
+    <Compile Include="WorkGiver_OrganizeStock.cs" />
+    <Compile Include="WorkGiver_PushFullStock.cs" />
+    <Compile Include="SlotGroup_AdvancedStockingExt.cs" />
+    <Compile Include="ITab_Stock.cs" />
+    <Compile Include="JobDriver_OverStockThings.cs" />
+    <Compile Include="JobDriver_OrganizeThing.cs" />
+    <Compile Include="JobDriver_FillEmptyStock.cs" />
+    <Compile Include="StockingSettingsClipboard.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

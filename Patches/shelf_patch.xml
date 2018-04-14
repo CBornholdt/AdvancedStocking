@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  	<Operation Class="PatchOperationSequence">
+    	<success>Always</success>
+    	<operations>
+      		<li Class="PatchOperationTest">
+      			<xpath>/Defs/ThingDef[defName='Shelf' and thingClass='Building_Storage']</xpath>
+      		</li>
+      		<li Class="PatchOperationAdd">
+      			<xpath>/Defs/ThingDef[defName='Shelf' and thingClass='Building_Storage']/inspectorTabs</xpath>
+      			<value>
+      				<li>AdvancedStocking.ITab_Stock</li>
+      			</value>
+      		</li>
+      		<li Class="PatchOperationReplace">
+      			<xpath>/Defs/ThingDef[defName='Shelf' and thingClass='Building_Storage']/thingClass</xpath>
+      			<value>
+      				<thingClass>AdvancedStocking.Building_Shelf</thingClass>
+      			</value>
+      		</li>
+      	</operations>
+    </Operation>
+</Patch>

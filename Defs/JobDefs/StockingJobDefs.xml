@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <JobDef>
+        <defName>OverStockThings</defName>
+	    <driverClass>AdvancedStocking.JobDriver_OverStockThings</driverClass>
+	    <reportString>combining stock</reportString> 
+    </JobDef>
+    <JobDef>
+        <defName>OrganizeThing</defName>
+        <driverClass>AdvancedStocking.JobDriver_OrganizeThing</driverClass>
+        <reportString>organizing stock</reportString> 
+    </JobDef>
+    <JobDef>
+    	<defName>FillEmptyStock</defName>
+    	<driverClass>AdvancedStocking.JobDriver_FillEmptyStock</driverClass>
+    	<reportString>stocking TargetA.</reportString>
+    	<suspendable>false</suspendable>
+ 	</JobDef>
+ 	 <JobDef>
+    	<defName>PushFullStock</defName>
+    	<driverClass>JobDriver_HaulToCell</driverClass>
+    	<reportString>unloading TargetA.</reportString>
+    	<suspendable>false</suspendable>
+ 	</JobDef>
+</Defs>
