@@ -23,6 +23,10 @@ namespace AdvancedStocking
 
 			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.PushFullStockPriority)
 				return false;
+				
+			LocalTargetInfo target = t;
+			if (!pawn.CanReserveAndReach (target, PathEndMode.Touch, pawn.NormalMaxDanger (), 1, -1, null, false))
+				return false;
 
 			List<Thing> potentials = new List<Thing>();
 
@@ -91,7 +95,7 @@ namespace AdvancedStocking
 				return null;
 
 			Thing chosenThing = potentialPlaces.Keys.First((Thing x) => potentialPlaces[x].Contains(chosenPlace));
-			Job job = new Job(StockJobDefs.PushFullStock, chosenThing, chosenPlace);
+			Job job = new Job(StockingJobDefOf.PushFullStock, chosenThing, chosenPlace);
 			job.haulOpportunisticDuplicates = true;
 			job.haulMode = HaulMode.ToCellStorage;
 			job.count = chosenThing.stackCount;

@@ -1,26 +1,32 @@
 ﻿using System;
 using Verse;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace AdvancedStocking
 {
 	public class Listing_TreeUIOption : Listing_Tree 
 	{
-		public TreeNode_UIOption rootOption = null;
+		private List<TreeNode_UIOption> rootOptions = null;
 		private GameFont font;
 		private Vector2 scrollPosition;
+		private readonly Vector2 closeButtonSize = new Vector2(16, 16);
 
-		public Listing_TreeUIOption(TreeNode_UIOption rootOption, GameFont font = GameFont.Medium, float lineHeight = 30)
+		public Listing_TreeUIOption(List<TreeNode_UIOption> rootOptions, GameFont font = GameFont.Medium, float lineHeight = 30 )
 		{
-			this.rootOption = rootOption;
+			this.rootOptions = rootOptions;
 			this.font = font;
 			this.lineHeight = lineHeight;
 			nestIndentWidth = lineHeight;
 		}
 
+		public List<TreeNode_UIOption> RootOptions {
+			get { return this.rootOptions; }
+		}
+
 		public override void Begin(Rect rect)
 		{
-			Rect viewRect = new Rect (0, 0, rect.width - 16, CurHeight + 60);
+			Rect viewRect = new Rect (0, 0, rect.width - closeButtonSize.x, CurHeight + 60);	// + 60 is there for padding
 			Widgets.BeginScrollView (rect, ref this.scrollPosition, viewRect, true);
 			Rect rect2 = new Rect (0, 0, viewRect.width, 9999);
 			base.Begin (rect2);
@@ -29,8 +35,9 @@ namespace AdvancedStocking
 		public void DrawUIOptions(TreeNode_UIOption node = null, int indentLevel = 0, int openMask = 1)
 		{
 			if (node == null && indentLevel == 0) {
-				node = rootOption;
-				node.SetOpen (openMask, true);
+				foreach (var option in this.rootOptions)
+					DrawUIOptions (option, 0, openMask);
+			//	node.SetOpen (openMask, true);
 			}
 			if (node == null)
 				return;
@@ -60,8 +67,8 @@ namespace AdvancedStocking
 
 		protected Rect RemainingAreaIndented(int indentLevel = 0)
 		{
-			Rect r = new Rect (this.curX, this.curY, 
-				this.ColumnWidth - this.curX, this.listingRect.height - this.curY);
+			Rect r = new Rect (0, this.curY, 
+				this.listingRect.width, this.listingRect.height - this.curY);
 			r.xMin += indentLevel * nestIndentWidth;
 			return r;
 		}

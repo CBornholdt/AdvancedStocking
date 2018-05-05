@@ -45,7 +45,7 @@ namespace AdvancedStocking
 
 			Toil doWork = new Toil ();
 			doWork.initAction = delegate {
-				this.totalWorkNeeded = Shelf.OverStockWorkNeeded (TargetC.Thing);
+				this.totalWorkNeeded = Shelf.OverstackWorkNeeded (TargetC.Thing);
 				this.workPerformed = 0;
 			};
 			doWork.tickAction = delegate {
@@ -59,7 +59,7 @@ namespace AdvancedStocking
 
 			yield return new Toil {
 				initAction = delegate {
-					Shelf.OverStockThings (TargetThingB, TargetC.Thing);
+					Shelf.OverstackThings (TargetThingB, TargetC.Thing);
 					this.pawn.Map.reservationManager.Release (this.job.targetA, this.pawn, this.job);
 					this.pawn.Map.reservationManager.Release (this.job.targetC, this.pawn, this.job);
 				},

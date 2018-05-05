@@ -9,10 +9,11 @@ namespace AdvancedStocking
 	{
 		public static IEnumerable<IntVec3> EmptyCells(this RimWorld.SlotGroup slotGroup)
 		{
-			foreach(IntVec3 c in slotGroup?.CellsList ?? new List<IntVec3>()) {
-				List<Thing> thingsList = slotGroup.parent.Map.thingGrid.ThingsListAtFast(c);
+			List<IntVec3> cellsList = slotGroup.CellsList;
+			for(int i = 0; i < cellsList.Count; i++) {
+				List<Thing> thingsList = slotGroup.parent.Map.thingGrid.ThingsListAtFast(cellsList[i]);
 				if (thingsList.Count == 0 || (thingsList.Count == 1 && thingsList[0] == slotGroup.parent))	//If thingsList is null, don't return true ...
-					yield return c;
+					yield return cellsList[i];
 			}
 		}
 	}

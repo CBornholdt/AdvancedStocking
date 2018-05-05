@@ -5,4 +5,5 @@
 
   <CommandPasteStockingSettingsLabel>Paste settings</CommandPasteStockingSettingsLabel>
   <CommandPasteStockingSettingsDesc>Overwrite this Shelf's stock and storage settings with those previously copied to the clipboard.</CommandPasteStockingSettingsDesc>
+  <StockingMode>Stocking Mode</StockingMode>
 </LanguageData>

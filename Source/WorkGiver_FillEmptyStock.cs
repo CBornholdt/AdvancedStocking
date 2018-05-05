@@ -23,6 +23,16 @@ namespace AdvancedStocking
 
 			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.FillEmptyStockPriority || !shelf.HasEmptyCell ())
 				return false;
+				
+			if(!shelf.slotGroup.EmptyCells().Any(cell => 
+				pawn.CanReserveAndReach (new LocalTargetInfo(cell), PathEndMode.Touch, pawn.NormalMaxDanger (), 1, -1, null, false)))
+				return false;
+
+			LocalTargetInfo target = t;
+			if (!pawn.CanReserve (target, 1, -1, null, false)) {
+				JobFailReason.Is ("ShelfReserved".Translate ());
+				return false;
+			}
 
 			foreach(SlotGroup sg in pawn.Map?.slotGroupManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
 				if(sg.Settings.Priority > shelf.settings.Priority 
@@ -30,9 +40,9 @@ namespace AdvancedStocking
 					|| sg.parent == shelf)
 					continue;
 				else 
-					foreach(Thing thing in sg.HeldThings)
+					foreach(Thing thing in sg.HeldThings) 
 						if((thing.stackCount >= thing.def.stackLimit || forced) && shelf.settings.filter.Allows(thing)
-							&& HaulAIUtility.PawnCanAutomaticallyHaul(pawn, thing, forced))
+							&& StockingUtility.PawnCanAutomaticallyHaul(pawn, thing, forced, shelf.InForbiddenMode))
 							return true;
 			if(!JobFailReason.HaveReason)
 				JobFailReason.Is("FillEmptyStock_NoItemsFound_JobFailReason".Translate());
@@ -56,13 +66,13 @@ namespace AdvancedStocking
 				else 
 					foreach(Thing thing in sg.HeldThings)
 						if((thing.stackCount >= thing.def.stackLimit || forced) && shelf.settings.filter.Allows(thing)
-							&& HaulAIUtility.PawnCanAutomaticallyHaul(pawn, thing, forced))
+							&& StockingUtility.PawnCanAutomaticallyHaul(pawn, thing, forced, shelf.InForbiddenMode))
 							potentials.Add(thing);
 
 			int minDist = 200000000;
 			float maxPartialFullStackFound = 0f;
 			Thing chosenThing = null;
-			foreach(Thing thing in potentials) {
+			foreach(Thing thing in potentials) {	//I KNOW THIS IS TERRIBLE, BUT I LOVE IT ANYWAYS
 				int dist = (thing.Position - pawn.Position).LengthHorizontalSquared + (thing.Position - shelf.Position).LengthHorizontalSquared;
 				if(forced) {
 					float part = (float)thing.stackCount/(float)thing.def.stackLimit;
@@ -83,8 +93,11 @@ namespace AdvancedStocking
 
 			if(chosenThing == null)
 				return null;
-
-			Job job = new Job(StockJobDefs.FillEmptyStock, chosenThing, shelf.slotGroup.EmptyCells().First(), shelf);
+			IntVec3 destEmptyCell = shelf.slotGroup.EmptyCells().FirstOrDefault(cell => 
+				pawn.CanReserveAndReach(new LocalTargetInfo(cell), PathEndMode.Touch, pawn.NormalMaxDanger(), 1, -1, null, false));
+			if(destEmptyCell == default(IntVec3))
+				return null;
+			Job job = new Job(StockingJobDefOf.FillEmptyStock, chosenThing, destEmptyCell, shelf);
 			job.haulOpportunisticDuplicates = true;
 			job.haulMode = HaulMode.ToCellStorage;
 			job.count = chosenThing.stackCount;
@@ -95,15 +108,13 @@ namespace AdvancedStocking
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal (Pawn pawn)
 		{
 			List<SlotGroup> slotGroups = pawn.Map?.slotGroupManager?.AllGroupsListForReading;
-			List<Thing> result = new List<Thing>();
 			if(slotGroups == null)
-				return null;
+				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {
-				Building_Shelf s = slotGroups[i].parent as Building_Shelf;
-				if(HasJobOnThing(pawn, s, false))
-					result.Add(s);
+				Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
+				if(HasJobOnThing(pawn, shelf, false))
+					yield return shelf;
 			}
-			return result.Count == 0 ? null : result;
 		}
 	}
 

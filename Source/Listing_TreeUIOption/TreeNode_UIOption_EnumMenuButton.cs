@@ -13,16 +13,14 @@ namespace AdvancedStocking
 		private Func<T, bool> displayPredicate;
 		private Func<string> buttonLabelMaker;
 		private float buttonWidth;
-		private string tipText;
 
 		public TreeNode_UIOption_EnumMenuButton(string labelText, Func<string> buttonLabelMaker, Action<T> selectedAction, Func<T, bool> displayPredicate, 
-			float buttonWidth = 0, string tipText = null, bool forcedOpen = false, Func<bool> isActive = null) : base(labelText, forcedOpen, isActive)
+			float buttonWidth = 0, string tipText = null, bool forcedOpen = false, Func<bool> isActive = null) : base(labelText, tipText, forcedOpen, isActive)
 		{
 			this.selectedAction = selectedAction;
 			this.displayPredicate = displayPredicate;
 			this.buttonLabelMaker = buttonLabelMaker;
 			this.buttonWidth = buttonWidth;
-			this.tipText = tipText;
 		}
 
 		public override float Draw(Rect area, float lineHeight)

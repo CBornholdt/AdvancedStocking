@@ -1,0 +1,36 @@
+﻿using System;
+using Verse;
+using RimWorld;
+
+namespace AdvancedStocking
+{
+	[DefOf]
+	public static class StockingJobDefOf {
+		public static JobDef OverStockThings;
+		public static JobDef OrganizeThing;
+		public static JobDef FillEmptyStock;
+		public static JobDef PushFullStock;
+	}
+
+	[DefOf]
+	public static class StockingStatCategoryDefOf {
+		public static StatCategoryDef Stocking;
+	}
+
+	[DefOf]
+	public static class StockingStatDefOf {
+		public static StatDef MaxStockWeight;
+		public static StatDef MaxOverlayLimit;
+		public static StatDef MaxOverstackRatio;
+	}
+
+	[DefOf]
+	public static class ShelfOrganizeModeDefOf {
+		public static ShelfOrganizeModeDef None;
+		public static ShelfOrganizeModeDef Overstack;
+		public static ShelfOrganizeModeDef SingleThingOverlay;
+		public static ShelfOrganizeModeDef ApparelOverlay;
+		public static ShelfOrganizeModeDef WeaponsOverlay;
+	}
+}
+

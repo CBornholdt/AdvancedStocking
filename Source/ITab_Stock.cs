@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -29,39 +29,53 @@ namespace AdvancedStocking
 
 		private void SetupListing(Building_Shelf s)
 		{
-			TreeNode_UIOptionCheckbox stockingEnabledCheckbox = new TreeNode_UIOptionCheckbox ("InStockingMode_label".Translate(), 
+			TreeNode_UIOption_Checkbox stockingEnabledCheckbox = new TreeNode_UIOption_Checkbox ("InStockingMode_label".Translate(), 
 				() => s.InStockingMode, b => s.InStockingMode = b, "InStockingMode_tooltip".Translate());
 
-			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InPriorityCyclingMode_label".Translate(), 
+			stockingEnabledCheckbox.children.Add (new TreeNode_UIOption_Checkbox ("InPriorityCyclingMode_label".Translate(), 
 				() => s.InPriorityCyclingMode, b => s.InPriorityCyclingMode = b, "InPriorityCyclingMode_tooltip".Translate(), false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InSingleThingMode_label".Translate(), 
-				() => s.InSingleThingMode, b => s.InSingleThingMode = b, "Testing", false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InForbiddenMode_label".Translate(), 
+//			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InSingleThingMode_label".Translate(), 
+//				() => s.InSingleThingMode, b => s.InSingleThingMode = b, "Testing", false, () => s.InStockingMode));
+			stockingEnabledCheckbox.children.Add (new TreeNode_UIOption_Checkbox ("InForbiddenMode_label".Translate(), 
 				() => s.InForbiddenMode, b => s.InForbiddenMode = b, "InForbiddenMode_tooltip".Translate(), false, () => s.InStockingMode));
 
-			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InOverStockMode_label".Translate(), 
-				() => s.InOverStockMode, b => s.InOverStockMode = b, "InOverStockMode_tooltip".Translate(), false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingOrganizeMode>("StockingOrganizeMode_label".Translate(),
+			stockingEnabledCheckbox.children.Add (new TreeNode_UIOption_Checkbox ("IsOverstackModeEnabled_label".Translate(), 
+				() => s.IsOverstackModeEnabled, b => s.IsOverstackModeEnabled = b, "IsOverstackModeEnabled_tooltip".Translate(), false, () => s.InStockingMode));
+			stockingEnabledCheckbox.children.Add (new TreeNode_UIOption_Checkbox ("IsOverlayModeEnabled_label".Translate(), 
+				() => s.IsOverlayModeEnabled, b => s.IsOverlayModeEnabled = b, "IsOverlayModeEnabled_tooltip".Translate(), false, () => s.InStockingMode));
+/*			stockingEnabledCheckbox.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingOrganizeMode>("StockingOrganizeMode_label".Translate(),
 				() => Enum.GetName(typeof(StockingOrganizeMode), s.OrganizeMode).Translate(), p => s.OrganizeMode = p, null, 
-				ITab_Stock.PriorityButtonWidth, "StockingOrganizeMode_tooltip".Translate(), false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("AutoOrganizeAfterFilling_label".Translate (),
+				ITab_Stock.PriorityButtonWidth, "StockingOrganizeMode_tooltip".Translate(), false, () => s.InStockingMode));	*/
+			stockingEnabledCheckbox.children.Add (new TreeNode_UIOption_Checkbox ("AutoOrganizeAfterFilling_label".Translate (),
 				() => s.PawnShouldOrganizeAfterFilling, b => s.PawnShouldOrganizeAfterFilling = b, "AutoOrganizeAfterFilling_tooltip".Translate (), 
 				false, () => s.InStockingMode && s.IsOrganizingEnabled));
+			TreeNode_UIOption prioritiesSubtree = new TreeNode_UIOption ("StockJobPriorities_label".Translate (), "StockJobPriorities_tooltip".Translate ());
+			stockingEnabledCheckbox.children.Add (prioritiesSubtree);
 
-			stockingEnabledCheckbox.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Fill_Empty_Stock_Priority".Translate(), 
+			prioritiesSubtree.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Fill_Empty_Stock_Priority".Translate(), 
 				() => Enum.GetName(typeof(StockingPriority), s.FillEmptyStockPriority).Translate(), 
 				p => s.FillEmptyStockPriority = p, 
 				null, ITab_Stock.PriorityButtonWidth, "Fill_Empty_Stock_Priority_Tooltip".Translate(), false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Organize_Stock_Priority".Translate(), 
+			prioritiesSubtree.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Organize_Stock_Priority".Translate(), 
 				() => Enum.GetName(typeof(StockingPriority), s.OrganizeStockPriority).Translate(), 
 				p => s.OrganizeStockPriority = p, 
 				null, ITab_Stock.PriorityButtonWidth, "Organize_Stock_Priority_Tooltip".Translate(), false, () => s.InStockingMode));
-			stockingEnabledCheckbox.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Push_Full_Stock_Priority".Translate(), 
+			prioritiesSubtree.children.Add( new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Push_Full_Stock_Priority".Translate(), 
 				() => Enum.GetName(typeof(StockingPriority), s.PushFullStockPriority).Translate(), 
 				p => s.PushFullStockPriority = p, 
 				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false, () => s.InStockingMode));
 
-			this.listing = new Listing_TreeUIOption (stockingEnabledCheckbox);
+			this.listing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox });
+
+	/*		foreach (var def in DefDatabase<ShelfOrganizeModeDef>.AllDefs) {
+				string message = def.label + " DEFs: ";
+				foreach (var thingDef in def.allowedThingDefs ?? Enumerable.Empty<ThingDef>())
+					message += thingDef.label + ", ";
+				message += "  CATEGORIES: ";
+				foreach (var category in def.allowedThingCategories ?? Enumerable.Empty<ThingCategoryDef>())
+					message += category.label + ", ";
+				Log.Message (message);	
+			}	*/
 		}
 
 		protected override void FillTab() {

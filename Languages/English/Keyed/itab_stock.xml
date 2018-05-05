@@ -8,20 +8,20 @@
 	<InPriorityCyclingMode_tooltip>Will smartly increment storage priority when empty and decrement when full</InPriorityCyclingMode_tooltip>
 	<InForbiddenMode_label>Forbidden Mode</InForbiddenMode_label>
 	<InForbiddenMode_tooltip>Will auto forbid any items placed within. Very useful for caravan storage. Also full stock pushing will ignore forbidden items ...</InForbiddenMode_tooltip>
-	<InOverStockMode_label>Over Stock Mode</InOverStockMode_label>
-	<InOverStockMode_tooltip>Will combine two stacks of the same item into a larger stack</InOverStockMode_tooltip>
-	<StockingOrganizeMode_label>Stock Organize Mode</StockingOrganizeMode_label>
-	<StockingOrganizeMode_tooltip>Will determine under what conditions items should be Organized on top of each other in the same cell</StockingOrganizeMode_tooltip>
-	<SingleItem>Sameitem</SingleItem>
-	<Weapons>Weapons</Weapons>
+	<IsOverstackModeEnabled_label>Overstack Mode</IsOverstackModeEnabled_label>
+	<IsOverstackModeEnabled_tooltip>Will combine two stacks of the same item into a larger stack than normally possible</IsOverstackModeEnabled_tooltip>
+	<IsOverlayModeEnabled_label>Overlay Mode</IsOverlayModeEnabled_label>
+	<IsOverlayModeEnabled_tooltip>Will place multiple items on top of each other in the same cell</IsOverlayModeEnabled_tooltip>
 	<AutoOrganizeAfterFilling_label>Auto Organize</AutoOrganizeAfterFilling_label>
 	<AutoOrganizeAfterFilling_tooltip>Will automatically organize afer filling with an item</AutoOrganizeAfterFilling_tooltip>
+	<StockJobPriorities_label>Stock Job Priorities</StockJobPriorities_label>
+	<StockJobPriorities_tooltip>Alter priorites for the various stocking jobs or disable</StockJobPriorities_tooltip>
 	<Low>Low</Low>
 	<Normal>Normal</Normal>
 	<High>High</High>
-	<Organize_Stock_Priority>Organize Stock Priority</Organize_Stock_Priority>
-	<Fill_Empty_Stock_Priority>Fill Empty Stock Priority</Fill_Empty_Stock_Priority>
-	<Push_Full_Stock_Priority>Push Full Stock Priority</Push_Full_Stock_Priority>
+	<Organize_Stock_Priority>Organize Stock</Organize_Stock_Priority>
+	<Fill_Empty_Stock_Priority>Fill Empty Stock</Fill_Empty_Stock_Priority>
+	<Push_Full_Stock_Priority>Push Full Stock</Push_Full_Stock_Priority>
 	<Organize_Stock_Priority_Tooltip>Will combine multiple stacks of a similar item</Organize_Stock_Priority_Tooltip>
 	<Fill_Empty_Stock_Priority_Tooltip>Will attempt to gather items from other storage locations to fill empty spaces. Highest priority</Fill_Empty_Stock_Priority_Tooltip>
 	<Push_Full_Stock_Priority_Tooltip>Will push any full spaces to an equal or higher priority storage location</Push_Full_Stock_Priority_Tooltip> 

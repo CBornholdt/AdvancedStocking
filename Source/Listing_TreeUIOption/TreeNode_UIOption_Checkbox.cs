@@ -7,52 +7,23 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public class TreeNode_UIOption : TreeNode
-	{
-		//Area to draw, line height, return used height
-		public Func<Rect, float, float> drawFunc = null;
-		public string label;
-		public bool forcedOpen = false;
-		public Func<bool> isActive = null;
-
-		public TreeNode_UIOption(Func<Rect, float,float> drawFunc, string label, bool forcedOpen = false, Func<bool> isActive = null) 
-			: this(label, forcedOpen, isActive)
-		{
-			this.drawFunc = drawFunc;
-		}
-
-		protected TreeNode_UIOption(string label, bool forcedOpen = false, Func<bool> isActive = null) : base()
-		{
-			this.label = label;
-			this.forcedOpen = forcedOpen;
-			this.isActive = isActive;
-			children = new List<TreeNode>();
-		}
-
-		public override string ToString () => label;
-
-		public virtual float Draw(Rect area, float lineHeight) => drawFunc(area, lineHeight);
-	}
-
-	public class TreeNode_UIOptionCheckbox : TreeNode_UIOption
+	public class TreeNode_UIOption_Checkbox : TreeNode_UIOption
 	{
 		private Func<bool> getter;
 		private Action<bool> setter;
-		private string tipText;
 
-		public TreeNode_UIOptionCheckbox(string name, Func<bool> getter, Action<bool> setter, string tipText = null, bool forcedOpen = false, Func<bool> isActive = null) 
-			: base(name, forcedOpen, isActive)
+		public TreeNode_UIOption_Checkbox(string name, Func<bool> getter, Action<bool> setter, string tipText = null, bool forcedOpen = false, Func<bool> isActive = null) 
+			: base(name, tipText, forcedOpen, isActive)
 		{
 			this.getter = getter;
 			this.setter = setter;
-			this.tipText = tipText;
 		}
 
 		public override float Draw(Rect area, float lineHeight)
 		{
 			int textHeight = (int) Text.CalcHeight(this.label, area.width - lineHeight);
 			//Set height of area to be integral units of lineHeight
-			area.height = (textHeight % (int)lineHeight == 0) ? (float)textHeight : ((textHeight / (int)lineHeight) + 1) * lineHeight;
+			area.height = (textHeight % lineHeight == 0) ? textHeight : textHeight + (lineHeight - textHeight % lineHeight);
 			Widgets.DrawHighlightIfMouseover (area);
 
 			if (!this.tipText.NullOrEmpty ()) {
@@ -86,3 +57,4 @@ namespace AdvancedStocking
 		}
 	}
 }
+

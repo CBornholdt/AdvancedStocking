@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
@@ -35,8 +34,7 @@ namespace AdvancedStocking
 			Scribe_Values.Look<float> (ref this.totalWorkNeeded, "totalWorkNeeded");
 			Scribe_Values.Look<float> (ref this.workPerformed, "workPerformed");
 		}
-
-		[DebuggerHidden]
+			
 		protected override IEnumerable<Toil> MakeNewToils (){
 			this.FailOnDespawnedNullOrForbidden (TargetIndex.A);
 			this.FailOnDestroyedOrNull (TargetIndex.B);
