@@ -15,7 +15,9 @@
 		<allowOverlayMode>true</allowOverlayMode>
 		<overlayLimit>4</overlayLimit>
 		<overstackRatioLimit>15</overstackRatioLimit>
-		<allowedThingCategories>FoodMeals</allowedThingCategories>
+		<allowedThingCategories>
+			<li>FoodMeals</li>
+		</allowedThingCategories>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>

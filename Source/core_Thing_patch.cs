@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Linq;
 using System.Collections.Generic;
 using Verse;
@@ -20,6 +21,9 @@ namespace AdvancedStocking
 			harmony.Patch (AccessTools.Method (typeof(Verse.Thing), "TryAbsorbStack"), null, 
 				new HarmonyMethod (typeof(AdvancedStocking.HarmonyPatches).GetMethod("TryAbsorbStack_Postfix")), null);
 
+			harmony.Patch(AccessTools.Method(typeof(Verse.Thing), "SpawnSetup"), null, null, 
+				new HarmonyMethod(typeof(AdvancedStocking.HarmonyPatches).GetMethod("SpawnSetup_Transpiler")));
+
 			harmony.Patch (AccessTools.Method (typeof(RimWorld.StorageSettings), "set_Priority"), 
 				new HarmonyMethod (typeof(AdvancedStocking.HarmonyPatches).GetMethod("set_Priority_Prefix")), null, null);
 
@@ -39,6 +43,34 @@ namespace AdvancedStocking
 					slotGroup.parent.Notify_ReceivedThing (__instance);
 				}
 			}
+		}
+
+		public static IEnumerable<CodeInstruction> SpawnSetup_Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			List<CodeInstruction> codes = instructions.ToList ();
+			FieldInfo thingDefStacklimit = AccessTools.Field (typeof(ThingDef), "stackLimit");
+			MethodInfo spawnSetupHelper = AccessTools.Method (typeof(HarmonyPatches), "SpawnSetupHelper_IgnoreOverstack");
+
+			for(int i = 0; i < codes.Count; i++) {
+
+				if((i + 1) < codes.Count && codes[i].opcode == OpCodes.Ldfld && codes[i].operand == thingDefStacklimit 
+					&& codes[i + 1].opcode == OpCodes.Ble) {
+					yield return codes [i];
+					yield return codes [i + 1];
+					yield return new CodeInstruction (OpCodes.Ldarg_0);	//Leave Thing on stack
+					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);
+					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand);
+					i++;
+				}
+				else
+					yield return codes [i];
+			}
+		}
+
+		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing)
+		{
+			var owner = thing.holdingOwner?.Owner;
+			return owner != null && owner is Building_Shelf;
 		}
 
 		public static void set_Priority_Prefix(StorageSettings __instance, ref StoragePriority value)

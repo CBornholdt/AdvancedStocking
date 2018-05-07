@@ -47,16 +47,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="core_Thing_patch.cs" />
-    <Compile Include="FloatMenuButton.cs" />
-    <Compile Include="WorkGiver_FillEmptyStock.cs" />
-    <Compile Include="StockWorkGiverDefs.cs" />
-    <Compile Include="WorkGiver_OrganizeStock.cs" />
-    <Compile Include="WorkGiver_PushFullStock.cs" />
     <Compile Include="SlotGroup_AdvancedStockingExt.cs" />
     <Compile Include="ITab_Stock.cs" />
-    <Compile Include="JobDriver_OverStockThings.cs" />
-    <Compile Include="JobDriver_OrganizeThing.cs" />
-    <Compile Include="JobDriver_FillEmptyStock.cs" />
     <Compile Include="StockingSettingsClipboard.cs" />
     <Compile Include="StockingDefs.cs" />
     <Compile Include="Listing_TreeUIOption\Listing_TreeUIOption.cs" />
@@ -68,10 +60,18 @@
     <Compile Include="Stats\StatWorker_Stocking_OverstackRatio.cs" />
     <Compile Include="Stats\ShelfOrganizeModeDef.cs" />
     <Compile Include="StockingUtility.cs" />
+    <Compile Include="Jobs\JobDriver_FillEmptyStock.cs" />
+    <Compile Include="Jobs\JobDriver_OrganizeThing.cs" />
+    <Compile Include="Jobs\JobDriver_OverStockThings.cs" />
+    <Compile Include="Jobs\WorkGiver_FillEmptyStock.cs" />
+    <Compile Include="Jobs\WorkGiver_OrganizeStock.cs" />
+    <Compile Include="Jobs\WorkGiver_PushFullStock.cs" />
+    <Compile Include="Listing_TreeUIOption\FloatMenuButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Listing_TreeUIOption\" />
     <Folder Include="Stats\" />
+    <Folder Include="Jobs\" />
   </ItemGroup>
 </Project>
