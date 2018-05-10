@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
@@ -7,8 +6,8 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public class JobDriver_OverStockThings : JobDriver {
-
+	public class JobDriver_OverlayThing : JobDriver
+	{
 		private float totalWorkNeeded;
 		private float workPerformed;
 
@@ -35,17 +34,16 @@ namespace AdvancedStocking
 			Scribe_Values.Look<float> (ref this.totalWorkNeeded, "totalWorkNeeded");
 			Scribe_Values.Look<float> (ref this.workPerformed, "workPerformed");
 		}
-
-		[DebuggerHidden]
+			
 		protected override IEnumerable<Toil> MakeNewToils (){
 			this.FailOnDespawnedNullOrForbidden (TargetIndex.A);
 			this.FailOnDestroyedOrNull (TargetIndex.B);
-			this.FailOnDespawnedOrNull (TargetIndex.C);
-			yield return Toils_Goto.GotoThing (TargetIndex.A, PathEndMode.Touch);
+			yield return Toils_Goto.GotoThing (TargetIndex.B, PathEndMode.Touch);
 
+			Log.Message (TargetThingB.Position + " " + TargetC.Cell);
 			Toil doWork = new Toil ();
 			doWork.initAction = delegate {
-				this.totalWorkNeeded = Shelf.OverstackWorkNeeded (TargetC.Thing);
+				this.totalWorkNeeded = Shelf.OverlayWorkNeeded (TargetC.Cell);
 				this.workPerformed = 0;
 			};
 			doWork.tickAction = delegate {
@@ -59,8 +57,9 @@ namespace AdvancedStocking
 
 			yield return new Toil {
 				initAction = delegate {
-					Shelf.OverstackThings (TargetThingB, TargetC.Thing);
+					Shelf.OverlayThing (TargetThingB, TargetC.Cell);
 					this.pawn.Map.reservationManager.Release (this.job.targetA, this.pawn, this.job);
+					this.pawn.Map.reservationManager.Release (this.job.targetB, this.pawn, this.job);
 					this.pawn.Map.reservationManager.Release (this.job.targetC, this.pawn, this.job);
 				},
 				defaultCompleteMode = ToilCompleteMode.Instant
@@ -68,3 +67,4 @@ namespace AdvancedStocking
 		}
 	}
 }
+

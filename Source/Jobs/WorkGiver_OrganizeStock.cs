@@ -25,7 +25,7 @@ namespace AdvancedStocking
 				return false;
 
 			return (shelf != null) && shelf.InStockingMode && (this.priority() == shelf.OrganizeStockPriority) 
-				&& (shelf.CanOverstackAnything() || shelf.CanOverlayAnything());
+				&& (shelf.CanCombineAnything() || shelf.CanOverlayAnything());
 		}
 
 		public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
@@ -34,10 +34,10 @@ namespace AdvancedStocking
 			Thing stockSource = null;
 			IntVec3 destCell = IntVec3.Invalid;
 			Building_Shelf s = t as Building_Shelf;
-			if(s.CanOverstackThings(out stockSource, out stockDest))
-				return new Job (StockingJobDefOf.OverStockThings, t, stockSource, stockDest);
+			if(s.CanCombineThings(out stockSource, out stockDest))
+				return new Job (StockingJobDefOf.CombineThings, t, stockSource, stockDest);
 			if(s.CanOverlayThing(out stockSource, out destCell))
-				return new Job (StockingJobDefOf.OrganizeThing, t, stockSource, destCell);
+				return new Job (StockingJobDefOf.OverlayThing, t, stockSource, destCell);
 			return null;
 		}
 

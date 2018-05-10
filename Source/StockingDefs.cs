@@ -6,8 +6,8 @@ namespace AdvancedStocking
 {
 	[DefOf]
 	public static class StockingJobDefOf {
-		public static JobDef OverStockThings;
-		public static JobDef OrganizeThing;
+		public static JobDef CombineThings;
+		public static JobDef OverlayThing;
 		public static JobDef FillEmptyStock;
 		public static JobDef PushFullStock;
 	}

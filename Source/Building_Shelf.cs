@@ -17,16 +17,6 @@ namespace AdvancedStocking
 		High
 	}
 
-/*	public enum StockingOrganizeMode : byte
-	{
-		Off,
-		SingleItem,
-		Apparel,
-		Weapons,
-		Drugs,
-		BodyParts
-	}	*/
-
 	public class Building_Shelf : Building_Storage
 	{
 		private bool inStockingMode = false;
@@ -42,9 +32,9 @@ namespace AdvancedStocking
 		private bool overstackModeEnabled = false;
 
 		//Will wrap these into properties eventually
-		public StockingPriority FillEmptyStockPriority = StockingPriority.None;
-		public StockingPriority OrganizeStockPriority = StockingPriority.None;
-		public StockingPriority PushFullStockPriority = StockingPriority.None;
+		public StockingPriority FillEmptyStockPriority = StockingPriority.Normal;
+		public StockingPriority OrganizeStockPriority = StockingPriority.Normal;
+		public StockingPriority PushFullStockPriority = StockingPriority.Normal;
 
 		private ShelfOrganizeModeDef currentOrganizeMode;
 
@@ -155,13 +145,13 @@ namespace AdvancedStocking
 		}
 
 		//Methods
-		public bool CanOverstackAnything()
+		public bool CanCombineAnything()
 		{
-			return InOverstackMode && CanOverstackThings(out Thing t1, out Thing t2);
+			return CanCombineThings(out Thing t1, out Thing t2);
 		}
 
 		// Will be running a lot, using for loops as the loops should be very short (2-3 iterations each)
-		public bool CanOverstackThings(out Thing source, out Thing dest)
+		public bool CanCombineThings(out Thing source, out Thing dest)
 		{
 			List<IntVec3> cells = slotGroup.CellsList;
 			int cellCount = cells.Count;
@@ -170,19 +160,14 @@ namespace AdvancedStocking
 				things.Add(this.Map.thingGrid.ThingsListAtFast(cells[i]));
 			for(int i = 0; i < cellCount; i++) {
 				for(int j = 0; j < things[i].Count; j++) { 
+					source = things [i] [j];
+					if (!source.def.EverStoreable || source.stackCount > source.def.stackLimit)
+						continue;	//Ensure that source is not overstacked already
 					for (int k = 0; k < cellCount; k++) {
-						if (i == k)
-							continue;
 						for(int l = 0; l < things[k].Count; l++) {
-							Thing a = things[i][j];
-							Thing b = things[k][l];
-							//Log.Message (string.Format("{0:d} {1:d},{2:d} {6:G} {3:d} {4:d},{5:d} {7:G}", a.stackCount, i, j, b.stackCount, k, l, WithinOverstockLimit(a), WithinOverstockLimit(b)));
-							if(a.CanStackWith(b) && a.stackCount < GetOverstackLimit(a) && b.stackCount < GetOverstackLimit(b)) {
-								source = a;
-								dest = b;
-								//Log.Message(string.Format("Bingo {0:d} {1:d}", a.stackCount, b.stackCount));
+							dest = things[k][l];
+							if(source != dest && source.CanStackWith(dest) && (source.stackCount + dest.stackCount) <= GetOverstackLimit(dest)) 
 								return true;
-							}
 						}
 					}
 				}
@@ -266,16 +251,11 @@ namespace AdvancedStocking
 			Scribe_Values.Look<bool> (ref this.inPriorityCyclingMode, "inPriorityCyclingMode", false);
 			Scribe_Values.Look<bool> (ref this.overstackModeEnabled, "overstackModeEnabled", false);
 			Scribe_Values.Look<bool> (ref this.overlayModeEnabled, "overlayModeEnabled", false);
-	//		Scribe_Values.Look<bool> (ref this.inSingleThingMode, "inSingleThingMode", false);
 			Scribe_Values.Look<bool> (ref this.autoOrganizeAfterFilling, "autoOrganizeAfterFilling", false);
-	//		Scribe_Values.Look<bool> (ref this.isShiftingStock, "isShiftingStock", false);
-	//		Scribe_Deep.Look<ThingFilter> (ref this.unlockedFilter, "unlockedFilter", new Action(this.Notify_FilterChanged));
-	//		Scribe_Defs.Look<ThingDef> (ref this.lockedThingDef, "lockedThingDef");
 			Scribe_Values.Look<bool> (ref this.inForbiddenMode, "inForbiddenMode", false);
 			Scribe_Values.Look<StockingPriority> (ref this.OrganizeStockPriority, "organizeStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.PushFullStockPriority, "pushfullstockPriority", StockingPriority.None);
-	//		Scribe_Values.Look<StockingOrganizeMode> (ref this.organizeMode, "organizeMode", StockingOrganizeMode.Off);
 		}
 
 		public override string GetInspectString()
@@ -318,20 +298,6 @@ namespace AdvancedStocking
 			return true;
 		}
 			
-		private void LockToSingleThing(ThingDef thingDef) {
-		/*	if (!IsLockedToSingleThing) 
-				settings.filter = this.lockedFilter;
-
-			this.isLockedToSingleThing = false;	//So that Notify_LockedFilterChanged does nothing
-			settings.filter.SetDisallowAll ();
-			settings.filter.SetAllow (thingDef, true);
-			lockedThingDef = thingDef;
-
-			this.isLockedToSingleThing = true;  //turn back on Notify_LockedFilterChanged
-			this.isShiftingStock = false;
-			Map.listerHaulables.Notify_SlotGroupChanged(this.GetSlotGroup());	*/
-		}
-			
 		public virtual void Notify_FilterChanged() {
 			RecalculateCurrentOrganizeMode ();
 		}
@@ -340,7 +306,7 @@ namespace AdvancedStocking
 			if (!InStockingMode)
 				return;
 
-			Log.Message ("Got item, isFull=" + IsFull() + " isEmpty=" + IsEmpty() + " canDowncycle=" + canDowncycle + " canUpcycle=" + canUpcycle); 
+		//	Log.Message ("Got item, isFull=" + IsFull() + " isEmpty=" + IsEmpty() + " canDowncycle=" + canDowncycle + " canUpcycle=" + canUpcycle); 
 
 			if (InPriorityCyclingMode && this.canUpcycle && IsEmpty()) 
 				UpcyclePriority();
@@ -362,7 +328,7 @@ namespace AdvancedStocking
 			if(PawnShouldOrganizeAfterFilling)
 				TrySetupAutoOrganizeJob(newItem);
 
-			Log.Message ("Got item, isFull=" + IsFull() + " isEmpty=" + IsEmpty() + " canDowncycle=" + canDowncycle + " canUpcycle=" + canUpcycle); 
+		//	Log.Message ("Got item, isFull=" + IsFull() + " isEmpty=" + IsEmpty() + " canDowncycle=" + canDowncycle + " canUpcycle=" + canUpcycle); 
 
 			if (InForbiddenMode)
 				newItem.SetForbidden (true);
@@ -371,15 +337,9 @@ namespace AdvancedStocking
 				DowncyclePriority();
 		}
 
-		public void OrganizeThing(Thing thing, IntVec3 destCell)
+		public void OverlayThing(Thing thing, IntVec3 destCell)
 		{
 			thing.Position = destCell;
-		//	List<Thing> thingsAtDest = Map.thingGrid.ThingsListAtFast (destCell);
-
-			//Now set the newly placed thing on top of the stack  (no longer needed)
-		/*	Thing tmp = thingsAtDest[thingsAtDest.Count - 1];
-			thingsAtDest [thingsAtDest.Count - 1] = thingsAtDest [0];
-			thingsAtDest [0] = tmp;	*/
 		}
 
 		public void OverstackThings(Thing sourceStock, Thing destStock)
@@ -387,12 +347,12 @@ namespace AdvancedStocking
 			destStock.TryAbsorbStack(sourceStock, false);
 		}
 
-		public virtual float OverstackWorkNeeded(Thing destStock)
+		public virtual float CombineWorkNeeded(Thing destStock)
 		{
 			return 100 * (float)destStock.stackCount / (float)destStock.def.stackLimit;
 		}
 
-		public virtual float OrganizeWorkNeeded(IntVec3 destCell)
+		public virtual float OverlayWorkNeeded(IntVec3 destCell)
 		{
 			return 20f * Map.thingGrid.ThingsListAtFast (destCell).Where (t => t.def.EverStoreable).Count ();
 		}
@@ -445,31 +405,31 @@ namespace AdvancedStocking
 
 		public bool TrySetupAutoOrganizeJob(Thing newItem)
 		{
-			Pawn adjacentPawn = newItem.CellsAdjacent8WayAndInside()
+			Pawn adjPawn = newItem.CellsAdjacent8WayAndInside()
 				.Select<IntVec3, Pawn> (cell => Map.mapPawns.AllPawnsSpawned.FirstOrDefault(pawn => pawn.Position == cell))
 				.Where (pawn => pawn != null && pawn.IsColonist && 
 					(pawn.CurJob?.haulMode ?? HaulMode.Undefined) == HaulMode.ToCellStorage)
 				.FirstOrDefault ();
-
-			Log.Message("Would try to autoorganize with " + (adjacentPawn?.Name.ToString() ?? "NOONE"));
-			return true;
-		//	if (adjPawn != null)
-		//		TrySetupAutoOrganizeJob (adjacentPawn);
+				
+			if (adjPawn != null) 
+				return TrySetupAutoOrganizeJob (adjPawn);
+			return false;
 		}
 
-		public void TrySetupAutoOrganizeJob(Pawn pawn)
+		public bool TrySetupAutoOrganizeJob(Pawn pawn)
 		{
 			Thing sourceThing;
 			Thing destThing;
-			if (CanOverstackThings (out sourceThing, out destThing)) {
-				pawn.jobs.StartJob (new Job (StockingJobDefOf.OverStockThings, this, sourceThing, destThing), JobCondition.Succeeded);
-				return;
+			if (CanCombineThings (out sourceThing, out destThing)) {
+				pawn.jobs.StartJob (new Job (StockingJobDefOf.CombineThings, this, sourceThing, destThing), JobCondition.Succeeded);
+				return true;
 			}
 			IntVec3 destCell;
 			if(CanOverlayThing(out sourceThing, out destCell)) {
-				pawn.jobs.StartJob (new Job (StockingJobDefOf.OrganizeThing, this, sourceThing, destCell), JobCondition.Succeeded);
-				return;
+				pawn.jobs.StartJob (new Job (StockingJobDefOf.OverlayThing, this, sourceThing, destCell), JobCondition.Succeeded);
+				return true;
 			}
+			return false;
 		}
 
 		public override void TickRare () {
@@ -485,23 +445,6 @@ namespace AdvancedStocking
 				settings.Priority = IncrementStoragePriority (settings.Priority);
 			}
 		}
-
-	/*	public float WeightOnShelfInCell(IntVec3 cell)
-		{
-			List<Thing> things = Map.thingGrid.ThingsListAtFast (cell);
-			float mass = 0;
-			int thingsOnShelf = 0;
-			for (int i = 0; i < things.Count; i++) {
-				Thing thing = things [i];
-				if (!thing.def.EverStoreable)
-					continue;
-
-
-				mass += thing.GetStatValue (StatDefOf.Mass);
-				thingsOnShelf++;
-			}
-			if (thingsOnShelf >= 2)
-				mass += (thingsOnShelf - 1) * currentOrganizeMode.overlayMassCost;	*/
 
 		static StoragePriority DecrementStoragePriority(StoragePriority p) {
 			StoragePriority r = StoragePriority.Low;

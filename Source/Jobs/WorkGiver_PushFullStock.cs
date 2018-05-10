@@ -106,7 +106,6 @@ namespace AdvancedStocking
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal (Pawn pawn)
 		{
 			List<SlotGroup> slotGroups = pawn.Map?.slotGroupManager?.AllGroupsListForReading;
-			List<Thing> result = new List<Thing>();
 			if(slotGroups == null)
 				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {

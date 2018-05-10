@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
     <JobDef>
-        <defName>OverStockThings</defName>
-	    <driverClass>AdvancedStocking.JobDriver_OverStockThings</driverClass>
+        <defName>CombineThings</defName>
+	    <driverClass>AdvancedStocking.JobDriver_CombineThings</driverClass>
 	    <reportString>combining stock</reportString> 
     </JobDef>
     <JobDef>
-        <defName>OrganizeThing</defName>
-        <driverClass>AdvancedStocking.JobDriver_OrganizeThing</driverClass>
+        <defName>OverlayThing</defName>
+        <driverClass>AdvancedStocking.JobDriver_OverlayThing</driverClass>
         <reportString>organizing stock</reportString> 
     </JobDef>
     <JobDef>

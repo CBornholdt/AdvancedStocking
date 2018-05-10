@@ -61,13 +61,13 @@
     <Compile Include="Stats\ShelfOrganizeModeDef.cs" />
     <Compile Include="StockingUtility.cs" />
     <Compile Include="Jobs\JobDriver_FillEmptyStock.cs" />
-    <Compile Include="Jobs\JobDriver_OrganizeThing.cs" />
-    <Compile Include="Jobs\JobDriver_OverStockThings.cs" />
     <Compile Include="Jobs\WorkGiver_FillEmptyStock.cs" />
     <Compile Include="Jobs\WorkGiver_OrganizeStock.cs" />
     <Compile Include="Jobs\WorkGiver_PushFullStock.cs" />
     <Compile Include="Listing_TreeUIOption\FloatMenuButton.cs" />
     <Compile Include="StockingGameComponent.cs" />
+    <Compile Include="Jobs\JobDriver_CombineThings.cs" />
+    <Compile Include="Jobs\JobDriver_OverlayThing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

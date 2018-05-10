@@ -8,12 +8,10 @@ namespace AdvancedStocking
 	//This simply pushes the stackLimit check until after everything has loaded ...
 	public class StockingGameComponent : GameComponent
 	{
-		private Game game;
 		private List<Thing> thingsToCheck;
 
 		public StockingGameComponent(Game game) 
 		{
-			this.game = game;
 			thingsToCheck = new List<Thing> ();
 		}
 

@@ -17,7 +17,7 @@ namespace AdvancedStocking
 			this.rootOptions = rootOptions;
 			this.font = font;
 			this.lineHeight = lineHeight;
-			nestIndentWidth = lineHeight;
+			nestIndentWidth = lineHeight * 0.75f;
 		}
 
 		public List<TreeNode_UIOption> RootOptions {
@@ -48,8 +48,6 @@ namespace AdvancedStocking
 			Text.Font = this.font;
 			Rect rect = RemainingAreaIndented (indentLevel);
 			if (node.children?.Count > 0) {
-				if(indentLevel != 0)
-					rect.xMin -= OpenCloseWidgetSize;
 				base.OpenCloseWidget (node, indentLevel, openMask);
 				rect.xMin += OpenCloseWidgetSize;
 			}

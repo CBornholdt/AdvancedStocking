@@ -13,7 +13,7 @@ namespace AdvancedStocking
 			if (!ignoreForbidden)
 				return HaulAIUtility.PawnCanAutomaticallyHaul (p, t, forced);
 
-			MethodInfo basicChecks = typeof(HaulAIUtility).GetMethod ("PawnCanAutomaticallyHaulBasicChecks", BindingFlags.NonPublic);
+			MethodInfo basicChecks = typeof(HaulAIUtility).GetMethod ("PawnCanAutomaticallyHaulBasicChecks", BindingFlags.NonPublic | BindingFlags.Static);
 			return t.def.EverHaulable 
 				&& (t.def.alwaysHaulable || t.Map.designationManager.DesignationOn (t, DesignationDefOf.Haul) != null 
 					|| t.IsInValidStorage ()) 
