@@ -67,6 +67,7 @@
     <Compile Include="Jobs\WorkGiver_OrganizeStock.cs" />
     <Compile Include="Jobs\WorkGiver_PushFullStock.cs" />
     <Compile Include="Listing_TreeUIOption\FloatMenuButton.cs" />
+    <Compile Include="StockingGameComponent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -48,8 +48,10 @@ namespace AdvancedStocking
 			Text.Font = this.font;
 			Rect rect = RemainingAreaIndented (indentLevel);
 			if (node.children?.Count > 0) {
+				if(indentLevel != 0)
+					rect.xMin -= OpenCloseWidgetSize;
 				base.OpenCloseWidget (node, indentLevel, openMask);
-				rect.xMin += 18;
+				rect.xMin += OpenCloseWidgetSize;
 			}
 
 			this.curY = node.Draw (rect, lineHeight);

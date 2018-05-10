@@ -58,8 +58,9 @@ namespace AdvancedStocking
 					yield return codes [i];
 					yield return codes [i + 1];
 					yield return new CodeInstruction (OpCodes.Ldarg_0);	//Leave Thing on stack
-					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);
-					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand);
+					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Bool, Thing on stack
+					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);	//Consume 2, leave bool
+					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand); //Consume bool
 					i++;
 				}
 				else
@@ -67,10 +68,11 @@ namespace AdvancedStocking
 			}
 		}
 
-		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing)
+		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing, bool respawningAfterLoad)
 		{
-			var owner = thing.holdingOwner?.Owner;
-			return owner != null && owner is Building_Shelf;
+			if (respawningAfterLoad)
+				Current.Game.GetComponent<StockingGameComponent> ().AddThingForOverstackCheck (thing);
+			return respawningAfterLoad;
 		}
 
 		public static void set_Priority_Prefix(StorageSettings __instance, ref StoragePriority value)

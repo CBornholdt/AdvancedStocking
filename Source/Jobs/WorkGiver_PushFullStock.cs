@@ -108,13 +108,12 @@ namespace AdvancedStocking
 			List<SlotGroup> slotGroups = pawn.Map?.slotGroupManager?.AllGroupsListForReading;
 			List<Thing> result = new List<Thing>();
 			if(slotGroups == null)
-				return null;
+				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {
-				Building_Shelf s = slotGroups[i].parent as Building_Shelf;
-				if(HasJobOnThing(pawn, s, false))
-					result.Add(s);
+				Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
+				if(shelf != null )
+					yield return shelf;
 			}
-			return result.Count == 0 ? null : result;
 		}
 	}
 

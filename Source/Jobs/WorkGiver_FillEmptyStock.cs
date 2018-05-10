@@ -112,7 +112,7 @@ namespace AdvancedStocking
 				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {
 				Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
-				if(HasJobOnThing(pawn, shelf, false))
+				if(shelf != null)
 					yield return shelf;
 			}
 		}
