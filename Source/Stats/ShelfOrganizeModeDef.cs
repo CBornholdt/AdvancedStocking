@@ -7,9 +7,6 @@ namespace AdvancedStocking
 {
 	public class ShelfOrganizeModeDef : Def
 	{
-		public bool allowOverstackMode = false;
-		public bool allowOverlayMode = false;
-
 		public int order;
 		public int overlayLimit = 1;
 		public int overstackRatioLimit = 1;

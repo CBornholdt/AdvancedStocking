@@ -3,11 +3,15 @@ using RimWorld;
 using Verse.AI;
 using Verse;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace AdvancedStocking
 {
 	public static class StockingUtility
 	{
+		//Populated by StockingGameComponent
+		public static Dictionary<ThingDef, float> cachedThingDefMasses;
+
 		public static bool PawnCanAutomaticallyHaul (Pawn p, Thing t, bool forced, bool ignoreForbidden)
 		{
 			if (!ignoreForbidden)

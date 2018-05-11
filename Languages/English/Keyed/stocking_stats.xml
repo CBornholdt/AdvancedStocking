@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <OverstockLimitStatLabel>Overstock Limit</OverstockLimitStatLabel>
-  <OrganizeLimitStatLabel>Overlay Limit</OrganizeLimitStatLabel>
+  <OverstackLimitStatLabel>Overstack Limit ({0})</OverstackLimitStatLabel>
+  <OverstackLimitStatReportText>Represents the increased stack count for {0}'s' that can be kept on each cell</OverstackLimitStatReportText>
 </LanguageData>

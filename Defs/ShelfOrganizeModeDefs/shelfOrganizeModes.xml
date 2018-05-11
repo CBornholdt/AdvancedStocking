@@ -8,11 +8,38 @@
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>
+		<defName>SingleThingOverlay</defName>
+		<label>Single Thing Overlay</label>
+		<order>1</order>
+		<numAllowedThingDefs>1</numAllowedThingDefs>
+		<overlayLimit>20</overlayLimit>
+		<allowedThingCategories>
+			<li>Apparel</li>
+			<li>Manufactured</li>
+			<li>Items</li>
+		</allowedThingCategories>
+		<disallowedThingCategories>
+			<li>Textiles</li>
+		</disallowedThingCategories>
+	</AdvancedStocking.ShelfOrganizeModeDef>
+
+	<AdvancedStocking.ShelfOrganizeModeDef>
+		<defName>SingleThingOverstack</defName>
+		<label>SingleThingOverstack</label>
+		<order>2</order>
+		<numAllowedThingDefs>1</numAllowedThingDefs>
+		<overstackRatioLimit>12</overstackRatioLimit>
+		<allowedThingCategories>
+			<li>ResourcesRaw</li>
+			<li>Foods</li>
+			<li>Textiles</li>
+		</allowedThingCategories>
+	</AdvancedStocking.ShelfOrganizeModeDef>
+
+	<AdvancedStocking.ShelfOrganizeModeDef>
 		<defName>MealOverstack</defName>
 		<label>Meal Overstack</label>
-		<order>2</order>
-		<allowOverstackMode>true</allowOverstackMode>
-		<allowOverlayMode>true</allowOverlayMode>
+		<order>3</order>
 		<overlayLimit>4</overlayLimit>
 		<overstackRatioLimit>15</overstackRatioLimit>
 		<allowedThingCategories>
@@ -21,39 +48,31 @@
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>
-		<defName>Overstack</defName>
-		<label>Overstack</label>
-		<order>11</order>
-		<allowOverstackMode>true</allowOverstackMode>
-		<numAllowedThingDefs>1</numAllowedThingDefs>
-		<overstackRatioLimit>12</overstackRatioLimit>
-	</AdvancedStocking.ShelfOrganizeModeDef>
-
-	<AdvancedStocking.ShelfOrganizeModeDef>
-		<defName>SingleThingOverlay</defName>
-		<label>Single Thing Overlay</label>
-		<order>12</order>
-		<allowOverlayMode>true</allowOverlayMode>
-		<numAllowedThingDefs>1</numAllowedThingDefs>
-		<overlayLimit>20</overlayLimit>
+		<defName>RawPlantOverstack</defName>
+		<label>RawPlantOverstack</label>
+		<order>4</order>
+		<overlayLimit>1</overlayLimit>
+		<overstackRatioLimit>20</overstackRatioLimit>
+		<allowedThingCategories>
+			<li>PlantFoodRaw</li>
+		</allowedThingCategories>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>
 		<defName>ApparelOverlay</defName>
 		<label>Apparel Overlay</label>
 		<order>13</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>Apparel</li>
 		</allowedThingCategories>
 		<overlayLimit>16</overlayLimit>
+		<overstackRatioLimit>4</overstackRatioLimit>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>
 		<defName>WeaponsOverlay</defName>
 		<label>Weapons Overlay</label>
 		<order>14</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>Weapons</li>
 		</allowedThingCategories>
@@ -64,7 +83,6 @@
 		<defName>BodyPartsOverlay</defName>
 		<label>Body Parts Overlay</label>
 		<order>15</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>BodyParts</li>
 		</allowedThingCategories>
@@ -75,18 +93,17 @@
 		<defName>TextilesOverlay</defName>
 		<label>Textiles Overlay</label>
 		<order>16</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>Textiles</li>
 		</allowedThingCategories>
 		<overlayLimit>15</overlayLimit>
+		<overstackRatioLimit>2</overstackRatioLimit>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
 	<AdvancedStocking.ShelfOrganizeModeDef>
 		<defName>DrugsMedicine</defName>
 		<label>Drugs and Medicine Overlay</label>
 		<order>17</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>Medicine</li>
 			<li>Drugs</li>
@@ -98,10 +115,28 @@
 		<defName>Manufactured</defName>
 		<label>Manufactured Overlay</label>
 		<order>20</order>
-		<allowOverlayMode>true</allowOverlayMode>
 		<allowedThingCategories>
 			<li>Manufactured</li>
 		</allowedThingCategories>
 		<overlayLimit>6</overlayLimit>
+	</AdvancedStocking.ShelfOrganizeModeDef>
+
+	<AdvancedStocking.ShelfOrganizeModeDef>
+		<defName>Valuables</defName>
+		<label>Valuables Overlay</label>
+		<order>25</order>
+		<allowedThingCategories>
+			<li>ResourcesRaw</li>
+			<li>Items</li>
+		</allowedThingCategories>
+		<disallowedThingCategories>
+			<li>PlantMatter</li>
+			<li>StoneBlocks</li>
+			<li>Art</li>
+			<li>Furniture</li>
+			<li>Unfinished</li>
+		</disallowedThingCategories>
+		<overlayLimit>6</overlayLimit>
+		<overstackRatioLimit>6</overstackRatioLimit>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 </Defs>

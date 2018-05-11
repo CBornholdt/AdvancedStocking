@@ -1,6 +1,7 @@
 ﻿using System;
 using Verse;
 using RimWorld;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace AdvancedStocking
@@ -13,6 +14,9 @@ namespace AdvancedStocking
 		public StockingGameComponent(Game game) 
 		{
 			thingsToCheck = new List<Thing> ();
+			StockingUtility.cachedThingDefMasses = new Dictionary<ThingDef, float> ();
+			foreach (var thingDef in DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.EverStoreable))
+				StockingUtility.cachedThingDefMasses.Add (thingDef, thingDef.GetStatValueAbstract (StatDefOf.Mass));
 		}
 
 		public void AddThingForOverstackCheck(Thing thing)

@@ -27,7 +27,7 @@ namespace AdvancedStocking
 	[DefOf]
 	public static class ShelfOrganizeModeDefOf {
 		public static ShelfOrganizeModeDef None;
-		public static ShelfOrganizeModeDef Overstack;
+		public static ShelfOrganizeModeDef SingleThingOverstack;
 		public static ShelfOrganizeModeDef SingleThingOverlay;
 		public static ShelfOrganizeModeDef ApparelOverlay;
 		public static ShelfOrganizeModeDef WeaponsOverlay;

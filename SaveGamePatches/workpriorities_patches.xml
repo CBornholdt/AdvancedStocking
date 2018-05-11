@@ -2,7 +2,7 @@
 
 <Patch>
   <Operation Class="PatchOperationAdd">
-    <xpath>//workSettings/priorities/vals[not(li[21])]</xpath>
+    <xpath>//workSettings/priorities/vals</xpath>
     <value>
    	  <li>0</li>
     </value>
