@@ -19,6 +19,8 @@ namespace AdvancedStocking
 
 		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
 		{
+			return false;   //Need to think about purpose of Pushing stock
+
 			Building_Shelf shelf = t as Building_Shelf;
 
 			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.PushFullStockPriority)

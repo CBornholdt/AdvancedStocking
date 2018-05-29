@@ -32,13 +32,17 @@ namespace AdvancedStocking
 		public static ShelfOrganizeModeDef ApparelOverlay;
 		public static ShelfOrganizeModeDef WeaponsOverlay;
 	}
-
+    
 	[DefOf]
 	public static class StockWorkGiverDefs 
 	{
-		public static WorkGiverDef OrganizeStock_High;
-		public static WorkGiverDef OrganizeStock_Normal;
-		public static WorkGiverDef OrganizeStock_Low;
+		public static WorkGiverDef CombineStock_High;
+		public static WorkGiverDef CombineStock_Normal;
+		public static WorkGiverDef CombineStock_Low;
+        
+		public static WorkGiverDef OverlayStock_High;
+        public static WorkGiverDef OverlayStock_Normal;
+        public static WorkGiverDef OverlayStock_Low;
 
 		public static WorkGiverDef FillEmptyStock_High;
 		public static WorkGiverDef FillEmptyStock_Normal;

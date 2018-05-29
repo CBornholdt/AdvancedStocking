@@ -18,8 +18,9 @@ namespace AdvancedStocking
 		}
 
 		public override bool TryMakePreToilReservations(){
+			//Note that multiple pawns are allowed to reserve the Cell for overlaying simultaneously
 			bool result = this.pawn.Reserve (this.job.targetA, this.job, 1, -1, null) && this.pawn.Reserve(this.job.targetB, this.job, 1, -1, null) &&
-				this.pawn.Reserve(this.job.targetC, this.job, 1, -1, null);
+				this.pawn.Reserve(this.job.targetC, this.job, -1, -1, null);
 			if (!result) {
 				this.pawn.Map.reservationManager.Release (this.job.targetA, this.pawn, this.job);
 				this.pawn.Map.reservationManager.Release (this.job.targetB, this.pawn, this.job);
@@ -39,8 +40,7 @@ namespace AdvancedStocking
 			this.FailOnDespawnedNullOrForbidden (TargetIndex.A);
 			this.FailOnDestroyedOrNull (TargetIndex.B);
 			yield return Toils_Goto.GotoThing (TargetIndex.B, PathEndMode.Touch);
-
-			Log.Message (TargetThingB.Position + " " + TargetC.Cell);
+            
 			Toil doWork = new Toil ();
 			doWork.initAction = delegate {
 				this.totalWorkNeeded = Shelf.OverlayWorkNeeded (TargetC.Cell);

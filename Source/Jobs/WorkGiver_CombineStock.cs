@@ -6,7 +6,7 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public abstract class WorkGiver_OrganizeStock : WorkGiver_Scanner 
+	public abstract class WorkGiver_CombineStock : WorkGiver_Scanner 
 	{
 		protected abstract StockingPriority priority ();
 
@@ -23,9 +23,14 @@ namespace AdvancedStocking
 			LocalTargetInfo target = t;
 			if (!pawn.CanReserveAndReach (target, PathEndMode.Touch, pawn.NormalMaxDanger (), 1, -1, null, false))
 				return false;
-
-			return (shelf != null) && shelf.InStockingMode && (this.priority() == shelf.OrganizeStockPriority) 
-				&& (shelf.CanCombineAnything() || shelf.CanOverlayAnything());
+            
+			return (shelf != null) && shelf.InStockingMode
+										   && (this.priority() == shelf.OrganizeStockPriority)
+										   && shelf.CanCombineThings(out Thing source, out Thing dest)
+										   && (pawn.CanReserve(source, 1, -1, null, false)
+				                               || (shelf.InForbiddenMode && source.IsForbidden(Faction.OfPlayer)))
+										   && (pawn.CanReserve(dest, 1, -1, null, false)
+											   || (shelf.InForbiddenMode && dest.IsForbidden(Faction.OfPlayer)));
 		}
 
 		public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
@@ -34,10 +39,8 @@ namespace AdvancedStocking
 			Thing stockSource = null;
 			IntVec3 destCell = IntVec3.Invalid;
 			Building_Shelf s = t as Building_Shelf;
-			if(s.CanCombineThings(out stockSource, out stockDest))
-				return new Job (StockingJobDefOf.CombineThings, t, stockSource, stockDest);
-			if(s.CanOverlayThing(out stockSource, out destCell))
-				return new Job (StockingJobDefOf.OverlayThing, t, stockSource, destCell);
+			if (s.CanCombineThings(out stockSource, out stockDest))
+				return new Job(StockingJobDefOf.CombineThings, t, stockSource, stockDest);
 			return null;
 		}
 
@@ -48,23 +51,23 @@ namespace AdvancedStocking
 				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {
 				Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
-				if(shelf != null)
+				if(shelf != null && shelf.InStockingMode)
 					yield return shelf;
 			}
 		}
 	}
 
-	public class WorkGiver_OrganizeStock_High : WorkGiver_OrganizeStock 
+	public class WorkGiver_CombineStock_High : WorkGiver_CombineStock 
 	{
 		protected override StockingPriority priority() => StockingPriority.High;
 	}
 
-	public class WorkGiver_OrganizeStock_Normal : WorkGiver_OrganizeStock 
+	public class WorkGiver_CombineStock_Normal : WorkGiver_CombineStock 
 	{
 		protected override StockingPriority priority() => StockingPriority.Normal;
 	}
 
-	public class WorkGiver_OrganizeStock_Low : WorkGiver_OrganizeStock 
+	public class WorkGiver_CombineStock_Low : WorkGiver_CombineStock 
 	{
 		protected override StockingPriority priority() => StockingPriority.Low;
 	}

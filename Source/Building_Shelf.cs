@@ -19,6 +19,8 @@ namespace AdvancedStocking
 
 	public class Building_Shelf : Building_Storage
 	{
+		private readonly float BASE_COMBINE_WORK = 25f;
+
 		private bool inStockingMode = false;
 		private bool inForbiddenMode = false;
 		private bool inPriorityCyclingMode = false;
@@ -100,7 +102,9 @@ namespace AdvancedStocking
 
 		public bool CanCombineAnything()
 		{
-			return InStockingMode && CanCombineThings(out Thing t1, out Thing t2);
+			return InStockingMode && CanCombineThings(out Thing t1, out Thing t2)
+                && !Map.reservationManager.IsReservedByAnyoneOf(t1, Faction.OfPlayer)
+                       && !Map.reservationManager.IsReservedByAnyoneOf(t2, Faction.OfPlayer);
 		}
 
 		// Will be running a lot, using for loops as the loops should be very short (2-3 iterations each)
@@ -132,7 +136,9 @@ namespace AdvancedStocking
 
 		public bool CanOverlayAnything()
 		{
-			return InStockingMode && CanOverlayThing(out Thing t1, out IntVec3 c1);
+			return InStockingMode && CanOverlayThing(out Thing t1, out IntVec3 c1)
+                && !Map.reservationManager.IsReservedByAnyoneOf(t1, Faction.OfPlayer)
+                       && !Map.reservationManager.IsReservedByAnyoneOf(c1, Faction.OfPlayer);
 		}
 
 		//TODO rewrite this with For loops and without linq
@@ -162,7 +168,7 @@ namespace AdvancedStocking
 
 		public float CombineWorkNeeded(Thing destStock)
 		{
-			return 100 * (float)destStock.stackCount / (float)destStock.def.stackLimit;
+			return BASE_COMBINE_WORK * (float)destStock.stackCount / (float)destStock.def.stackLimit;
 		}
 
 		public void CopyStockSettingsFrom(Building_Shelf other)

@@ -2,48 +2,11 @@
 <Defs>
 
   <WorkGiverDef>
-    <defName>OrganizeStock_High</defName>
-    <label>go organize critical stock</label>
-    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_High</giverClass>
-    <workType>Stocking</workType>
-    <priorityInType>11</priorityInType>
-    <verb>organize stock</verb>
-    <gerund>organizing stock</gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
-  <WorkGiverDef>
-    <defName>OrganizeStock_Normal</defName>
-    <label>go organize normal stock</label>
-    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_Normal</giverClass>
-    <workType>Stocking</workType>
-    <priorityInType>8</priorityInType>
-    <verb>organize stock</verb>
-    <gerund>organizing stock</gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
-  <WorkGiverDef>
-    <defName>OrganizeStock_Low</defName>
-    <label>go organize stock</label>
-    <giverClass>AdvancedStocking.WorkGiver_OrganizeStock_Low</giverClass>
-    <workType>Stocking</workType>
-    <priorityInType>5</priorityInType>
-    <verb>organize stock</verb>
-    <gerund>organizing stock</gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
-
-  <WorkGiverDef>
     <defName>FillEmptyStock_High</defName>
     <label>go fill critical stock</label>
     <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_High</giverClass>
     <workType>Stocking</workType>
-    <priorityInType>12</priorityInType>
+    <priorityInType>15</priorityInType>
     <verb>fill stock</verb>
     <gerund>filling stock</gerund>
     <requiredCapacities>
@@ -55,7 +18,7 @@
     <label>go fill normal stock</label>
     <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_Normal</giverClass>
     <workType>Stocking</workType>
-    <priorityInType>9</priorityInType>
+    <priorityInType>11</priorityInType>
     <verb>fill stock</verb>
     <gerund>filling stock</gerund>
     <requiredCapacities>
@@ -67,9 +30,83 @@
     <label>go fill stock</label>
     <giverClass>AdvancedStocking.WorkGiver_FillEmptyStock_Low</giverClass>
     <workType>Stocking</workType>
-    <priorityInType>6</priorityInType>
+    <priorityInType>7</priorityInType>
     <verb>fill stock</verb>
     <gerund>filling stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>CombineStock_High</defName>
+    <label>go combine critical stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_CombineStock_High</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>14</priorityInType>
+    <verb>combine stock</verb>
+    <gerund>combining stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>CombineStock_Normal</defName>
+    <label>go combine normal stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_CombineStock_Normal</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>10</priorityInType>
+    <verb>combine stock</verb>
+    <gerund>combining stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>CombineStock_Low</defName>
+    <label>go combine stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_CombineStock_Low</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>6</priorityInType>
+    <verb>combine stock</verb>
+    <gerund>combining stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>OverlayStock_High</defName>
+    <label>go overlay critical stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OverlayStock_High</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>13</priorityInType>
+    <verb>overlay stock</verb>
+    <gerund>overlaying stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>OverlayStock_Normal</defName>
+    <label>go overlay normal stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OverlayStock_Normal</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>9</priorityInType>
+    <verb>overlay stock</verb>
+    <gerund>overlaying stock</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>OverlayStock_Low</defName>
+    <label>go overlay stock</label>
+    <giverClass>AdvancedStocking.WorkGiver_OverlayStock_Low</giverClass>
+    <workType>Stocking</workType>
+    <priorityInType>5</priorityInType>
+    <verb>overlay stock</verb>
+    <gerund>overlaying stock</gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
@@ -80,7 +117,7 @@
     <label>go push critical stock</label>
     <giverClass>AdvancedStocking.WorkGiver_PushFullStock_High</giverClass>
     <workType>Stocking</workType>
-    <priorityInType>10</priorityInType>
+    <priorityInType>12</priorityInType>
     <verb>push stock</verb>
     <gerund>pushing stock</gerund>
     <requiredCapacities>
@@ -92,7 +129,7 @@
     <label>go push normal stock</label>
     <giverClass>AdvancedStocking.WorkGiver_PushFullStock_Normal</giverClass>
     <workType>Stocking</workType>
-    <priorityInType>7</priorityInType>
+    <priorityInType>8</priorityInType>
     <verb>push stock</verb>
     <gerund>pushing stock</gerund>
     <requiredCapacities>
