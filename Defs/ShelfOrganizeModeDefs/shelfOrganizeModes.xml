@@ -58,6 +58,18 @@
 		</allowedThingCategories>
 	</AdvancedStocking.ShelfOrganizeModeDef>
 
+    <AdvancedStocking.ShelfOrganizeModeDef>
+        <defName>ChunksCorpseOverstack</defName>
+        <label>ChunksCorposeOverstack</label>
+        <order>5</order>
+        <overlayLimit>4</overlayLimit>
+        <overstackRatioLimit>10</overstackRatioLimit>
+        <allowedThingCategories>
+            <li>Chunks</li>
+            <li>Corpses</li>
+        </allowedThingCategories>
+    </AdvancedStocking.ShelfOrganizeModeDef>
+
 	<AdvancedStocking.ShelfOrganizeModeDef>
 		<defName>ApparelOverlay</defName>
 		<label>Apparel Overlay</label>
