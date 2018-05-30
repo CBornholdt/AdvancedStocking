@@ -20,6 +20,7 @@ namespace AdvancedStocking
 	public class Building_Shelf : Building_Storage
 	{
 		private readonly float BASE_COMBINE_WORK = 25f;
+		private readonly float BASE_OVERLAY_WORK = 10f;
 
 		private bool inStockingMode = false;
 		private bool inForbiddenMode = false;
@@ -299,10 +300,10 @@ namespace AdvancedStocking
 		{
 			thing.Position = destCell;
 		}
-
+        
 		public float OverlayWorkNeeded(IntVec3 destCell)
 		{
-			return 20f * Map.thingGrid.ThingsListAtFast (destCell).Where (t => t.def.EverStoreable).Count ();
+			return BASE_OVERLAY_WORK * Map.thingGrid.ThingsListAtFast (destCell).Where (t => t.def.EverStoreable).Count ();
 		}
 
 		public void OverstackThings(Thing sourceStock, Thing destStock)

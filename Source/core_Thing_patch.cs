@@ -58,7 +58,7 @@ namespace AdvancedStocking
 					yield return codes [i];
 					yield return codes [i + 1];
 					yield return new CodeInstruction (OpCodes.Ldarg_0);	//Leave Thing on stack
-					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Bool, Thing on stack
+					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Thing, Bool on stack
 					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);	//Consume 2, leave bool
 					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand); //Consume bool
 					i++;
