@@ -33,10 +33,18 @@
       </li>
       <li Class="AdvancedStocking.StatPart_StuffDef_Fallover">
         <stuffCategoryFactors>
-            <Metallic>2.0</Metallic>
-            <Woody>0.75</Woody>
-            <Stony>1.5</Stony>
+          <Metallic>2.0</Metallic>
+          <Woody>0.75</Woody>
+          <Stony>1.5</Stony>
         </stuffCategoryFactors>
+      </li>
+      <li Class="AdvancedStocking.StatPart_Floor">
+        <wetFactor>0.5</wetFactor>
+        <roughFactor>0.5</roughFactor>
+        <metalFloorFactor>1.2</metalFloorFactor>
+        <stoneFloorFactor>1.1</stoneFloorFactor>
+        <fabricFloorFactor>0.8</fabricFloorFactor>
+        <woodFloorFactor>0.8</woodFloorFactor>
       </li>
     </parts>
   </StatDef>

@@ -16,6 +16,6 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		BaseDirectory = ..
-		version = 0.3.0.1
+		version = 0.3.1.0
 	EndGlobalSection
 EndGlobal
