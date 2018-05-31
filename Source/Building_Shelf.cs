@@ -416,8 +416,10 @@ namespace AdvancedStocking
 			return false;   */
 		}
 
-		public override void TickRare () {
-		
+		public override void TickLong()
+		{
+			base.TickLong();
+			CacheStats();
 		}
 
 		public void UpcyclePriority()
