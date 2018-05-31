@@ -31,6 +31,13 @@
         <factorMasterwork>2</factorMasterwork>
         <factorLegendary>2.5</factorLegendary>
       </li>
+      <li Class="AdvancedStocking.StatPart_StuffDef_Fallover">
+        <stuffCategoryFactors>
+            <Metallic>2.0</Metallic>
+            <Woody>0.75</Woody>
+            <Stony>1.5</Stony>
+        </stuffCategoryFactors>
+      </li>
     </parts>
   </StatDef>
 
