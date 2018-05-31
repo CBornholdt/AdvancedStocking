@@ -6,10 +6,8 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public abstract class WorkGiver_CombineStock : WorkGiver_Scanner 
+	public class WorkGiver_CombineStock : WorkGiver_Scanner 
 	{
-		protected abstract StockingPriority priority ();
-
 		public override ThingRequest PotentialWorkThingRequest {
 			get {
 				return ThingRequest.ForGroup (ThingRequestGroup.BuildingArtificial);
@@ -25,7 +23,6 @@ namespace AdvancedStocking
 				return false;
             
 			return (shelf != null) && shelf.InStockingMode
-										   && (this.priority() == shelf.OrganizeStockPriority)
 										   && shelf.CanCombineThings(out Thing source, out Thing dest)
 										   && (pawn.CanReserve(source, 1, -1, null, false)
 				                               || (shelf.InForbiddenMode && source.IsForbidden(Faction.OfPlayer)))
@@ -59,16 +56,31 @@ namespace AdvancedStocking
 
 	public class WorkGiver_CombineStock_High : WorkGiver_CombineStock 
 	{
-		protected override StockingPriority priority() => StockingPriority.High;
+		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+		{
+			return (t is Building_Shelf shelf)
+				&& (shelf.OrganizeStockPriority == StockingPriority.High)
+				&& base.HasJobOnThing(pawn, t, forced);
+		}
 	}
 
 	public class WorkGiver_CombineStock_Normal : WorkGiver_CombineStock 
 	{
-		protected override StockingPriority priority() => StockingPriority.Normal;
+		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return (t is Building_Shelf shelf)
+                && (shelf.OrganizeStockPriority == StockingPriority.Normal)
+                && base.HasJobOnThing(pawn, t, forced);
+        }
 	}
 
 	public class WorkGiver_CombineStock_Low : WorkGiver_CombineStock 
 	{
-		protected override StockingPriority priority() => StockingPriority.Low;
+		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return (t is Building_Shelf shelf)
+                && (shelf.OrganizeStockPriority == StockingPriority.Low)
+                && base.HasJobOnThing(pawn, t, forced);
+        }
 	}
 }

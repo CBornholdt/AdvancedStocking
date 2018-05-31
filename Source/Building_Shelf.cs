@@ -370,7 +370,18 @@ namespace AdvancedStocking
 
 		public bool TrySetupAutoOrganizeJob(Pawn pawn)
 		{
-			Thing sourceThing;
+			var combineGiver = new WorkGiver_CombineStock();
+			if (combineGiver.HasJobOnThing(pawn, this, false)) {
+				pawn.jobs.StartJob(combineGiver.JobOnThing(pawn, this, false), JobCondition.Succeeded, null, true);
+				return true;
+			}
+			var overlayGiver = new WorkGiver_OverlayStock();
+			if (overlayGiver.HasJobOnThing(pawn, this, false)) {
+				pawn.jobs.StartJob(overlayGiver.JobOnThing(pawn, this, false), JobCondition.Succeeded, null, true);
+				return true;
+			}
+			return false;
+		/*	Thing sourceThing;
 			Thing destThing;
 			if (CanCombineThings (out sourceThing, out destThing)) {
 				pawn.jobs.StartJob (new Job (StockingJobDefOf.CombineThings, this, sourceThing, destThing), JobCondition.Succeeded);
@@ -381,7 +392,7 @@ namespace AdvancedStocking
 				pawn.jobs.StartJob (new Job (StockingJobDefOf.OverlayThing, this, sourceThing, destCell), JobCondition.Succeeded);
 				return true;
 			}
-			return false;
+			return false;   */
 		}
 
 		public override void TickRare () {

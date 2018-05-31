@@ -8,7 +8,7 @@ using RimWorld;
 namespace AdvancedStocking
 {
 	public class JobDriver_CombineThings : JobDriver {
-
+        
 		private float totalWorkNeeded;
 		private float workPerformed;
 
@@ -19,14 +19,12 @@ namespace AdvancedStocking
 		}
 
 		public override bool TryMakePreToilReservations(){
-			bool result = this.pawn.Reserve (this.job.targetA, this.job, 1, -1, null) && this.pawn.Reserve(this.job.targetB, this.job, 1, -1, null) &&
-				this.pawn.Reserve(this.job.targetC, this.job, 1, -1, null);
-			if (!result) {
-				this.pawn.Map.reservationManager.Release (this.job.targetA, this.pawn, this.job);
-				this.pawn.Map.reservationManager.Release (this.job.targetB, this.pawn, this.job);
-				this.pawn.Map.reservationManager.Release (this.job.targetC, this.pawn, this.job);
-			}
-			return result;
+			Log.Message(this.TargetA.ToString() + " " + this.pawn.CanReserve(this.TargetA) + " " +
+                        this.TargetB.ToString() + " " + this.pawn.CanReserve(this.TargetB) + " " +
+                        this.TargetC.ToString() + " " + this.pawn.CanReserve(this.TargetC));
+
+			return this.pawn.Reserve(this.job.targetA, this.job, 1, -1, null) && this.pawn.Reserve(this.job.targetB, this.job, 1, -1, null) &&
+					   this.pawn.Reserve(this.job.targetC, this.job, 1, -1, null);
 		}
 
 		public override void ExposeData ()

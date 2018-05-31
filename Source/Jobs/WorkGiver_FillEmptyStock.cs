@@ -7,11 +7,9 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public abstract class WorkGiver_FillEmptyStock : WorkGiver_Scanner 
+	public class WorkGiver_FillEmptyStock : WorkGiver_Scanner 
 	{
-		protected abstract StockingPriority Priority ();
-
-		public override ThingRequest PotentialWorkThingRequest {
+        public override ThingRequest PotentialWorkThingRequest {
 			get {
 				return ThingRequest.ForGroup (ThingRequestGroup.BuildingArtificial);
 			}
@@ -21,7 +19,7 @@ namespace AdvancedStocking
 		{
 			Building_Shelf shelf = t as Building_Shelf;
 
-			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.FillEmptyStockPriority || !shelf.HasEmptyCell ())
+			if (shelf == null || !shelf.InStockingMode || !shelf.HasEmptyCell ())
 				return false;
 				
 			if(!shelf.slotGroup.EmptyCells().Any(cell => 
@@ -118,28 +116,34 @@ namespace AdvancedStocking
 		}
 	}
 
-	public class WorkGiver_FillEmptyStock_High : WorkGiver_FillEmptyStock 
-	{
-		protected override StockingPriority Priority()
-		{
-			return StockingPriority.High;
-		}
-	}
+	public class WorkGiver_FillEmptyStock_High : WorkGiver_FillEmptyStock
+    {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return (t is Building_Shelf shelf)
+                && (shelf.OrganizeStockPriority == StockingPriority.High)
+                && base.HasJobOnThing(pawn, t, forced);
+        }
+    }
 
-	public class WorkGiver_FillEmptyStock_Normal : WorkGiver_FillEmptyStock 
-	{
-		protected override StockingPriority Priority()
-		{
-			return StockingPriority.Normal;
-		}
-	}
+    public class WorkGiver_FillEmptyStock_Normal : WorkGiver_FillEmptyStock
+    {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return (t is Building_Shelf shelf)
+                && (shelf.OrganizeStockPriority == StockingPriority.Normal)
+                && base.HasJobOnThing(pawn, t, forced);
+        }
+    }
 
-	public class WorkGiver_FillEmptyStock_Low : WorkGiver_FillEmptyStock 
-	{
-		protected override StockingPriority Priority()
-		{
-			return StockingPriority.Low;
-		}
-	}
+    public class WorkGiver_FillEmptyStock_Low : WorkGiver_FillEmptyStock
+    {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return (t is Building_Shelf shelf)
+                && (shelf.OrganizeStockPriority == StockingPriority.Low)
+                && base.HasJobOnThing(pawn, t, forced);
+        }
+    }
 }
 
