@@ -38,7 +38,9 @@ namespace AdvancedStocking
 
 		private ShelfOrganizeModeDef currentOrganizeMode;
 
-		private float overlayLimitCached;
+		private int overlayLimit = 1;
+
+		private int maxOverlayLimitCached;
 		private float overstackRatioLimitCached;
 		private float maxWeightLimitCached;
 
@@ -73,6 +75,22 @@ namespace AdvancedStocking
 			}
 		}
 
+		public int MaxOverlayLimit {
+			get { return this.maxOverlayLimitCached; }
+		}
+
+		public int OverlayLimit {
+			get { return this.overlayLimit; }
+			set {
+				if (value > this.maxOverlayLimitCached) {
+					Log.ErrorOnce("Tried setting " + this + " with " + value
+								  + " overlays. Max is " + this.maxOverlayLimitCached, 3197544);
+					value = this.maxOverlayLimitCached;
+				}
+				this.overlayLimit = value;
+			}
+		}
+        
 		public bool PawnShouldOrganizeAfterFilling {
 			get { return this.autoOrganizeAfterFilling; }
 			set { this.autoOrganizeAfterFilling = value; }
@@ -84,6 +102,11 @@ namespace AdvancedStocking
 					yield return entry;
 
 				StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
+
+				if (InStockingMode && MaxOverlayLimit > 1)
+					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
+												   0, "OverlayLimitStatReportText".Translate());
+                    
 				List<ThingDef> outputThingDefs = new List<ThingDef>();
 				foreach (var thing in slotGroup.HeldThings.Where(t => t.stackCount >= t.def.stackLimit && !outputThingDefs.Contains(t.def))) {
 					outputThingDefs.Add (thing.def);
@@ -92,11 +115,11 @@ namespace AdvancedStocking
 				}
 			}
 		}	
-
+        
 		//Methods
 		public void CacheStats()
 		{
-			this.overlayLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverlayLimit);
+			this.maxOverlayLimitCached = (int)this.GetStatValue(StockingStatDefOf.MaxOverlayLimit);
 			this.overstackRatioLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverstackRatio);
 			this.maxWeightLimitCached = this.GetStatValue (StockingStatDefOf.MaxStockWeight);
 		}
@@ -145,8 +168,8 @@ namespace AdvancedStocking
 		//TODO rewrite this with For loops and without linq
 		public bool CanOverlayThing(out Thing thing, out IntVec3 destCell)
 		{
-			int overlayLimit = GetOverlayLimit ();
 			foreach(IntVec3 cell in slotGroup.CellsList) {
+				int overlaysAllowed = (overlayLimit == -1) ? maxOverlayLimitCached : overlayLimit;
 				var things = Map.thingGrid.ThingsListAtFast(cell).Where(t => t.def.EverStoreable);
 				if (things.Count() == 1) {
 					Thing potential = things.Single ();
@@ -154,7 +177,7 @@ namespace AdvancedStocking
 						if (cell == cell2)
 							continue;
 						var destThings = Map.thingGrid.ThingsListAtFast (cell2).Where (t => t.def.EverStoreable);
-						if (destThings.Count() > 0 && destThings.Count() < overlayLimit) {
+						if (destThings.Count() > 0 && destThings.Count() < overlaysAllowed) {
 							thing = potential;
 							destCell = cell2;
 							return true;
@@ -214,6 +237,7 @@ namespace AdvancedStocking
 			Scribe_Values.Look<bool> (ref this.inPriorityCyclingMode, "inPriorityCyclingMode", false);
 			Scribe_Values.Look<bool> (ref this.autoOrganizeAfterFilling, "autoOrganizeAfterFilling", false);
 			Scribe_Values.Look<bool> (ref this.inForbiddenMode, "inForbiddenMode", false);
+			Scribe_Values.Look<int>(ref this.overlayLimit, "OverlaysAllowed", 1);
 			Scribe_Values.Look<StockingPriority> (ref this.OrganizeStockPriority, "organizeStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.PushFullStockPriority, "pushfullstockPriority", StockingPriority.None);
@@ -230,11 +254,6 @@ namespace AdvancedStocking
 				return thing.def.stackLimit;
 			return (int) Mathf.Min (this.overstackRatioLimitCached * thing.def.stackLimit,
 				this.maxWeightLimitCached / StockingUtility.cachedThingDefMasses[thing.def]);
-		}
-
-		public int GetOverlayLimit()
-		{
-			return (int)this.overlayLimitCached;
 		}
 
 		public bool HasEmptyCell() {
@@ -348,6 +367,8 @@ namespace AdvancedStocking
 			}
 			currentOrganizeMode = ShelfOrganizeModeDefOf.None;
 			CacheStats();
+			if (overlayLimit > maxOverlayLimitCached)
+				overlayLimit = maxOverlayLimitCached;
 		}
 
 		private void ResetPriorityCycle() {

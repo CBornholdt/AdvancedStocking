@@ -73,6 +73,7 @@
     <Compile Include="Jobs\WorkGiver_OverlayStock.cs" />
     <Compile Include="Stats\StatPart_StuffDef_Fallover.cs" />
     <Compile Include="Stats\StatPart_Floor.cs" />
+    <Compile Include="Listing_TreeUIOption\TreeNode_UIOption_Slider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

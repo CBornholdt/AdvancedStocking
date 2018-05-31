@@ -58,7 +58,15 @@ namespace AdvancedStocking
 				p => s.PushFullStockPriority = p, 
 				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false, () => s.InStockingMode));
 
-			this.listing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox });
+			TreeNode_UIOption_Checkbox stockingLimitsCheckBox = new TreeNode_UIOption_Checkbox("StockingLimitsCheckbox_label".Translate(),
+																							   () => true, (b) => { });
+			stockingLimitsCheckBox.children.Add(new TreeNode_UIOption_Slider("OverlayLimit_Label", () => (float)s.OverlayLimit
+																			 , val => s.OverlayLimit = (int)val
+			                                                                 , min: 1f, max: s.MaxOverlayLimit, roundTo: 1f));
+			
+                                                
+			this.listing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox, stockingLimitsCheckBox });
+
 
 	/*		foreach (var def in DefDatabase<ShelfOrganizeModeDef>.AllDefs) {
 				string message = def.label + " DEFs: ";

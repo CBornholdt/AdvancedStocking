@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <OverstackLimitStatLabel>Overstack Limit ({0})</OverstackLimitStatLabel>
-  <OverstackLimitStatReportText>Represents the increased stack count for {0}'s' that can be kept on each cell</OverstackLimitStatReportText>
+  <OverstackLimitStatReportText>Represents the increased stack count for {0}'s' that can be kept on each square</OverstackLimitStatReportText>
+  <OverlayLimitStatLabel>Overlay Limit</OverlayLimitStatLabel>
+  <OverlayLimitStatReportText>Represents the number of items capable of being overlaid on the same shelf square</OverlayLimitStatReportText>
   <StatReport_StuffDef_Fallover.ThingDef>Made of {0}</StatReport_StuffDef_Fallover.ThingDef>
   <StatReport_StuffDef_Fallover.ThingCatDef>Made with type of {0}</StatReport_StuffDef_Fallover.ThingCatDef>
   <StatReport_StuffDef_Fallover.StuffCatDef>Is {0}</StatReport_StuffDef_Fallover.StuffCatDef>
