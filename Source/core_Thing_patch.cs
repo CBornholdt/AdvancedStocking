@@ -30,8 +30,8 @@ namespace AdvancedStocking
 			harmony.Patch(AccessTools.Method(typeof(RimWorld.FloatMenuMakerMap), "AddHumanlikeOrders"), null, 
 				new HarmonyMethod (typeof(AdvancedStocking.HarmonyPatches).GetMethod("AddHumanlikeOrders_Postfix")), null);
 
-			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettingsClipboard), "CopyPasteGizmosFor"),  
-				new HarmonyMethod (typeof(AdvancedStocking.StockingSettingsClipboard).GetMethod("CopyPasteGizmosFor_Prefix")), null, null);
+			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettingsClipboard), "CopyPasteGizmosFor"), null, 
+				new HarmonyMethod (typeof(AdvancedStocking.StockingSettingsClipboard).GetMethod("CopyPasteGizmosFor_Postfix")), null);
 		}
 
 		public static void TryAbsorbStack_Postfix(Thing __instance, Thing other, bool respectStackLimit, ref bool __result) {
