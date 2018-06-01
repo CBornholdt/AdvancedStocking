@@ -111,17 +111,36 @@ namespace AdvancedStocking
 				if (InStockingMode && MaxOverlayLimit > 1)
 					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
 												   0, "OverlayLimitStatReportText".Translate());
-                    
-				List<ThingDef> outputThingDefs = new List<ThingDef>();
-				foreach (var thing in slotGroup.HeldThings.Where(t => t.stackCount >= t.def.stackLimit && !outputThingDefs.Contains(t.def))) {
-					outputThingDefs.Add (thing.def);
-					yield return new StatDrawEntry (stockingCat, "OverstackLimitStatLabel".Translate (thing.LabelNoCount), 
-						GetOverstackLimit (thing).ToString (), 0, "OverstackLimitStatReportText".Translate (thing.LabelNoCount));
+
+				IEnumerable<ThingDef> thingDefsToDisplay = null;
+				if (settings.filter.AllowedDefCount > 10)
+					thingDefsToDisplay = settings.filter.AllowedThingDefs;
+				else
+					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();	
+
+				foreach (var thingDef in thingDefsToDisplay) {
+					yield return new StatDrawEntry(stockingCat, "MaxOverstackLimitStat.Label".Translate(thingDef.label),
+						cachedMaxStackLimits[thingDef].ToString(), 0, "MaxOverstackLimitStat.Text".Translate(thingDef.label));
+					yield return new StatDrawEntry(stockingCat, "OverstackLimitStat.Label".Translate(thingDef.label),
+						stackLimits[thingDef].ToString(), 0, "OverstackLimitStat.Text".Translate(thingDef.label));
 				}
 			}
-		}	
-        
+		}
+
 		//Methods
+		public void CacheAll()
+		{
+			bool overlayLimitAtMax = overlayLimit == maxOverlayLimitCached;
+			RecalculateCurrentOrganizeMode ();
+			CacheStats();
+			
+			if (overlayLimit > maxOverlayLimitCached || overlayLimitAtMax)
+				overlayLimit = maxOverlayLimitCached;
+				
+			CacheMaxStackLimits();
+			CleanupStackLimits();
+		}
+		
 		public void CacheStats()
 		{
 			this.maxOverlayLimitCached = (int)this.GetStatValue(StockingStatDefOf.MaxOverlayLimit);
@@ -135,7 +154,7 @@ namespace AdvancedStocking
 			float allowedMassPerThing = maxWeightLimitCached / OverlayLimit;
 			foreach (var thingDef in settings.filter.AllowedThingDefs) {
 				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
-				int massLimit = (int)(allowedMassPerThing / StatDefOf.Mass.Worker.GetValueAbstract(thingDef));
+				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 				int stackLimit = (overstackLimit < massLimit) ? overstackLimit : massLimit;
 
 				cachedMaxStackLimits.Add(thingDef, stackLimit);
@@ -315,14 +334,7 @@ namespace AdvancedStocking
 		}
 			
 		public virtual void Notify_FilterChanged() {
-			RecalculateCurrentOrganizeMode ();
-			CacheStats();
-			
-			if (overlayLimit > maxOverlayLimitCached)
-				overlayLimit = maxOverlayLimitCached;
-				
-			CacheMaxStackLimits();
-			CleanupStackLimits();
+			CacheAll();
 		}
 
 		public override void Notify_LostThing (Thing newItem) {
@@ -386,7 +398,7 @@ namespace AdvancedStocking
 				tryNotifyChanged .Invoke(this.settings, new object [0]);
 			};
 			settingsChangedCallback.SetValue (settings.filter, newAction);
-			Notify_FilterChanged();	//Filter has been initialized so everything else afterwards too needs to be
+			CacheAll();
 		}	
 
 		private void RecalculateCurrentOrganizeMode()

@@ -62,7 +62,7 @@ namespace AdvancedStocking
 																							   () => true, (b) => { });
 			stockingLimitsCheckBox.children.Add(new TreeNode_UIOption_Slider("OverlayLimit_Label", () => (float)s.OverlayLimit
 																			 , val => s.OverlayLimit = (int)val
-			                                                                 , min: 1f, max: s.MaxOverlayLimit, roundTo: 1f));
+			                                                                 , min: 0f, max: s.MaxOverlayLimit, roundTo: 1f));
 			
                                                 
 			this.listing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox, stockingLimitsCheckBox });
