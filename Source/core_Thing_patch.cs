@@ -32,6 +32,17 @@ namespace AdvancedStocking
 
 			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettingsClipboard), "CopyPasteGizmosFor"), null, 
 				new HarmonyMethod (typeof(AdvancedStocking.StockingSettingsClipboard).GetMethod("CopyPasteGizmosFor_Postfix")), null);
+
+			harmony.Patch(AccessTools.Method(typeof(Verse.TerrainGrid), "DoTerrainChangedEffects"), null,
+				new HarmonyMethod(typeof(AdvancedStocking.HarmonyPatches).GetMethod("DoTerrainChangedEffects_Postfix")), null);
+		}
+
+		public static void DoTerrainChangedEffects_Postfix(TerrainGrid __instance, IntVec3 c)
+		{
+			Map map = (Map)typeof(TerrainGrid).
+				GetField("map", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
+
+			(map.slotGroupManager.SlotGroupAt(c)?.parent as Building_Shelf)?.CacheStats();
 		}
 
 		public static void TryAbsorbStack_Postfix(Thing __instance, Thing other, bool respectStackLimit, ref bool __result) {

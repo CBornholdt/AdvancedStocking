@@ -16,6 +16,9 @@ namespace AdvancedStocking
 		public override void TransformValue(StatRequest req, ref float val)
 		{
 			//If existing StatOffset or StatFactor then stat has already been adjusted
+			if (req.StuffDef == null)
+				return;
+
 			var stuffProps = req.StuffDef.stuffProps;
 			if ((stuffProps.statOffsets?.Any(mod => mod.stat == this.parentStat) ?? false)
 			    || (stuffProps.statFactors?.Any(mod => mod.stat == this.parentStat) ?? false))
@@ -42,6 +45,9 @@ namespace AdvancedStocking
 
 		public override string ExplanationPart(StatRequest req)
 		{
+			if (req.StuffDef == null)
+				return null;
+           
 			var stuffProps = req.StuffDef.stuffProps;
             if ((stuffProps.statOffsets?.Any(mod => mod.stat == this.parentStat) ?? false)
                 || (stuffProps.statFactors?.Any(mod => mod.stat == this.parentStat) ?? false))
