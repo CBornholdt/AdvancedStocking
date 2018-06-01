@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,12 @@ using RimWorld;
 
 namespace AdvancedStocking
 {
-	public class ITab_Stock : ITab
+	public class ITab_Stock : ITab, ISignalReceiver
 	{
 		private static readonly Vector2 WinSize = new Vector2 (360, 300);
 		private static readonly int PriorityButtonWidth = 80;
 		private Listing_TreeUIOption listing;
+		private Building_Shelf displayingFor;
 
 		public override bool IsVisible {
 			get {
@@ -79,27 +81,46 @@ namespace AdvancedStocking
 													, minGetter: () => 0f
 													, maxGetter: () => shelf.GetMaxStackLimit(thingDef)
 													, roundTo: 1f));
-                                               
-			this.listing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox, stockingLimitsRootNode });
+
+			Action<TreeNode, TreeNode> configureNodeOpenings = null;
+			FieldInfo openBitsField = typeof(Verse.TreeNode).GetField("openBits", BindingFlags.Instance | BindingFlags.NonPublic);
+			configureNodeOpenings = delegate (TreeNode oldNode, TreeNode newNode) {
+				openBitsField.SetValue(newNode, openBitsField.GetValue(oldNode));
+				IEnumerator<TreeNode> oldNodeEnum = oldNode.children?.GetEnumerator() ?? Enumerable.Empty<TreeNode>().GetEnumerator();
+				IEnumerator<TreeNode> newNodeEnum = newNode.children?.GetEnumerator() ?? Enumerable.Empty<TreeNode>().GetEnumerator();
+				while (oldNodeEnum.MoveNext() && newNodeEnum.MoveNext())
+					configureNodeOpenings(oldNodeEnum.Current, newNodeEnum.Current);
+			};
+			
+			var newListing = new Listing_TreeUIOption (new List<TreeNode_UIOption>() { stockingEnabledCheckbox, stockingLimitsRootNode });
+			for (int i = 0; i < (this.listing?.RootOptions.Count ?? 0); i++)
+				configureNodeOpenings(this.listing.RootOptions[i], newListing.RootOptions[i]);
+
+			this.listing = newListing;
+			this.displayingFor = shelf;
 		}
 
 		protected override void FillTab() {
 			Building_Shelf shelf = this.SelObject as Building_Shelf;
 			if (shelf == null)
 				return;
+			if (shelf != this.displayingFor) {
+				SetupListing(shelf);
+				shelf.filterChangedSignalManager.RegisterReceiver(this);
+			}
 			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30);
 			listing.Begin (rect);
 			listing.DrawUIOptions ();
 			listing.End ();
 		}
 
-		public override void OnOpen()
+		public void Notify_SignalReceived(Signal signal)
 		{
-			Building_Shelf shelf = this.SelObject as Building_Shelf;
-			if (shelf == null)
-				return;
-			base.OnOpen();
-			SetupListing(shelf);
+			Building_Shelf shelf = signal.args[0] as Building_Shelf;
+			if (shelf != displayingFor) //Cannot remove OnClose, will do so when erroneous signal sent
+				shelf.filterChangedSignalManager.DeregisterReceiver(this);
+			else
+				SetupListing(shelf);
 		}
 	}
 }

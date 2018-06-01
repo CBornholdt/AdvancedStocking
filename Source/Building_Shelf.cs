@@ -48,6 +48,8 @@ namespace AdvancedStocking
 		private float maxWeightLimitCached = 1f;
 		private Dictionary<ThingDef, int> cachedMaxStackLimits = new Dictionary<ThingDef, int>();
 
+		public SignalManager filterChangedSignalManager = new SignalManager();
+
 		public bool CanShelfBeStocked {
 			get {
 				return !this.IsForbidden(Faction.OfPlayer);
@@ -289,6 +291,9 @@ namespace AdvancedStocking
 			
 		public virtual void Notify_FilterChanged() {
 			RecalcOrganizeMode();
+
+			Signal filterChanged = new Signal("FilterChanged", new object[1] { this });
+			filterChangedSignalManager.SendSignal(filterChanged);
 		}
 
 		public override void Notify_LostThing (Thing newItem) {
