@@ -26,9 +26,9 @@ namespace AdvancedStocking
 
 		public override void Begin(Rect rect)
 		{
-			Rect viewRect = new Rect (0, 0, rect.width - closeButtonSize.x, CurHeight + 60);	// + 60 is there for padding
+			Rect viewRect = new Rect (0, 0, rect.width - closeButtonSize.x, CurHeight);	
 			Widgets.BeginScrollView (rect, ref this.scrollPosition, viewRect, true);
-			Rect rect2 = new Rect (0, 0, viewRect.width, 9999);
+			Rect rect2 = new Rect (0, 0, viewRect.width, CurHeight);
 			base.Begin (rect2);
 		}
 

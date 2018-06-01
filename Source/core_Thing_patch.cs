@@ -42,7 +42,7 @@ namespace AdvancedStocking
 			Map map = (Map)typeof(TerrainGrid).
 				GetField("map", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
 
-			(map.slotGroupManager.SlotGroupAt(c)?.parent as Building_Shelf)?.CacheAll();
+			(map.slotGroupManager.SlotGroupAt(c)?.parent as Building_Shelf)?.RecalcMaxStockWeight();
 		}
 
 		public static void TryAbsorbStack_Postfix(Thing __instance, Thing other, bool respectStackLimit, ref bool __result) {
