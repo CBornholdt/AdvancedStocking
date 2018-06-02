@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <OverstackLimitStatLabel>Overstack Limit ({0})</OverstackLimitStatLabel>
-  <OverstackLimitStatReportText>Represents the increased stack count for {0}'s' that can be kept on each square</OverstackLimitStatReportText>
+  <MaxOverstackLimitStat.Label>Max Overstack Limit ({0})</MaxOverstackLimitStat.Label>
+  <MaxOverstackLimitStat.Text>Represents the maximum ratio by which the count of {0}s may exceed its normal limit</MaxOverstackLimitStat.Text>
+  <OverstackLimitStat.Label>Overstack Limit ({0})</OverstackLimitStat.Label>
+  <OverstackLimitStat.Text>Represents the currently configured ratio by which the count of {0}s may exceed its normal limit</OverstackLimitStat.Text>
   <OverlayLimitStatLabel>Overlay Limit</OverlayLimitStatLabel>
   <OverlayLimitStatReportText>Represents the number of items capable of being overlaid on the same shelf square</OverlayLimitStatReportText>
   <StatReport_StuffDef_Fallover.ThingDef>Made of {0}</StatReport_StuffDef_Fallover.ThingDef>

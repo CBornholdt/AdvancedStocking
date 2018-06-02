@@ -122,13 +122,14 @@ namespace AdvancedStocking
 				if (settings.filter.AllowedDefCount <= 10)
 					thingDefsToDisplay = settings.filter.AllowedThingDefs;
 				else
-					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();	
+					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();
 
+				int i = -1;
 				foreach (var thingDef in thingDefsToDisplay) {
 					yield return new StatDrawEntry(stockingCat, "MaxOverstackLimitStat.Label".Translate(thingDef.label),
-						cachedMaxStackLimits[thingDef].ToString(), 0, "MaxOverstackLimitStat.Text".Translate(thingDef.label));
+						cachedMaxStackLimits[thingDef].ToString(), i, "MaxOverstackLimitStat.Text".Translate(thingDef.label));
 					yield return new StatDrawEntry(stockingCat, "OverstackLimitStat.Label".Translate(thingDef.label),
-						stackLimits[thingDef].ToString(), 0, "OverstackLimitStat.Text".Translate(thingDef.label));
+						stackLimits[thingDef].ToString(), i--, "OverstackLimitStat.Text".Translate(thingDef.label));
 				}
 			}
 		}

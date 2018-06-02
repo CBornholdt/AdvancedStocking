@@ -27,4 +27,8 @@
 	<Push_Full_Stock_Priority_Tooltip>Will push any full spaces to an equal or higher priority storage location</Push_Full_Stock_Priority_Tooltip> 
 	<FillEmptyStock_NoItemsFound_JobFailReason>No available items in lower priority storage</FillEmptyStock_NoItemsFound_JobFailReason>
 	<FillEmptyStock_AllItemsFoundAreForbidden_JobFailReason>All available items are forbidden</FillEmptyStock_AllItemsFoundAreForbidden_JobFailReason>
+
+	<StockingLimits.Label>Stocking Limits</StockingLimits.Label>
+	<OverlayLimit.Label>Overlay Limit (max {0})</OverlayLimit.Label>
+	<StackLimit.Label>Stack Limit for {0}</StackLimit.Label>
 </LanguageData>
