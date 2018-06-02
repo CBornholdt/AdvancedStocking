@@ -37,11 +37,13 @@
       <HintPath>..\..\..\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\usr\local\lib\dotnet\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="0Harmony">
       <HintPath>..\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Patches\ThingUtility_TryAbsorbStackNumToTake.cs" />
     <Compile Include="Patches\HaulAIUtility_HaulMaxNumToCellJob.cs" />
     <Compile Include="Patches\StoreUtility_NoStorageBlockersIn.cs" />
+    <Compile Include="Patches\CompressibilityDeciderUtility_IsSaveCompressible.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -16,7 +16,8 @@ namespace AdvancedStocking
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), "stackLimit");
-			MethodInfo helper = AccessTools.Method(typeof(ThingUtility_TryAbsorbStackNumToTake), "Helper");
+			MethodInfo helper = AccessTools.Method(typeof(ThingUtility_TryAbsorbStackNumToTake), 
+				nameof(ThingUtility_TryAbsorbStackNumToTake.TransformStacklimitIfOnShelf));
 			bool patched = false;
 
 			foreach (var code in instructions) {
@@ -29,7 +30,7 @@ namespace AdvancedStocking
 			}
 		}
 
-		static int Helper(int stackLimit, Thing thing)
+		static int TransformStacklimitIfOnShelf(int stackLimit, Thing thing)
 		{
 			SlotGroup slotGroup = thing.PositionHeld.GetSlotGroup(thing.MapHeld);
 			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)

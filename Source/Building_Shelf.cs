@@ -39,7 +39,7 @@ namespace AdvancedStocking
 		private ShelfOrganizeModeDef currentOrganizeMode;
 
 		private int overlayLimit = 1;
-		private Dictionary<ThingDef, int> stackLimits;
+		private Dictionary<ThingDef, int> stackLimits = new Dictionary<ThingDef, int>();
 		private List<ThingDef> stackLimitsExposeHelper1;
 		private List<int> stackLimitsExposeHelper2;
 
@@ -126,10 +126,9 @@ namespace AdvancedStocking
 
 				int i = -1;
 				foreach (var thingDef in thingDefsToDisplay) {
-					yield return new StatDrawEntry(stockingCat, "MaxOverstackLimitStat.Label".Translate(thingDef.label),
-						cachedMaxStackLimits[thingDef].ToString(), i, "MaxOverstackLimitStat.Text".Translate(thingDef.label));
-					yield return new StatDrawEntry(stockingCat, "OverstackLimitStat.Label".Translate(thingDef.label),
-						stackLimits[thingDef].ToString(), i--, "OverstackLimitStat.Text".Translate(thingDef.label));
+					yield return CreateMaxStacklimitStatEntry(thingDef, i);
+					yield return new StatDrawEntry(stockingCat, "StackLimitStat.Label".Translate(thingDef.label),
+						stackLimits[thingDef].ToString(), i--, "StackLimitStat.Text".Translate(thingDef.label));
 				}
 			}
 		}
@@ -153,8 +152,8 @@ namespace AdvancedStocking
 			for(int i = 0; i < cellCount; i++) {
 				for(int j = 0; j < things[i].Count; j++) { 
 					source = things [i] [j];
-					if (!source.def.EverStoreable || source.stackCount > source.def.stackLimit)
-						continue;	//Ensure that source is not overstacked already
+					if (!source.def.EverStoreable)
+						continue;
 					for (int k = 0; k < cellCount; k++) {
 						for(int l = 0; l < things[k].Count; l++) {
 							dest = things[k][l];
@@ -188,7 +187,8 @@ namespace AdvancedStocking
 						if (cell == cell2)
 							continue;
 						var destThings = Map.thingGrid.ThingsListAtFast (cell2).Where (t => t.def.EverStoreable);
-						if (destThings.Count() > 0 && destThings.Count() < overlaysAllowed) {
+						int count = destThings.Count();
+						if (count > 0 && count < overlaysAllowed) {
 							thing = potential;
 							destCell = cell2;
 							return true;
@@ -203,7 +203,7 @@ namespace AdvancedStocking
 
 		public float CombineWorkNeeded(Thing destStock)
 		{
-			return BASE_COMBINE_WORK * (float)destStock.stackCount / (float)destStock.def.stackLimit;
+			return BASE_COMBINE_WORK * Mathf.Min((float)destStock.stackCount / (float)destStock.def.stackLimit, 5);
 		}
 
 		public void CopyStockSettingsFrom(Building_Shelf other)
@@ -218,8 +218,23 @@ namespace AdvancedStocking
 			PushFullStockPriority = other.PushFullStockPriority;
 			overlayLimit = other.overlayLimit;
 			stackLimits = new Dictionary<ThingDef, int>(other.stackLimits);
+
+			RecalcOrganizeMode();
+		}
+
+		public StatDrawEntry CreateMaxStacklimitStatEntry(ThingDef thingDef, int displayPriority)
+		{
+			StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
+		
 			
-			Notify_FilterChanged();
+			int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
+			float allowedMassPerThing = maxWeightLimitCached / OverlayLimit;
+			int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
+		
+			return new StatDrawEntry(stockingCat, "MaxStackLimitStat.Label".Translate(thingDef.label),
+						cachedMaxStackLimits[thingDef].ToString(), displayPriority, "MaxStackLimitStat.Text"
+							.Translate(thingDef.label, thingDef.stackLimit, overstackRatioLimitCached, overstackLimit
+								, allowedMassPerThing, massLimit, cachedMaxStackLimits[thingDef]));
 		}
 
 		public ThingDef GetSingleThingDefOrNull()
@@ -251,15 +266,20 @@ namespace AdvancedStocking
 			Scribe_Values.Look<bool> (ref this.autoOrganizeAfterFilling, "autoOrganizeAfterFilling", false);
 			Scribe_Values.Look<bool> (ref this.inForbiddenMode, "inForbiddenMode", false);
 			Scribe_Values.Look<int>(ref this.overlayLimit, "OverlaysAllowed", 1);
-			Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Reference, LookMode.Value,
-								ref this.stackLimitsExposeHelper1, ref this.stackLimitsExposeHelper2);
 			Scribe_Values.Look<StockingPriority> (ref this.OrganizeStockPriority, "organizeStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.PushFullStockPriority, "pushfullstockPriority", StockingPriority.None);
 
-			//Loaded mod to existing game, stackLimits was nulled by Scribe_Collections.Look
+			if (Scribe.mode == LoadSaveMode.Saving || Scribe.EnterNode("StackLimits")) {
+				if(Scribe.mode != LoadSaveMode.Saving)
+					Scribe.ExitNode();
+				Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
+								ref this.stackLimitsExposeHelper1, ref this.stackLimitsExposeHelper2);
+			}
+
+	/*		//Loaded mod to existing game, stackLimits was nulled by Scribe_Collections.Look
 			if (Scribe.mode == LoadSaveMode.PostLoadInit && this.stackLimits == null)
-				this.stackLimits = new Dictionary<ThingDef, int>();
+				this.stackLimits = new Dictionary<ThingDef, int>();		*/
 		}
 
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
@@ -335,7 +355,7 @@ namespace AdvancedStocking
         
 		public float OverlayWorkNeeded(IntVec3 destCell)
 		{
-			return BASE_OVERLAY_WORK * Map.thingGrid.ThingsListAtFast (destCell).Where (t => t.def.EverStoreable).Count ();
+			return BASE_OVERLAY_WORK * Mathf.Min(Map.thingGrid.ThingsListAtFast (destCell).Count (t => t.def.EverStoreable), 5);
 		}
 
 		public void OverstackThings(Thing sourceStock, Thing destStock)
@@ -371,13 +391,14 @@ namespace AdvancedStocking
 				;
 			}
 
+		//	Log.Message(this.ToString() + " set organize mode " + currentOrganizeMode.defName);
 			this.overstackRatioLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverstackRatio);
 			RecalcOverlays();
 		}
 
 		public void RecalcOverlays()
 		{
-			bool overlayWasAtMaximum = OverlayLimit == maxOverlayLimitCached;
+			bool overlayWasAtMaximum = (OverlayLimit == maxOverlayLimitCached);
 			maxOverlayLimitCached = (int)this.GetStatValue(StockingStatDefOf.MaxOverlayLimit);
 			if (overlayWasAtMaximum || OverlayLimit > maxOverlayLimitCached)
 				OverlayLimit = maxOverlayLimitCached;
@@ -391,6 +412,9 @@ namespace AdvancedStocking
 				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
 				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 				int newMaxStackLimit = (overstackLimit < massLimit) ? overstackLimit : massLimit;
+		
+				if (newMaxStackLimit == 0)
+					newMaxStackLimit = 1;	//Eliminates Job errors due to Job.Count == 0
 
 				if (!stackLimits.TryGetValue(thingDef, out int oldStackLimit))
 					stackLimits[thingDef] = (thingDef.stackLimit <= newMaxStackLimit)
@@ -446,9 +470,8 @@ namespace AdvancedStocking
 		{
 			Pawn adjPawn = newItem.CellsAdjacent8WayAndInside()
 				.Select<IntVec3, Pawn> (cell => Map.mapPawns.AllPawnsSpawned.FirstOrDefault(pawn => pawn.Position == cell))
-				.Where (pawn => pawn != null && pawn.IsColonist && 
-					(pawn.CurJob?.haulMode ?? HaulMode.Undefined) == HaulMode.ToCellStorage)
-				.FirstOrDefault ();
+				.FirstOrDefault (pawn => pawn != null && pawn.IsColonist && 
+					(pawn.CurJob?.haulMode ?? HaulMode.Undefined) == HaulMode.ToCellStorage);
 				
 			if (adjPawn != null) 
 				return TrySetupAutoOrganizeJob (adjPawn);
@@ -468,18 +491,6 @@ namespace AdvancedStocking
 				return true;
 			}
 			return false;
-		/*	Thing sourceThing;
-			Thing destThing;
-			if (CanCombineThings (out sourceThing, out destThing)) {
-				pawn.jobs.StartJob (new Job (StockingJobDefOf.CombineThings, this, sourceThing, destThing), JobCondition.Succeeded);
-				return true;
-			}
-			IntVec3 destCell;
-			if(CanOverlayThing(out sourceThing, out destCell)) {
-				pawn.jobs.StartJob (new Job (StockingJobDefOf.OverlayThing, this, sourceThing, destCell), JobCondition.Succeeded);
-				return true;
-			}
-			return false;   */
 		}
               
 		public void UpcyclePriority()

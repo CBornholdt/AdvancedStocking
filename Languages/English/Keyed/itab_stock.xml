@@ -30,5 +30,7 @@
 
 	<StockingLimits.Label>Stocking Limits</StockingLimits.Label>
 	<OverlayLimit.Label>Overlay Limit (max {0})</OverlayLimit.Label>
-	<StackLimit.Label>Stack Limit for {0}</StackLimit.Label>
+	<OverlayLimit.ToolTip>Select the number of items that can be placed on the same square. Note, this impacts the maximum stacklimit of each of those items; as your overlays increase, your stacklimits will decrease. Also, any stacklimits configured to their maximum will automatically remain at maximum after an overlay change</OverlayLimit.ToolTip>
+	<StackLimit.Label>{0}</StackLimit.Label>
+	<StackLimit.ToolTip>The maximum number that can be placed in stack. If at maximum, will automatically enlarge if overlays are reduced</StackLimit.ToolTip>
 </LanguageData>

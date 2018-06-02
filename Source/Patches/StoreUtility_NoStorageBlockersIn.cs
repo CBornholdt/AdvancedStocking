@@ -17,7 +17,8 @@ namespace AdvancedStocking
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), "stackLimit");
-			MethodInfo helper = AccessTools.Method(typeof(StoreUtility_NoStorageBlockersIn), "Helper");
+			MethodInfo helper = AccessTools.Method(typeof(StoreUtility_NoStorageBlockersIn), 
+				nameof(StoreUtility_NoStorageBlockersIn.TransformStacklimitIfCellIsAShelf));
 			bool patched = false;
 
 			foreach (var code in instructions) {
@@ -32,7 +33,7 @@ namespace AdvancedStocking
 		}
 
 		//If cell to checked for storage blockers is a shelf, return enhanced stackLimits
-		static int Helper(int stackLimit, Thing thing, IntVec3 cell)
+		static int TransformStacklimitIfCellIsAShelf(int stackLimit, Thing thing, IntVec3 cell)
 		{
 			Map map = thing.MapHeld;
 			if (map == null)	//Is occasionally called on newly created items before they get a map ...

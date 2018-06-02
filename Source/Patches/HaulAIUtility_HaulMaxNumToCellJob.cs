@@ -11,13 +11,14 @@ using Harmony;
 namespace AdvancedStocking
 {
 	[HarmonyPatch(typeof(Verse.AI.HaulAIUtility))]
-	[HarmonyPatch("HaulMaxNumToCellJob")]
+	[HarmonyPatch(nameof(Verse.AI.HaulAIUtility.HaulMaxNumToCellJob))]
 	static class HaulAIUtility_HaulMaxNumToCellJob
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), "stackLimit");
-			MethodInfo helper = AccessTools.Method(typeof(HaulAIUtility_HaulMaxNumToCellJob), "Helper");
+			MethodInfo helper = AccessTools.Method(typeof(HaulAIUtility_HaulMaxNumToCellJob), 
+				nameof(HaulAIUtility_HaulMaxNumToCellJob.TransformStacklimitIfDestIsShelf));
 
 			foreach (var code in instructions) {
 				yield return code;
@@ -29,7 +30,7 @@ namespace AdvancedStocking
 			}
 		}
 
-		static int Helper(int stackLimit, Thing thing, SlotGroup slotGroup)
+		static int TransformStacklimitIfDestIsShelf(int stackLimit, Thing thing, SlotGroup slotGroup)
 		{
 			if (slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)
 				return shelf.GetStackLimit(thing);
