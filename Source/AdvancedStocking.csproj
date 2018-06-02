@@ -82,6 +82,7 @@
     <Compile Include="Patches\HaulAIUtility_HaulMaxNumToCellJob.cs" />
     <Compile Include="Patches\StoreUtility_NoStorageBlockersIn.cs" />
     <Compile Include="Patches\CompressibilityDeciderUtility_IsSaveCompressible.cs" />
+    <Compile Include="Patches\GenPlace_TryPlaceThing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -102,13 +102,15 @@ namespace AdvancedStocking
 			this.listing = newListing;
 		}
 
+		//Some of this should be in OnOpen instead ...
 		protected override void FillTab() {
 			Building_Shelf shelf = this.SelObject as Building_Shelf;
 			if (shelf == null)
 				return;
 			if (shelf != this.displayingFor) {
 				SetupListing(shelf);
-				shelf.filterChangedSignalManager.RegisterReceiver(this);
+				if(!shelf.filterChangedSignalManager.receivers.Contains(this))
+					shelf.filterChangedSignalManager.RegisterReceiver(this);
 			}
 			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30);
 			listing.Begin (rect);
