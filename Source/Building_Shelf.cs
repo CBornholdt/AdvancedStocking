@@ -21,6 +21,7 @@ namespace AdvancedStocking
 	{
 		private readonly float BASE_COMBINE_WORK = 25f;
 		private readonly float BASE_OVERLAY_WORK = 10f;
+		public readonly float MAX_UNHELD_STACKLIMITS_TO_DISPLAY = 10;
 
 		private bool inStockingMode = false;
 		private bool inForbiddenMode = false;
@@ -49,10 +50,20 @@ namespace AdvancedStocking
 		private Dictionary<ThingDef, int> cachedMaxStackLimits = new Dictionary<ThingDef, int>();
 
 		public SignalManager filterChangedSignalManager = new SignalManager();
+		public SignalManager itemsHeldChangedSignalManager = new SignalManager();
 
 		public bool CanShelfBeStocked {
 			get {
 				return !this.IsForbidden(Faction.OfPlayer);
+			}
+		}
+		
+		public int CurrentOverlaysUsed {
+			get {
+				return slotGroup.CellsList
+					.Select(cell => Map.thingGrid.ThingsListAtFast(cell).Count(thing => thing.def.EverStoreable))
+					.OrderByDescending(count => count)
+					.FirstOrDefault();
 			}
 		}
 
@@ -119,7 +130,7 @@ namespace AdvancedStocking
 												   0, "OverlayLimitStatReportText".Translate());
 
 				IEnumerable<ThingDef> thingDefsToDisplay = null;
-				if (settings.filter.AllowedDefCount <= 10)
+				if (settings.filter.AllowedDefCount <= MAX_UNHELD_STACKLIMITS_TO_DISPLAY)
 					thingDefsToDisplay = settings.filter.AllowedThingDefs;
 				else
 					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();
@@ -317,12 +328,15 @@ namespace AdvancedStocking
 			filterChangedSignalManager.SendSignal(filterChanged);
 		}
 
-		public override void Notify_LostThing (Thing newItem) {
+		public override void Notify_LostThing (Thing lostItem) {
 			if (!InStockingMode)
 				return;
 
 			if (InPriorityCyclingMode && this.canUpcycle && IsEmpty()) 
 				UpcyclePriority();
+
+			Signal hasLostItem = new Signal("HasLostItem", new object[2] { this, lostItem });
+			itemsHeldChangedSignalManager.SendSignal(hasLostItem);
 		}
 
 		public virtual void Notify_PriorityChanging(StoragePriority newPriority)
@@ -335,14 +349,22 @@ namespace AdvancedStocking
 		public override void Notify_ReceivedThing (Thing newItem) {
 			base.Notify_ReceivedThing (newItem);
 
+			Notify_ReceivedMoreOfAThing(newItem, newItem.stackCount);
+
+			Signal hasNewItem = new Signal("HasNewItem", new object[2] { this, newItem });
+			itemsHeldChangedSignalManager.SendSignal(hasNewItem);
+		}
+
+		public void Notify_ReceivedMoreOfAThing(Thing thing, int receivedCount)
+		{
 			if (!InStockingMode)
 				return;
 
 			if(PawnShouldOrganizeAfterFilling)
-				TrySetupAutoOrganizeJob(newItem);
+				TrySetupAutoOrganizeJob(thing);
 
 			if (InForbiddenMode)
-				newItem.SetForbidden (true);
+				thing.SetForbidden (true);
 
 			if (InPriorityCyclingMode && this.canDowncycle && IsFull())
 				DowncyclePriority();
@@ -461,7 +483,8 @@ namespace AdvancedStocking
 				tryNotifyChanged.Invoke(this.settings, new object [0]);
 			};
 			settingsChangedCallback.SetValue (settings.filter, newAction);
-			//Needs this set without any other Recalcs during spawning
+			//TODO I may be able to get rid of this cached max weight now that I store stack limits ...
+			//Needs this set without any other Recalcs during spawning, deals with circular dependency
 			this.maxWeightLimitCached = this.GetStatValue(StockingStatDefOf.MaxStockWeight);
 			RecalcOrganizeMode();
 		}

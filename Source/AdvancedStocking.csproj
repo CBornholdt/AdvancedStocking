@@ -39,9 +39,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\usr\local\lib\dotnet\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony">
       <HintPath>..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
   </ItemGroup>

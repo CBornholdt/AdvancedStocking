@@ -60,9 +60,10 @@ namespace AdvancedStocking
 				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false, () => shelf.InStockingMode));
 
 			TreeNode_UIOption stockingLimitsRootNode = new TreeNode_UIOption("StockingLimits.Label".Translate());
-			stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider("OverlayLimit.Label".Translate(shelf.MaxOverlayLimit)
-																			, () => (float)shelf.OverlayLimit
-																			, val => shelf.OverlayLimit = (int)val
+			stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider("OverlayLimit.Label"
+																				.Translate(shelf.CurrentOverlaysUsed, shelf.MaxOverlayLimit)
+																			, valGetter: () => (float)shelf.OverlayLimit
+																			, valSetter: val => shelf.OverlayLimit = (int)val
 																			, minGetter: () => 1f
 																			, maxGetter: () => shelf.MaxOverlayLimit
 																			, roundTo: 1f
@@ -71,14 +72,17 @@ namespace AdvancedStocking
 			IEnumerable<ThingDef> thingDefsToDisplay = null;
 			if (shelf.settings.filter.AllowedDefCount <= 10)
 				thingDefsToDisplay = shelf.settings.filter.AllowedThingDefs;
-			else
+			else {
 				thingDefsToDisplay = shelf.slotGroup.HeldThings.Select(thing => thing.def).Distinct();
+				Log.Message(thingDefsToDisplay.Count() + " Count " + shelf.slotGroup.HeldThings.Count());
+			}
 
 			foreach (var thingDef in thingDefsToDisplay)
-				stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider(
-													() => "StackLimit.Label".Translate(thingDef.LabelCap, shelf.GetMaxStackLimit(thingDef))
-													, () => (float)shelf.GetStackLimit(thingDef)
-													, value => shelf.SetStackLimit(thingDef, (int)value)
+				stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider
+													( () => "StackLimit.Label"
+														.Translate(thingDef.LabelCap, shelf.GetMaxStackLimit(thingDef))
+													, valGetter: () => (float)shelf.GetStackLimit(thingDef)
+													, valSetter: value => shelf.SetStackLimit(thingDef, (int)value)
 													, minGetter: () => 0f
 													, maxGetter: () => shelf.GetMaxStackLimit(thingDef)
 													, roundTo: 1f
@@ -109,8 +113,10 @@ namespace AdvancedStocking
 				return;
 			if (shelf != this.displayingFor) {
 				SetupListing(shelf);
-				if(!shelf.filterChangedSignalManager.receivers.Contains(this))
+				if (!shelf.filterChangedSignalManager.receivers.Contains(this)) {
 					shelf.filterChangedSignalManager.RegisterReceiver(this);
+					shelf.itemsHeldChangedSignalManager.RegisterReceiver(this);
+				}
 			}
 			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30);
 			listing.Begin (rect);
@@ -121,8 +127,10 @@ namespace AdvancedStocking
 		public void Notify_SignalReceived(Signal signal)
 		{
 			Building_Shelf shelf = signal.args[0] as Building_Shelf;
-			if (shelf != displayingFor) //Cannot remove OnClose, will do so when erroneous signal sent
+			if (shelf != displayingFor) { //Cannot remove OnClose, will do so when erroneous signal sent
 				shelf.filterChangedSignalManager.DeregisterReceiver(this);
+				shelf.itemsHeldChangedSignalManager.DeregisterReceiver(this);
+			}
 			else
 				SetupListing(shelf);
 		}

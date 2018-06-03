@@ -51,8 +51,8 @@
 
   <StatDef>
     <defName>MaxOverlayLimit</defName>
-    <label>maximum overlay limit</label>
-    <description>The maximum number of items that can be overlaid on the same shelf cell</description>
+    <label>maximum rack limit</label>
+    <description>The maximum number of items that can be racked on the same shelf cell</description>
     <workerClass>AdvancedStocking.StatWorker_Stocking_OverlayLimit</workerClass>
     <category>Stocking</category>
     <defaultBaseValue>1</defaultBaseValue>

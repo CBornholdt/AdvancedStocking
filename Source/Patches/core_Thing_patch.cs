@@ -30,14 +30,13 @@ namespace AdvancedStocking
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
 		}
 
+		//TODO move this to a separate transpiler because I lose the stackCount added during the original method
 		public static void TryAbsorbStack_Postfix(Thing __instance, Thing other, bool respectStackLimit, ref bool __result) {
 			if (__instance == null || __instance.def.category != ThingCategory.Item || !__instance.Spawned)
 				return;
-			if (__instance.stackCount >= __instance.def.stackLimit) {
-				SlotGroup slotGroup = __instance.PositionHeld.GetSlotGroup (__instance.MapHeld);
-				if (slotGroup != null && slotGroup.parent != null) {
-					slotGroup.parent.Notify_ReceivedThing (__instance);
-				}
+			SlotGroup slotGroup = __instance.PositionHeld.GetSlotGroup (__instance.MapHeld);
+			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf) {
+				shelf.Notify_ReceivedMoreOfAThing (__instance, 0);
 			}
 		}
 
