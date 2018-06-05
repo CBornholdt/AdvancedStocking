@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <MaxStackLimitStat.Label>Max Stack Limit ({0})</MaxStackLimitStat.Label>
-  <MaxStackLimitStat.Text>Represents the adjusted maximum stack limit for {0}s on this shelf. Calculated from\n1. Normal StackLimit = {1}\n2. Max Overstack Ratio = x{2}\n3. Overstack Limit = (1) * (2) = {3}\n4. MaxMassPerRackedThing = MaxStockWeight / RackLimit = {4}\n5. MassStackLimit = MaxMassPerRackedThing / NormalThingMass = {5}\n6. MaxStackLimit = Minimum(OverstackLimit, MassLimit) = {6}</MaxStackLimitStat.Text>
+  <MaxStackLimitStat.Text>Represents the stack limit for {0} on this shelf. The maximum value is calculated from\n1. Normal StackLimit = {1}\n2. Max Overstack Ratio = x{2}\n3. Overstack Limit = {1} x{2} = {3}\n4. MaxMassPerRackedThing = MaxStockWeight / RackLimit = {4}\n5. MassStackLimit = MaxMassPerRackedThing / NormalThingMass = {5}\n6. MaxStackLimit = Minimum(OverstackLimit, MassLimit) = {6}</MaxStackLimitStat.Text>
   <StackLimitStat.Label>Stacklimit ({0})</StackLimitStat.Label>
   <StackLimitStat.Text>The currently configured stack limit</StackLimitStat.Text>
+  <MaxOverlayLimitStat.Label>Maximum Number of Racks</MaxOverlayLimitStat.Label>
+  <MaxOverlayLimitStat.ReportText>Greatest number of racks configurable for the items this shelf can hold</MaxOverlayLimitStat.ReportText>
   <OverlayLimitStatLabel>Rack Limit</OverlayLimitStatLabel>
   <OverlayLimitStatReportText>Represents the number of items capable of being racked on the same shelf square</OverlayLimitStatReportText>
   <StatReport_StuffDef_Fallover.ThingDef>Made of {0}</StatReport_StuffDef_Fallover.ThingDef>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<TabStock>Stock</TabStock>
-	<InStockingMode_label>Stocking Mode</InStockingMode_label>
+	<InStockingMode_label>Advanced Stocking</InStockingMode_label>
 	<InStockingMode_tooltip>Enables or disables all stocking related logic</InStockingMode_tooltip>
 	<InSingleThingMode_label>Single Item Type Mode</InSingleThingMode_label>
 	<InPriorityCyclingMode_label>Priority Cycling</InPriorityCyclingMode_label>
