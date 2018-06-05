@@ -108,6 +108,10 @@ namespace AdvancedStocking
 								  + " overlays. Max is " + this.maxOverlayLimitCached, 3197544);
 					value = this.maxOverlayLimitCached;
 				}
+				if (value < 1) {
+					Log.ErrorOnce("AdvancedStocking.Building_Shelf.OverlayLimit Attempting to set overlay to " + value, 3197545);
+					value = 1;
+				}
 				this.overlayLimit = value;
 				RecalcStackLimits();
 			}
@@ -125,7 +129,7 @@ namespace AdvancedStocking
 
 				StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
 
-				if (InStockingMode && MaxOverlayLimit > 1)
+				if (InStockingMode && MaxOverlayLimit > 1) 
 					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
 												   0, "OverlayLimitStatReportText".Translate());
 
@@ -136,11 +140,8 @@ namespace AdvancedStocking
 					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();
 
 				int i = -1;
-				foreach (var thingDef in thingDefsToDisplay) {
-					yield return CreateMaxStacklimitStatEntry(thingDef, i);
-					yield return new StatDrawEntry(stockingCat, "StackLimitStat.Label".Translate(thingDef.label),
-						stackLimits[thingDef].ToString(), i--, "StackLimitStat.Text".Translate(thingDef.label));
-				}
+				foreach (var thingDef in thingDefsToDisplay) 
+					yield return CreateStacklimitStatEntry(thingDef, i);
 			}
 		}
 
@@ -233,26 +234,19 @@ namespace AdvancedStocking
 			RecalcOrganizeMode();
 		}
 
-		public StatDrawEntry CreateMaxStacklimitStatEntry(ThingDef thingDef, int displayPriority)
+		public StatDrawEntry CreateStacklimitStatEntry(ThingDef thingDef, int displayPriority)
 		{
 			StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
-		
 			
 			int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
 			float allowedMassPerThing = maxWeightLimitCached / OverlayLimit;
 			int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 		
-			return new StatDrawEntry(stockingCat, "MaxStackLimitStat.Label".Translate(thingDef.label),
-						cachedMaxStackLimits[thingDef].ToString(), displayPriority, "MaxStackLimitStat.Text"
+			return new StatDrawEntry(stockingCat, "StackLimitStat.Label".Translate(thingDef.label)
+						, stackLimits[thingDef] + "/" + cachedMaxStackLimits[thingDef].ToString()
+						, displayPriority, "MaxStackLimitStat.Text"
 							.Translate(thingDef.label, thingDef.stackLimit, overstackRatioLimitCached, overstackLimit
 								, allowedMassPerThing, massLimit, cachedMaxStackLimits[thingDef]));
-		}
-
-		public ThingDef GetSingleThingDefOrNull()
-		{
-			if(this.settings.filter.AllowedDefCount == 1)
-				return this.settings.filter.AllowedThingDefs.First();
-			return null;
 		}
 
 		public void DowncyclePriority()
@@ -295,11 +289,26 @@ namespace AdvancedStocking
 
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
 		
-		public int GetMaxStackLimit(ThingDef thingDef) => cachedMaxStackLimits.TryGetValue(thingDef, out int value) ? value : 0;
+		public int GetMaxStackLimit(ThingDef thingDef) => cachedMaxStackLimits.TryGetValue(thingDef, out int value) ? value : 1;
 		
 		public int GetStackLimit(Thing thing) => GetStackLimit(thing.def);
 
-		public int GetStackLimit(ThingDef thingDef) => stackLimits.TryGetValue(thingDef, out int value) ? value : 0;
+		public int GetStackLimit(ThingDef thingDef)
+		{
+			if (stackLimits.TryGetValue(thingDef, out int value))
+				return value;
+			Log.Warning("AdvancedStocking.GetStackLimit Could not find " + thingDef.LabelCap + " custom stacklimit. Returning 1");
+			return 1;
+		}
+		
+	//	public int GetStackLimit(ThingDef thingDef) => stackLimits.TryGetValue(thingDef, out int value) ? value : 1;
+		
+		public ThingDef GetSingleThingDefOrNull()
+		{
+			if(this.settings.filter.AllowedDefCount == 1)
+				return this.settings.filter.AllowedThingDefs.First();
+			return null;
+		}
 
 		public bool HasEmptyCell() {
 			return slotGroup.EmptyCells ().Any ();
@@ -433,17 +442,18 @@ namespace AdvancedStocking
 			foreach (var thingDef in settings.filter.AllowedThingDefs) {
 				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
 				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
-				int newMaxStackLimit = (overstackLimit < massLimit) ? overstackLimit : massLimit;
+				int newMaxStackLimit = Math.Min(overstackLimit, massLimit);
 		
-				if (newMaxStackLimit == 0)
-					newMaxStackLimit = 1;	//Eliminates Job errors due to Job.Count == 0
+				if (newMaxStackLimit <= 0)
+					newMaxStackLimit = 1;   //Eliminates Job errors due to Job.Count == 0
 
 				if (!stackLimits.TryGetValue(thingDef, out int oldStackLimit))
-					stackLimits[thingDef] = (thingDef.stackLimit <= newMaxStackLimit)
-							? thingDef.stackLimit : newMaxStackLimit;
+					stackLimits.Add(thingDef, Math.Min(thingDef.stackLimit, newMaxStackLimit));
 
-				cachedMaxStackLimits.TryGetValue(thingDef, out int oldMaxStackLimit);
-				cachedMaxStackLimits[thingDef] = newMaxStackLimit;
+				if (!cachedMaxStackLimits.TryGetValue(thingDef, out int oldMaxStackLimit))
+					cachedMaxStackLimits.Add(thingDef, newMaxStackLimit);
+				else
+					cachedMaxStackLimits[thingDef] = newMaxStackLimit;
 
 				if (oldStackLimit == oldMaxStackLimit || oldStackLimit > newMaxStackLimit)
 					stackLimits[thingDef] = newMaxStackLimit;

@@ -29,17 +29,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="0Harmony">
       <HintPath>..\Assemblies\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +80,8 @@
     <Compile Include="Patches\StoreUtility_NoStorageBlockersIn.cs" />
     <Compile Include="Patches\CompressibilityDeciderUtility_IsSaveCompressible.cs" />
     <Compile Include="Patches\GenPlace_TryPlaceThing.cs" />
+    <Compile Include="Stats\ThingValueClass.cs" />
+    <Compile Include="Stats\StuffCategoryValueClass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -106,6 +108,15 @@
     </None>
     <None Include="..\Defs\WorkTypeDefs\stocking_worktypedef.xml">
       <Link>Defs\WorkTypeDefs\stocking_worktypedef.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\itab_stock.xml">
+      <Link>Keyed\itab_stock.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\stocking_gizmos.xml">
+      <Link>Keyed\stocking_gizmos.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\stocking_stats.xml">
+      <Link>Keyed\stocking_stats.xml</Link>
     </None>
   </ItemGroup>
   <ProjectExtensions>

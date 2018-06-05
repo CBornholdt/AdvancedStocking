@@ -17,5 +17,10 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		BaseDirectory = ..
 		version = 0.3.1.0
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 80
+		$1.TabsToSpaces = True
+		$1.scope = text/plain
 	EndGlobalSection
 EndGlobal

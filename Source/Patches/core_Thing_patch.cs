@@ -43,8 +43,9 @@ namespace AdvancedStocking
 		public static IEnumerable<CodeInstruction> SpawnSetup_Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			List<CodeInstruction> codes = instructions.ToList ();
-			FieldInfo thingDefStacklimit = AccessTools.Field (typeof(ThingDef), "stackLimit");
-			MethodInfo spawnSetupHelper = AccessTools.Method (typeof(HarmonyPatches), "SpawnSetupHelper_IgnoreOverstack");
+			FieldInfo thingDefStacklimit = AccessTools.Field (typeof(ThingDef), nameof(ThingDef.stackLimit));
+			MethodInfo spawnSetupHelper = AccessTools.Method (typeof(HarmonyPatches), 
+										nameof(HarmonyPatches.SpawnSetupHelper_IgnoreOverstack));
 
 			for(int i = 0; i < codes.Count; i++) {
 
@@ -53,8 +54,9 @@ namespace AdvancedStocking
 					yield return codes [i];
 					yield return codes [i + 1];
 					yield return new CodeInstruction (OpCodes.Ldarg_0);	//Leave Thing on stack
-					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Thing, Bool on stack
-					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);	//Consume 2, leave bool
+					yield return new CodeInstruction(OpCodes.Ldarg_1); //Leave Thing, Map on stack
+					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Thing, Map, Bool on stack
+					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);	//Consume 3, leave bool
 					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand); //Consume bool
 					i++;
 				}
@@ -63,11 +65,17 @@ namespace AdvancedStocking
 			}
 		}
 
-		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing, bool respawningAfterLoad)
+		//This will get called after a large butcher job or when the pawn attempts to place a larger than normal
+		//	stackSize from inventory onto the stack
+		//If true, will Ignore the Overstack check in in SpawnSetup
+		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing, Map map, bool respawningAfterLoad)
 		{
-			if (respawningAfterLoad)
-				Current.Game.GetComponent<StockingGameComponent> ().AddThingForOverstackCheck (thing);
-			return respawningAfterLoad;
+			if (respawningAfterLoad) {
+				Current.Game.GetComponent<StockingGameComponent>().AddThingForOverstackCheck(thing);
+				return true;
+			}
+			else
+				return thing.PositionHeld.GetSlotGroup(map).parent is Building_Shelf;
 		}
 
 		public static void set_Priority_Prefix(StorageSettings __instance, ref StoragePriority value)

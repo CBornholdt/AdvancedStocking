@@ -60,7 +60,8 @@ namespace AdvancedStocking
 				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false, () => shelf.InStockingMode));
 
 			TreeNode_UIOption stockingLimitsRootNode = new TreeNode_UIOption("StockingLimits.Label".Translate());
-			stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider("OverlayLimit.Label"
+			if(shelf.MaxOverlayLimit > 1)
+				stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider("OverlayLimit.Label"
 																				.Translate(shelf.CurrentOverlaysUsed, shelf.MaxOverlayLimit)
 																			, valGetter: () => (float)shelf.OverlayLimit
 																			, valSetter: val => shelf.OverlayLimit = (int)val
