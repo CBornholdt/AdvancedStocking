@@ -20,7 +20,7 @@ namespace AdvancedStocking
 	{
 		private readonly float BASE_COMBINE_WORK = 25f;
 		private readonly float BASE_OVERLAY_WORK = 10f;
-		public readonly float MAX_UNHELD_STACKLIMITS_TO_DISPLAY = 10;
+		static public readonly float MAX_UNHELD_STACKLIMITS_TO_DISPLAY = 10;
 
 		private bool inRackMode = false;
 		private bool inForbiddenMode = false;
@@ -58,10 +58,10 @@ namespace AdvancedStocking
 		
 		public int CurrentOverlaysUsed {
 			get {
-				return slotGroup.CellsList
+				return Math.Max(1, slotGroup.CellsList
 					.Select(cell => Map.thingGrid.ThingsListAtFast(cell).Count(thing => thing.def.EverStoreable))
 					.OrderByDescending(count => count)
-					.FirstOrDefault();
+					.FirstOrFallback());
 			}
 		}
 
@@ -88,6 +88,8 @@ namespace AdvancedStocking
 			set {
 				if (value != this.inRackMode) {
 					inRackMode = value;
+					if (inRackMode == true)
+						this.overlayLimit = CurrentOverlaysUsed;
 					RecalcOverlays();
 				}
 			}
@@ -130,7 +132,7 @@ namespace AdvancedStocking
 
 				StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
 
-				if (MaxOverlayLimit > 1) 
+				if (InRackMode && MaxOverlayLimit > 1) 
 					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
 												   0, "OverlayLimitStatReportText".Translate());
 
@@ -240,7 +242,8 @@ namespace AdvancedStocking
 			StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
 			
 			int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
-			float allowedMassPerThing = MaxStockWeight / OverlayLimit;
+			int overlays = InRackMode ? OverlayLimit : 1;
+			float allowedMassPerThing = MaxStockWeight / overlays;
 			int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 		
 			return new StatDrawEntry(stockingCat, "StackLimitStat.Label".Translate(thingDef.label)
@@ -432,7 +435,8 @@ namespace AdvancedStocking
 	
 		public void RecalcStackLimits()
 		{
-			float allowedMassPerThing = MaxStockWeight / OverlayLimit;
+			int overlays = InRackMode ? OverlayLimit : 1;
+			float allowedMassPerThing = MaxStockWeight / overlays;
 			foreach (var thingDef in settings.filter.AllowedThingDefs) {
 				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
 				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);

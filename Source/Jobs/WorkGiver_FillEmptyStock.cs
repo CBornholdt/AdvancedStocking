@@ -121,7 +121,7 @@ namespace AdvancedStocking
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.High)
+                && (shelf.FillEmptyStockPriority == StockingPriority.High)
                 && base.HasJobOnThing(pawn, t, forced);
         }
     }
@@ -131,7 +131,7 @@ namespace AdvancedStocking
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.Low)
+                && (shelf.FillEmptyStockPriority == StockingPriority.Low)
                 && base.HasJobOnThing(pawn, t, forced);
         }
     }

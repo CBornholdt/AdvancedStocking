@@ -73,11 +73,10 @@ namespace AdvancedStocking
 																			, toolTip: "OverlayLimit.ToolTip".Translate()));
 
 			IEnumerable<ThingDef> thingDefsToDisplay = null;
-			if (shelf.settings.filter.AllowedDefCount <= 10)
+			if (shelf.settings.filter.AllowedDefCount <= Building_Shelf.MAX_UNHELD_STACKLIMITS_TO_DISPLAY)
 				thingDefsToDisplay = shelf.settings.filter.AllowedThingDefs;
 			else {
 				thingDefsToDisplay = shelf.slotGroup.HeldThings.Select(thing => thing.def).Distinct();
-				Log.Message(thingDefsToDisplay.Count() + " Count " + shelf.slotGroup.HeldThings.Count());
 			}
 
 			foreach (var thingDef in thingDefsToDisplay)

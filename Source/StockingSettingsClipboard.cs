@@ -19,9 +19,9 @@ namespace AdvancedStocking
 
         public static void Copy(Building_Shelf shelf)
         {
+            StorageSettingsClipboard.Copy(shelf.settings);
             StockingSettingsClipboard.copiedShelf = shelf;
             StockingSettingsClipboard.copied = true;
-            StorageSettingsClipboard.Copy(shelf.settings);
             
             //As both this and StorageSettingsClipboard are static without constructors
             //  I have a timing issue setting up callbacks. I will do so during the first copy

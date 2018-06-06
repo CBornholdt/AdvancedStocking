@@ -41,14 +41,3 @@ namespace AdvancedStocking
 		}		
 	}
 }
-
-
-namespace AdvancedStocking
-{
-	public class GenPlace_TryPlaceThing
-	{
-		public GenPlace_TryPlaceThing()
-		{
-		}
-	}
-}
