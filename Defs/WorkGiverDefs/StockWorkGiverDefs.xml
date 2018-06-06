@@ -53,24 +53,24 @@
 
   <WorkGiverDef>
     <defName>OverlayStock_High</defName>
-    <label>go overlay critical stock</label>
+    <label>go rack critical stock</label>
     <giverClass>AdvancedStocking.WorkGiver_OverlayStock_High</giverClass>
     <workType>Hauling</workType>
     <priorityInType>17</priorityInType>
-    <verb>overlay stock</verb>
-    <gerund>overlaying stock</gerund>
+    <verb>rack stock</verb>
+    <gerund>racking stock</gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
   <WorkGiverDef>
     <defName>OverlayStock_Low</defName>
-    <label>go overlay stock</label>
+    <label>go rack stock</label>
     <giverClass>AdvancedStocking.WorkGiver_OverlayStock_Low</giverClass>
     <workType>Hauling</workType>
     <priorityInType>7</priorityInType>
-    <verb>overlay stock</verb>
-    <gerund>overlaying stock</gerund>
+    <verb>rack stock</verb>
+    <gerund>racking stock</gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
