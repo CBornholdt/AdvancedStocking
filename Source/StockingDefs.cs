@@ -37,19 +37,15 @@ namespace AdvancedStocking
 	public static class StockWorkGiverDefs 
 	{
 		public static WorkGiverDef CombineStock_High;
-		public static WorkGiverDef CombineStock_Normal;
 		public static WorkGiverDef CombineStock_Low;
         
 		public static WorkGiverDef OverlayStock_High;
-        public static WorkGiverDef OverlayStock_Normal;
         public static WorkGiverDef OverlayStock_Low;
 
 		public static WorkGiverDef FillEmptyStock_High;
-		public static WorkGiverDef FillEmptyStock_Normal;
 		public static WorkGiverDef FillEmptyStock_Low;
 
 		public static WorkGiverDef PushFullStock_High;
-		public static WorkGiverDef PushFullStock_Normal;
 		public static WorkGiverDef PushFullStock_Low;
 	}
 }

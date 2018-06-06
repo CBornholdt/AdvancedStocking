@@ -106,9 +106,6 @@
     <None Include="..\Defs\WorkGiverDefs\StockWorkGiverDefs.xml">
       <Link>Defs\WorkGiverDefs\StockWorkGiverDefs.xml</Link>
     </None>
-    <None Include="..\Defs\WorkTypeDefs\stocking_worktypedef.xml">
-      <Link>Defs\WorkTypeDefs\stocking_worktypedef.xml</Link>
-    </None>
     <None Include="..\Languages\English\Keyed\itab_stock.xml">
       <Link>Keyed\itab_stock.xml</Link>
     </None>
@@ -117,6 +114,9 @@
     </None>
     <None Include="..\Languages\English\Keyed\stocking_stats.xml">
       <Link>Keyed\stocking_stats.xml</Link>
+    </None>
+    <None Include="..\Patches\shelf_patch.xml">
+      <Link>Patches\shelf_patch.xml</Link>
     </None>
   </ItemGroup>
   <ProjectExtensions>

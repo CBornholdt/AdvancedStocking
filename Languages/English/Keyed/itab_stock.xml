@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<TabStock>Stock</TabStock>
-	<InStockingMode_label>Advanced Stocking</InStockingMode_label>
-	<InStockingMode_tooltip>Enables or disables all stocking related logic</InStockingMode_tooltip>
-	<InSingleThingMode_label>Single Item Type Mode</InSingleThingMode_label>
+	<AdvancedStocking.Label>Advanced Stocking</AdvancedStocking.Label>
+	<InRackMode.Label>Rack Mode</InRackMode.Label>
+	<InRackMode.ToolTip>Whether this shelf supports multiple items being racked on the same square. Some storage configurations do not allow racking!</InRackMode.ToolTip>
 	<InPriorityCyclingMode_label>Priority Cycling</InPriorityCyclingMode_label>
 	<InPriorityCyclingMode_tooltip>Will smartly increment storage priority when empty and decrement when full</InPriorityCyclingMode_tooltip>
 	<InForbiddenMode_label>Forbidden Mode</InForbiddenMode_label>

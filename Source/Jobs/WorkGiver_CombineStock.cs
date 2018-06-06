@@ -22,12 +22,11 @@ namespace AdvancedStocking
 			if (!pawn.CanReserveAndReach (target, PathEndMode.Touch, pawn.NormalMaxDanger (), 1, -1, null, false))
 				return false;
             
-			return (shelf != null) && shelf.InStockingMode
-										   && shelf.CanCombineThings(out Thing source, out Thing dest)
-										   && (pawn.CanReserve(source, 1, -1, null, false)
-				                               || (shelf.InForbiddenMode && source.IsForbidden(Faction.OfPlayer)))
-										   && (pawn.CanReserve(dest, 1, -1, null, false)
-											   || (shelf.InForbiddenMode && dest.IsForbidden(Faction.OfPlayer)));
+			return (shelf != null) && shelf.CanCombineThings(out Thing source, out Thing dest)
+								   && (pawn.CanReserve(source, 1, -1, null, false)
+				                   		|| (shelf.InForbiddenMode && source.IsForbidden(Faction.OfPlayer)))
+								   && (pawn.CanReserve(dest, 1, -1, null, false)
+										|| (shelf.InForbiddenMode && dest.IsForbidden(Faction.OfPlayer)));
 		}
 
 		public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
@@ -46,11 +45,9 @@ namespace AdvancedStocking
 			List<SlotGroup> slotGroups = pawn?.Map?.slotGroupManager?.AllGroupsListForReading;
 			if(slotGroups == null)
 				yield break;
-			for (int i = 0; i < slotGroups.Count; i++) {
-				Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
-				if(shelf != null && shelf.InStockingMode)
+			for (int i = 0; i < slotGroups.Count; i++) 
+				if(slotGroups[i].parent is Building_Shelf shelf)
 					yield return shelf;
-			}
 		}
 	}
 
@@ -62,16 +59,6 @@ namespace AdvancedStocking
 				&& (shelf.OrganizeStockPriority == StockingPriority.High)
 				&& base.HasJobOnThing(pawn, t, forced);
 		}
-	}
-
-	public class WorkGiver_CombineStock_Normal : WorkGiver_CombineStock 
-	{
-		public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
-        {
-            return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.Normal)
-                && base.HasJobOnThing(pawn, t, forced);
-        }
 	}
 
 	public class WorkGiver_CombineStock_Low : WorkGiver_CombineStock 

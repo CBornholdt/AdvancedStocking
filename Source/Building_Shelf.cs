@@ -13,7 +13,6 @@ namespace AdvancedStocking
 	{
 		None,
 		Low,
-		Normal,
 		High
 	}
 
@@ -23,7 +22,7 @@ namespace AdvancedStocking
 		private readonly float BASE_OVERLAY_WORK = 10f;
 		public readonly float MAX_UNHELD_STACKLIMITS_TO_DISPLAY = 10;
 
-		private bool inStockingMode = false;
+		private bool inRackMode = false;
 		private bool inForbiddenMode = false;
 		private bool inPriorityCyclingMode = false;
 		private bool autoOrganizeAfterFilling = false;
@@ -33,9 +32,9 @@ namespace AdvancedStocking
 		private bool justCycled = false;
 
 		//Will wrap these into properties eventually
-		public StockingPriority FillEmptyStockPriority = StockingPriority.Normal;
-		public StockingPriority OrganizeStockPriority = StockingPriority.Normal;
-		public StockingPriority PushFullStockPriority = StockingPriority.Normal;
+		public StockingPriority FillEmptyStockPriority = StockingPriority.None;
+		public StockingPriority OrganizeStockPriority = StockingPriority.None;
+		public StockingPriority PushFullStockPriority = StockingPriority.None;
 
 		private ShelfOrganizeModeDef currentOrganizeMode;
 
@@ -46,8 +45,7 @@ namespace AdvancedStocking
 
 		private int maxOverlayLimitCached = 1;
 		private float overstackRatioLimitCached = 1f;
-		private float maxWeightLimitCached = 1f;
-		private Dictionary<ThingDef, int> cachedMaxStackLimits = new Dictionary<ThingDef, int>();
+		private Dictionary<ThingDef, int> maxStackLimits = new Dictionary<ThingDef, int>();
 
 		public SignalManager filterChangedSignalManager = new SignalManager();
 		public SignalManager itemsHeldChangedSignalManager = new SignalManager();
@@ -71,13 +69,6 @@ namespace AdvancedStocking
 			get { return this.currentOrganizeMode; }
 		}
 
-		public bool InStockingMode {
-			get { return this.inStockingMode; }
-			set {
-				this.inStockingMode = value;
-			}
-		}
-
 		public bool InForbiddenMode { 
 			get { return this.inForbiddenMode; }
 			set { this.inForbiddenMode = value; }
@@ -92,8 +83,18 @@ namespace AdvancedStocking
 			}
 		}
 		
+		public bool InRackMode {
+			get { return this.inRackMode; }
+			set {
+				if (value != this.inRackMode) {
+					inRackMode = value;
+					RecalcOverlays();
+				}
+			}
+		}
+		
 		public float MaxStockWeight {
-			get { return this.maxWeightLimitCached; }
+			get { return this.GetStatValue(StockingStatDefOf.MaxStockWeight); }
 		}
 
 		public int MaxOverlayLimit {
@@ -120,7 +121,7 @@ namespace AdvancedStocking
 		public bool PawnShouldOrganizeAfterFilling {
 			get { return this.autoOrganizeAfterFilling; }
 			set { this.autoOrganizeAfterFilling = value; }
-		}
+		}			
 
 		public override IEnumerable<StatDrawEntry> SpecialDisplayStats {
 			get {
@@ -129,7 +130,7 @@ namespace AdvancedStocking
 
 				StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
 
-				if (InStockingMode && MaxOverlayLimit > 1) 
+				if (MaxOverlayLimit > 1) 
 					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
 												   0, "OverlayLimitStatReportText".Translate());
 
@@ -148,7 +149,7 @@ namespace AdvancedStocking
 		//Methods
 		public bool CanCombineAnything()
 		{
-			return InStockingMode && CanCombineThings(out Thing t1, out Thing t2)
+			return CanCombineThings(out Thing t1, out Thing t2)
                 && !Map.reservationManager.IsReservedByAnyoneOf(t1, Faction.OfPlayer)
                        && !Map.reservationManager.IsReservedByAnyoneOf(t2, Faction.OfPlayer);
 		}
@@ -182,7 +183,7 @@ namespace AdvancedStocking
 
 		public bool CanOverlayAnything()
 		{
-			return InStockingMode && CanOverlayThing(out Thing t1, out IntVec3 c1)
+			return InRackMode && CanOverlayThing(out Thing t1, out IntVec3 c1)
                 && !Map.reservationManager.IsReservedByAnyoneOf(t1, Faction.OfPlayer)
                        && !Map.reservationManager.IsReservedByAnyoneOf(c1, Faction.OfPlayer);
 		}
@@ -221,7 +222,7 @@ namespace AdvancedStocking
 		public void CopyStockSettingsFrom(Building_Shelf other)
 		{
 			settings.CopyFrom (other.settings);
-			InStockingMode = other.InStockingMode;
+			InRackMode = other.InRackMode;
 			InForbiddenMode = other.InForbiddenMode;
 			InPriorityCyclingMode = other.InPriorityCyclingMode;
 			PawnShouldOrganizeAfterFilling = other.PawnShouldOrganizeAfterFilling;
@@ -239,14 +240,14 @@ namespace AdvancedStocking
 			StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
 			
 			int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
-			float allowedMassPerThing = maxWeightLimitCached / OverlayLimit;
+			float allowedMassPerThing = MaxStockWeight / OverlayLimit;
 			int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 		
 			return new StatDrawEntry(stockingCat, "StackLimitStat.Label".Translate(thingDef.label)
-						, stackLimits[thingDef] + "/" + cachedMaxStackLimits[thingDef].ToString()
+						, stackLimits[thingDef] + "/" + maxStackLimits[thingDef].ToString()
 						, displayPriority, "MaxStackLimitStat.Text"
 							.Translate(thingDef.label, thingDef.stackLimit, overstackRatioLimitCached, overstackLimit
-								, allowedMassPerThing, massLimit, cachedMaxStackLimits[thingDef]));
+								, allowedMassPerThing, massLimit, maxStackLimits[thingDef]));
 		}
 
 		public void DowncyclePriority()
@@ -266,7 +267,7 @@ namespace AdvancedStocking
 			base.ExposeData ();
 			Scribe_Values.Look<bool> (ref this.canDowncycle, "canDowncycle", true);
 			Scribe_Values.Look<bool> (ref this.canUpcycle, "canUpcycle", false);
-			Scribe_Values.Look<bool> (ref this.inStockingMode, "inStockingMode", false);
+			Scribe_Values.Look<bool> (ref this.inRackMode, "inRackMode", false);
 			Scribe_Values.Look<bool> (ref this.inPriorityCyclingMode, "inPriorityCyclingMode", false);
 			Scribe_Values.Look<bool> (ref this.autoOrganizeAfterFilling, "autoOrganizeAfterFilling", false);
 			Scribe_Values.Look<bool> (ref this.inForbiddenMode, "inForbiddenMode", false);
@@ -289,7 +290,7 @@ namespace AdvancedStocking
 
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
 		
-		public int GetMaxStackLimit(ThingDef thingDef) => cachedMaxStackLimits.TryGetValue(thingDef, out int value) ? value : 1;
+		public int GetMaxStackLimit(ThingDef thingDef) => maxStackLimits.TryGetValue(thingDef, out int value) ? value : 1;
 		
 		public int GetStackLimit(Thing thing) => GetStackLimit(thing.def);
 
@@ -338,9 +339,6 @@ namespace AdvancedStocking
 		}
 
 		public override void Notify_LostThing (Thing lostItem) {
-			if (!InStockingMode)
-				return;
-
 			if (InPriorityCyclingMode && this.canUpcycle && IsEmpty()) 
 				UpcyclePriority();
 
@@ -366,9 +364,6 @@ namespace AdvancedStocking
 
 		public void Notify_ReceivedMoreOfAThing(Thing thing, int receivedCount)
 		{
-			if (!InStockingMode)
-				return;
-
 			if(PawnShouldOrganizeAfterFilling)
 				TrySetupAutoOrganizeJob(thing);
 
@@ -395,8 +390,7 @@ namespace AdvancedStocking
 		}
 			
 		public void RecalcMaxStockWeight()
-		{
-			this.maxWeightLimitCached = this.GetStatValue(StockingStatDefOf.MaxStockWeight);
+		{	//Calculations are all handled inside the Stat
 			RecalcStackLimits();
 		}
 
@@ -438,7 +432,7 @@ namespace AdvancedStocking
 	
 		public void RecalcStackLimits()
 		{
-			float allowedMassPerThing = maxWeightLimitCached / OverlayLimit;
+			float allowedMassPerThing = MaxStockWeight / OverlayLimit;
 			foreach (var thingDef in settings.filter.AllowedThingDefs) {
 				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
 				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
@@ -450,10 +444,10 @@ namespace AdvancedStocking
 				if (!stackLimits.TryGetValue(thingDef, out int oldStackLimit))
 					stackLimits.Add(thingDef, Math.Min(thingDef.stackLimit, newMaxStackLimit));
 
-				if (!cachedMaxStackLimits.TryGetValue(thingDef, out int oldMaxStackLimit))
-					cachedMaxStackLimits.Add(thingDef, newMaxStackLimit);
+				if (!maxStackLimits.TryGetValue(thingDef, out int oldMaxStackLimit))
+					maxStackLimits.Add(thingDef, newMaxStackLimit);
 				else
-					cachedMaxStackLimits[thingDef] = newMaxStackLimit;
+					maxStackLimits[thingDef] = newMaxStackLimit;
 
 				if (oldStackLimit == oldMaxStackLimit || oldStackLimit > newMaxStackLimit)
 					stackLimits[thingDef] = newMaxStackLimit;
@@ -467,7 +461,7 @@ namespace AdvancedStocking
 
 		public void SetStackLimit(ThingDef thingDef, int stackLimit)
 		{
-			if (!cachedMaxStackLimits.TryGetValue(thingDef, out int maxStackLimit)) {
+			if (!maxStackLimits.TryGetValue(thingDef, out int maxStackLimit)) {
 				Log.Error("Attempted to set stackLimit for " + thingDef.label + " on " + this.ToString() + " but its maxStackLimit was not cached");
 				return;
 			}
@@ -493,9 +487,7 @@ namespace AdvancedStocking
 				tryNotifyChanged.Invoke(this.settings, new object [0]);
 			};
 			settingsChangedCallback.SetValue (settings.filter, newAction);
-			//TODO I may be able to get rid of this cached max weight now that I store stack limits ...
-			//Needs this set without any other Recalcs during spawning, deals with circular dependency
-			this.maxWeightLimitCached = this.GetStatValue(StockingStatDefOf.MaxStockWeight);
+			
 			RecalcOrganizeMode();
 		}
 

@@ -23,7 +23,7 @@ namespace AdvancedStocking
 
 			Building_Shelf shelf = t as Building_Shelf;
 
-			if (shelf == null || !shelf.InStockingMode || this.Priority () != shelf.PushFullStockPriority)
+			if (shelf == null || this.Priority () != shelf.PushFullStockPriority)
 				return false;
 				
 			LocalTargetInfo target = t;
@@ -123,14 +123,6 @@ namespace AdvancedStocking
 		protected override StockingPriority Priority()
 		{
 			return StockingPriority.High;
-		}
-	}
-
-	public class WorkGiver_PushFullStock_Normal : WorkGiver_PushFullStock 
-	{
-		protected override StockingPriority Priority()
-		{
-			return StockingPriority.Normal;
 		}
 	}
 
