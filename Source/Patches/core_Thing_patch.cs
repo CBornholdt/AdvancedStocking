@@ -13,6 +13,8 @@ namespace AdvancedStocking
 	static class HarmonyPatches
 	{
 		static HarmonyPatches() {
+			HarmonyInstance.DEBUG = true;
+		
 			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.advancedstocking");
 
 			harmony.Patch (AccessTools.Method (typeof(Verse.Thing), "TryAbsorbStack"), null, 

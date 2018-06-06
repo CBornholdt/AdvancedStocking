@@ -30,34 +30,36 @@ namespace AdvancedStocking
 
 		private void SetupListing(Building_Shelf shelf)
 		{
-			TreeNode_UIOption_Checkbox stockingEnabledCheckbox = new TreeNode_UIOption_Checkbox("InStockingMode_label".Translate(),
-				() => shelf.InStockingMode, b => shelf.InStockingMode = b, "InStockingMode_tooltip".Translate());
+			TreeNode_UIOption advancedStockingRootNode = new TreeNode_UIOption("AdvancedStocking.Label".Translate());
+				
+			advancedStockingRootNode.children.Add(new TreeNode_UIOption_Checkbox("InRackMode.Label".Translate(),
+				() => shelf.InRackMode, b => shelf.InRackMode = b, "InRackMode.ToolTip".Translate()));
 
-			stockingEnabledCheckbox.children.Add(new TreeNode_UIOption_Checkbox("InPriorityCyclingMode_label".Translate(),
-				() => shelf.InPriorityCyclingMode, b => shelf.InPriorityCyclingMode = b, "InPriorityCyclingMode_tooltip".Translate(), false, () => shelf.InStockingMode));
-			//			stockingEnabledCheckbox.children.Add (new TreeNode_UIOptionCheckbox ("InSingleThingMode_label".Translate(), 
+			advancedStockingRootNode.children.Add(new TreeNode_UIOption_Checkbox("InPriorityCyclingMode_label".Translate(),
+				() => shelf.InPriorityCyclingMode, b => shelf.InPriorityCyclingMode = b, "InPriorityCyclingMode_tooltip".Translate(), false));
+			//			advancedStockingRootNode.children.Add (new TreeNode_UIOptionCheckbox ("InSingleThingMode_label".Translate(), 
 			//				() => shelf.InSingleThingMode, b => shelf.InSingleThingMode = b, "Testing", false, () => shelf.InStockingMode));
-			stockingEnabledCheckbox.children.Add(new TreeNode_UIOption_Checkbox("InForbiddenMode_label".Translate(),
-				() => shelf.InForbiddenMode, b => shelf.InForbiddenMode = b, "InForbiddenMode_tooltip".Translate(), false, () => shelf.InStockingMode));
+			advancedStockingRootNode.children.Add(new TreeNode_UIOption_Checkbox("InForbiddenMode_label".Translate(),
+				() => shelf.InForbiddenMode, b => shelf.InForbiddenMode = b, "InForbiddenMode_tooltip".Translate(), false));
 
-			stockingEnabledCheckbox.children.Add(new TreeNode_UIOption_Checkbox("AutoOrganizeAfterFilling_label".Translate(),
+			advancedStockingRootNode.children.Add(new TreeNode_UIOption_Checkbox("AutoOrganizeAfterFilling_label".Translate(),
 				() => shelf.PawnShouldOrganizeAfterFilling, b => shelf.PawnShouldOrganizeAfterFilling = b, "AutoOrganizeAfterFilling_tooltip".Translate(),
-				false, () => shelf.InStockingMode));
+				false));
 			TreeNode_UIOption prioritiesSubtree = new TreeNode_UIOption("StockJobPriorities_label".Translate(), "StockJobPriorities_tooltip".Translate());
-			stockingEnabledCheckbox.children.Add(prioritiesSubtree);
+			advancedStockingRootNode.children.Add(prioritiesSubtree);
 
 			prioritiesSubtree.children.Add(new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Fill_Empty_Stock_Priority".Translate(),
 				() => Enum.GetName(typeof(StockingPriority), shelf.FillEmptyStockPriority).Translate(),
 				p => shelf.FillEmptyStockPriority = p,
-				null, ITab_Stock.PriorityButtonWidth, "Fill_Empty_Stock_Priority_Tooltip".Translate(), false, () => shelf.InStockingMode));
+				null, ITab_Stock.PriorityButtonWidth, "Fill_Empty_Stock_Priority_Tooltip".Translate(), false));
 			prioritiesSubtree.children.Add(new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Organize_Stock_Priority".Translate(),
 				() => Enum.GetName(typeof(StockingPriority), shelf.OrganizeStockPriority).Translate(),
 				p => shelf.OrganizeStockPriority = p,
-				null, ITab_Stock.PriorityButtonWidth, "Organize_Stock_Priority_Tooltip".Translate(), false, () => shelf.InStockingMode));
+				null, ITab_Stock.PriorityButtonWidth, "Organize_Stock_Priority_Tooltip".Translate(), false));
 			prioritiesSubtree.children.Add(new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Push_Full_Stock_Priority".Translate(),
 				() => Enum.GetName(typeof(StockingPriority), shelf.PushFullStockPriority).Translate(),
 				p => shelf.PushFullStockPriority = p,
-				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false, () => shelf.InStockingMode));
+				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false));
 
 			TreeNode_UIOption stockingLimitsRootNode = new TreeNode_UIOption("StockingLimits.Label".Translate());
 			if(shelf.MaxOverlayLimit > 1)
@@ -71,11 +73,10 @@ namespace AdvancedStocking
 																			, toolTip: "OverlayLimit.ToolTip".Translate()));
 
 			IEnumerable<ThingDef> thingDefsToDisplay = null;
-			if (shelf.settings.filter.AllowedDefCount <= 10)
+			if (shelf.settings.filter.AllowedDefCount <= Building_Shelf.MAX_UNHELD_STACKLIMITS_TO_DISPLAY)
 				thingDefsToDisplay = shelf.settings.filter.AllowedThingDefs;
 			else {
 				thingDefsToDisplay = shelf.slotGroup.HeldThings.Select(thing => thing.def).Distinct();
-				Log.Message(thingDefsToDisplay.Count() + " Count " + shelf.slotGroup.HeldThings.Count());
 			}
 
 			foreach (var thingDef in thingDefsToDisplay)
@@ -99,7 +100,7 @@ namespace AdvancedStocking
 					configureNodeOpenings(oldNodeEnum.Current, newNodeEnum.Current);
 			};
 
-			var newListing = new Listing_TreeUIOption(new List<TreeNode_UIOption>() { stockingEnabledCheckbox, stockingLimitsRootNode });
+			var newListing = new Listing_TreeUIOption(new List<TreeNode_UIOption>() { advancedStockingRootNode, stockingLimitsRootNode });
 			for (int i = 0; i < (this.listing?.RootOptions.Count ?? 0); i++)
 				configureNodeOpenings(this.listing.RootOptions[i], newListing.RootOptions[i]);
 

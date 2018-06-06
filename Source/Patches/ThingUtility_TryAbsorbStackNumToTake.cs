@@ -32,6 +32,9 @@ namespace AdvancedStocking
 
 		static int TransformStacklimitIfOnShelf(int stackLimit, Thing thing)
 		{
+			Map map = thing.MapHeld;
+			if (map == null)
+				return stackLimit;
 			SlotGroup slotGroup = thing.PositionHeld.GetSlotGroup(thing.MapHeld);
 			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)
 				return shelf.GetStackLimit(thing);

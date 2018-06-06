@@ -24,7 +24,7 @@ namespace AdvancedStocking
             if (!pawn.CanReserveAndReach(target, PathEndMode.Touch, pawn.NormalMaxDanger(), 1, -1, null, false))
                 return false;
             
-			return (shelf != null) && shelf.InStockingMode
+			return (shelf != null) && shelf.InRackMode
 										   && shelf.CanOverlayThing(out Thing source, out IntVec3 dest)
 										   && pawn.CanReserve(source, 1, -1, null, false);
         }
@@ -47,7 +47,7 @@ namespace AdvancedStocking
             for (int i = 0; i < slotGroups.Count; i++)
             {
                 Building_Shelf shelf = slotGroups[i].parent as Building_Shelf;
-                if (shelf != null && shelf.InStockingMode)
+                if (shelf != null)
                     yield return shelf;
             }
         }
@@ -59,16 +59,6 @@ namespace AdvancedStocking
         {
             return (t is Building_Shelf shelf)
                 && (shelf.OrganizeStockPriority == StockingPriority.High)
-                && base.HasJobOnThing(pawn, t, forced);
-        }
-    }
-
-    public class WorkGiver_OverlayStock_Normal : WorkGiver_OverlayStock
-    {
-        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
-        {
-            return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.Normal)
                 && base.HasJobOnThing(pawn, t, forced);
         }
     }

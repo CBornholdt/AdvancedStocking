@@ -19,7 +19,7 @@ namespace AdvancedStocking
 		{
 			Building_Shelf shelf = t as Building_Shelf;
 
-			if (shelf == null || !shelf.InStockingMode || !shelf.HasEmptyCell ())
+			if (shelf == null || !shelf.HasEmptyCell ())
 				return false;
 				
 			if(!shelf.slotGroup.EmptyCells().Any(cell => 
@@ -121,17 +121,7 @@ namespace AdvancedStocking
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.High)
-                && base.HasJobOnThing(pawn, t, forced);
-        }
-    }
-
-    public class WorkGiver_FillEmptyStock_Normal : WorkGiver_FillEmptyStock
-    {
-        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
-        {
-            return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.Normal)
+                && (shelf.FillEmptyStockPriority == StockingPriority.High)
                 && base.HasJobOnThing(pawn, t, forced);
         }
     }
@@ -141,9 +131,8 @@ namespace AdvancedStocking
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             return (t is Building_Shelf shelf)
-                && (shelf.OrganizeStockPriority == StockingPriority.Low)
+                && (shelf.FillEmptyStockPriority == StockingPriority.Low)
                 && base.HasJobOnThing(pawn, t, forced);
         }
     }
 }
-
