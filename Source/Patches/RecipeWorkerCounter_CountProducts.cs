@@ -29,9 +29,7 @@ namespace AdvancedStocking
 
 		static int ReplaceCountWithStackCount(IEnumerable<Thing> things)
 		{
-			int count = things.Sum(thing => thing.stackCount);
-			Log.Message("Count = " + count);
-			return count;
+			return things.Sum(thing => thing.stackCount);
 		}		
 	}
 }
