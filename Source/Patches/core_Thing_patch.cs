@@ -13,7 +13,7 @@ namespace AdvancedStocking
 	static class HarmonyPatches
 	{
 		static HarmonyPatches() {
-			HarmonyInstance.DEBUG = true;
+		//	HarmonyInstance.DEBUG = true;
 		
 			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.advancedstocking");
 
