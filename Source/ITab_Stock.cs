@@ -15,6 +15,8 @@ namespace AdvancedStocking
 		private Listing_TreeUIOption listing;
 		private Building_Shelf displayingFor;
 
+        public float CellSpacing => 2;
+
 		public override bool IsVisible {
 			get {
 				return (this.SelObject as Building_Shelf) != null;
@@ -90,6 +92,9 @@ namespace AdvancedStocking
 													, roundTo: 1f
 													, toolTip: "StackLimit.ToolTip".Translate()));
 
+            if (stockingLimitsRootNode.children.NullOrEmpty())
+                stockingLimitsRootNode.label = "StockingLimits.Label.NoChildren".Translate();
+
 			Action<TreeNode, TreeNode> configureNodeOpenings = null;
 			FieldInfo openBitsField = typeof(Verse.TreeNode).GetField("openBits", BindingFlags.Instance | BindingFlags.NonPublic);
 			configureNodeOpenings = delegate (TreeNode oldNode, TreeNode newNode) {
@@ -120,7 +125,7 @@ namespace AdvancedStocking
 					shelf.itemsHeldChangedSignalManager.RegisterReceiver(this);
 				}
 			}
-			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30);
+			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30).ContractedBy(CellSpacing);
 			listing.Begin (rect);
 			listing.DrawUIOptions ();
 			listing.End ();
