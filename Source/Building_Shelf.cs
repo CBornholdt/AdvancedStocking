@@ -6,6 +6,7 @@ using Verse;
 using Verse.AI;
 using RimWorld;
 using UnityEngine;
+//using MoreLinq;
 
 namespace AdvancedStocking
 {
@@ -43,9 +44,10 @@ namespace AdvancedStocking
 		private List<ThingDef> stackLimitsExposeHelper1;
 		private List<int> stackLimitsExposeHelper2;
 
-		private int maxOverlayLimitCached = 1;
+		private int maxOverlayLimit = 1;
 		private float overstackRatioLimitCached = 1f;
 		private Dictionary<ThingDef, int> maxStackLimits = new Dictionary<ThingDef, int>();
+        private float heaviestAllowedThingMass;
 
 		public SignalManager filterChangedSignalManager = new SignalManager();
 		public SignalManager itemsHeldChangedSignalManager = new SignalManager();
@@ -100,16 +102,16 @@ namespace AdvancedStocking
 		}
 
 		public int MaxOverlayLimit {
-			get { return this.maxOverlayLimitCached; }
+			get { return this.maxOverlayLimit; }
 		}
 
 		public int OverlayLimit {
 			get { return this.overlayLimit; }
 			set {
-				if (value > this.maxOverlayLimitCached) {
+				if (value > this.maxOverlayLimit) {
 					Log.ErrorOnce("Tried setting " + this + " with " + value
-								  + " overlays. Max is " + this.maxOverlayLimitCached, 3197544);
-					value = this.maxOverlayLimitCached;
+								  + " overlays. Max is " + this.maxOverlayLimit, 3197544);
+					value = this.maxOverlayLimit;
 				}
 				if (value < 1) {
 					Log.ErrorOnce("AdvancedStocking.Building_Shelf.OverlayLimit Attempting to set overlay to " + value, 3197545);
@@ -131,6 +133,10 @@ namespace AdvancedStocking
 					yield return entry;
 
 				StatCategoryDef stockingCat = StockingStatCategoryDefOf.Stocking;
+
+                if (InRackMode && MaxOverlayLimit < this.GetStatValue(StockingStatDefOf.MaxOverlayLimit))
+                    yield return new StatDrawEntry(stockingCat, "MaxOverlayLimit.Constrained.StatLabel".Translate()
+                                        , MaxOverlayLimit.ToString(), 0, "MaxOverlayLimit.Constrained.ReportText".Translate());
 
 				if (InRackMode && MaxOverlayLimit > 1) 
 					yield return new StatDrawEntry(stockingCat, "OverlayLimitStatLabel".Translate(), OverlayLimit.ToString(),
@@ -193,8 +199,14 @@ namespace AdvancedStocking
 		//TODO rewrite this with For loops and without linq
 		public bool CanOverlayThing(out Thing thing, out IntVec3 destCell)
 		{
+            int overlaysAllowed = OverlayLimit;
+            if (overlaysAllowed < 2) {
+                thing = null;
+                destCell = IntVec3.Invalid;
+                return false;
+            }
+                
 			foreach(IntVec3 cell in slotGroup.CellsList) {
-				int overlaysAllowed = (overlayLimit == -1) ? maxOverlayLimitCached : overlayLimit;
 				var things = Map.thingGrid.ThingsListAtFast(cell).Where(t => t.def.EverStoreable);
 				if (things.Count() == 1) {
 					Thing potential = things.Single ();
@@ -421,15 +433,22 @@ namespace AdvancedStocking
 
 		//	Log.Message(this.ToString() + " set organize mode " + currentOrganizeMode.defName);
 			this.overstackRatioLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverstackRatio);
-			RecalcOverlays();
+            if (settings.filter.AllowedThingDefs.Any()) //max requires something present
+                this.heaviestAllowedThingMass = settings.filter.AllowedThingDefs.Max(def => def.GetStatValueAbstract(StatDefOf.Mass, null));
+            else
+                this.heaviestAllowedThingMass = 5000f;  //that should be big enough
+            RecalcOverlays();
 		}
 
 		public void RecalcOverlays()
 		{
-			bool overlayWasAtMaximum = (OverlayLimit == maxOverlayLimitCached);
-			maxOverlayLimitCached = (int)this.GetStatValue(StockingStatDefOf.MaxOverlayLimit);
-			if (overlayWasAtMaximum || OverlayLimit > maxOverlayLimitCached)
-				OverlayLimit = maxOverlayLimitCached;
+			bool overlayWasAtMaximum = (OverlayLimit == maxOverlayLimit);
+			maxOverlayLimit = Math.Min((int)this.GetStatValue(StockingStatDefOf.MaxOverlayLimit)
+                                        , (int)(this.GetStatValue(StockingStatDefOf.MaxStockWeight) 
+                                            / this.heaviestAllowedThingMass));
+            maxOverlayLimit = Math.Max(maxOverlayLimit, 1); //ensure at least 1                                           
+			if (overlayWasAtMaximum || OverlayLimit > maxOverlayLimit)
+				OverlayLimit = maxOverlayLimit;
 			RecalcStackLimits();
 		}
 	

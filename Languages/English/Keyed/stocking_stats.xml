@@ -6,6 +6,8 @@
   <StackLimitStat.Text>The currently configured stack limit</StackLimitStat.Text>
   <MaxOverlayLimitStat.Label>Maximum Number of Racks</MaxOverlayLimitStat.Label>
   <MaxOverlayLimitStat.ReportText>Greatest number of racks configurable for the items this shelf can hold</MaxOverlayLimitStat.ReportText>
+  <MaxOverlayLimit.Constrained.StatLabel>Rack Limit (Allowed Weights)</MaxOverlayLimit.Constrained.StatLabel>
+  <MaxOverlayLimit.Constrained.ReportText>Greatest number of racks allowable based upon the items this shelf can store. Some things are just too heavy for more.</MaxOverlayLimit.Constrained.ReportText>
   <OverlayLimitStatLabel>Rack Limit</OverlayLimitStatLabel>
   <OverlayLimitStatReportText>Represents the number of items capable of being racked on the same shelf square</OverlayLimitStatReportText>
   <StatReport_StuffDef_Fallover.ThingDef>Made of {0}</StatReport_StuffDef_Fallover.ThingDef>
