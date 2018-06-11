@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<AS_Mod.CategoryLabel>Advanced Stocking</AS_Mod.CategoryLabel>
+	<AS_Mod.MaxOverstackRatio.Label>Max overstack ratio (Currently x{0})</AS_Mod.MaxOverstackRatio.Label>
+</LanguageData>
