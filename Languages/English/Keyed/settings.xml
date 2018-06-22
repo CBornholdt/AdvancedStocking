@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<AS_Mod.CategoryLabel>Advanced Stocking</AS_Mod.CategoryLabel>
+	<AS_Mod.MaxOverstackRatio.Label>Max overstack ratio (Currently x{0})</AS_Mod.MaxOverstackRatio.Label>
+	<AS_Mod.MaxOverstackRatio.Tooltip>Determines the total increase over game normal stacklimits that can be stored on a shelf. Other rules determine if individual racks have their own reduced limits or use this limit directly</AS_Mod.MaxOverstackRatio.Tooltip>
+	<AS_Mod.MaxOverlayLimit.Label>Max rack limit (Currently {0})</AS_Mod.MaxOverlayLimit.Label>
+	<AS_Mod.MaxOverlayLimit.Tooltip>Determines how many items can be racked, or placed on the same square. Note, this number is influenced by the heaviest item allowed to be stored on an individual shelf, and a shelf must be set in RackMode and a pawn can only rack something that is already on a shelf (1 square shelves cannot be racked!!!)</AS_Mod.MaxOverlayLimit.Tooltip>
+	<AS_MOD.OverlaysReduceStacklimit.Label>Racks reduce max stacklimits</AS_MOD.OverlaysReduceStacklimit.Label>
+	<AS_MOD.OverlaysReduceStacklimit.Tooltip>Determines whether the number of racks a shelf is configured for impacts stacklimit of those items placed on the shelf. If true, the max overstack ratio will be divided by the number of racks.</AS_MOD.OverlaysReduceStacklimit.Tooltip>
+	<AS_MOD.OverlaysReduceStacklimit.Partially.Label>Partial reduction</AS_MOD.OverlaysReduceStacklimit.Partially.Label>
+	<AS_MOD.OverlaysReduceStacklimit.Partially.Tooltip>Instead of evenly dividing the maximum stack limit by the number of racks, it is divided by roughly 1/3 less.</AS_MOD.OverlaysReduceStacklimit.Partially.Tooltip>
+</LanguageData>

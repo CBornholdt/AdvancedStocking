@@ -75,29 +75,4 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-
-  <WorkGiverDef>
-    <defName>PushFullStock_High</defName>
-    <label>go push critical stock</label>
-    <giverClass>AdvancedStocking.WorkGiver_PushFullStock_High</giverClass>
-    <workType>Hauling</workType>
-    <priorityInType>16</priorityInType>
-    <verb>push stock</verb>
-    <gerund>pushing stock</gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
-  <WorkGiverDef>
-    <defName>PushFullStock_Low</defName>
-    <label>go push stock</label>
-    <giverClass>AdvancedStocking.WorkGiver_PushFullStock_Low</giverClass>
-    <workType>Hauling</workType>
-    <priorityInType>6</priorityInType>
-    <verb>push stock</verb>
-    <gerund>pushing stock</gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
 </Defs>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Patch>
+  <Operation Class="PatchOperationAttributeSet">
+    <xpath>//*[@Class="AdvancedStocking.Building_Shelf"]</xpath>
+    <attribute>Class</attribute>
+    <value>Building_Storage</value>
+  </Operation>
+
+  <Operation Class="PatchOperationRemove">
+    <xpath>//curJob[def = "OverlayThing" or def = "CombineThings"]</xpath>
+  </Operation>
+</Patch>
+
+  

@@ -15,6 +15,8 @@ namespace AdvancedStocking
 		private Listing_TreeUIOption listing;
 		private Building_Shelf displayingFor;
 
+        public float CellSpacing => 2;
+
 		public override bool IsVisible {
 			get {
 				return (this.SelObject as Building_Shelf) != null;
@@ -56,18 +58,14 @@ namespace AdvancedStocking
 				() => Enum.GetName(typeof(StockingPriority), shelf.OrganizeStockPriority).Translate(),
 				p => shelf.OrganizeStockPriority = p,
 				null, ITab_Stock.PriorityButtonWidth, "Organize_Stock_Priority_Tooltip".Translate(), false));
-			prioritiesSubtree.children.Add(new TreeNode_UIOption_EnumMenuButton<StockingPriority>("Push_Full_Stock_Priority".Translate(),
-				() => Enum.GetName(typeof(StockingPriority), shelf.PushFullStockPriority).Translate(),
-				p => shelf.PushFullStockPriority = p,
-				null, ITab_Stock.PriorityButtonWidth, "Push_Full_Stock_Priority_Tooltip".Translate(), false));
-
+		
 			TreeNode_UIOption stockingLimitsRootNode = new TreeNode_UIOption("StockingLimits.Label".Translate());
 			if(shelf.MaxOverlayLimit > 1)
 				stockingLimitsRootNode.children.Add(new TreeNode_UIOption_Slider("OverlayLimit.Label"
 																				.Translate(shelf.CurrentOverlaysUsed, shelf.MaxOverlayLimit)
 																			, valGetter: () => (float)shelf.OverlayLimit
 																			, valSetter: val => shelf.OverlayLimit = (int)val
-																			, minGetter: () => 1f
+																			, minGetter: () => shelf.CurrentOverlaysUsed
 																			, maxGetter: () => shelf.MaxOverlayLimit
 																			, roundTo: 1f
 																			, toolTip: "OverlayLimit.ToolTip".Translate()));
@@ -90,6 +88,9 @@ namespace AdvancedStocking
 													, roundTo: 1f
 													, toolTip: "StackLimit.ToolTip".Translate()));
 
+            if (stockingLimitsRootNode.children.NullOrEmpty())
+                stockingLimitsRootNode.label = "StockingLimits.Label.NoChildren".Translate();
+
 			Action<TreeNode, TreeNode> configureNodeOpenings = null;
 			FieldInfo openBitsField = typeof(Verse.TreeNode).GetField("openBits", BindingFlags.Instance | BindingFlags.NonPublic);
 			configureNodeOpenings = delegate (TreeNode oldNode, TreeNode newNode) {
@@ -100,7 +101,7 @@ namespace AdvancedStocking
 					configureNodeOpenings(oldNodeEnum.Current, newNodeEnum.Current);
 			};
 
-			var newListing = new Listing_TreeUIOption(new List<TreeNode_UIOption>() { advancedStockingRootNode, stockingLimitsRootNode });
+			var newListing = new Listing_TreeUIOption(new List<TreeNode_UIOption>() { stockingLimitsRootNode, advancedStockingRootNode });
 			for (int i = 0; i < (this.listing?.RootOptions.Count ?? 0); i++)
 				configureNodeOpenings(this.listing.RootOptions[i], newListing.RootOptions[i]);
 
@@ -120,7 +121,7 @@ namespace AdvancedStocking
 					shelf.itemsHeldChangedSignalManager.RegisterReceiver(this);
 				}
 			}
-			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30);
+			Rect rect = new Rect (0, 30, ITab_Stock.WinSize.x, ITab_Stock.WinSize.y - 30).ContractedBy(CellSpacing);
 			listing.Begin (rect);
 			listing.DrawUIOptions ();
 			listing.End ();
