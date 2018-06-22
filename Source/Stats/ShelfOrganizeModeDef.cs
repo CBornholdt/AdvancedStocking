@@ -11,6 +11,7 @@ namespace AdvancedStocking
 		public int overlayLimit = 1;
 		public int overstackRatioLimit = 1;
 		public int numAllowedThingDefs = -1;
+        public bool onlyStackLimitOf1 = false;
 		public List<ThingCategoryDef> allowedThingCategories;
 		public List<ThingDef> allowedThingDefs;
 		public List<ThingCategoryDef> disallowedThingCategories;

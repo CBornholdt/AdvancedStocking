@@ -83,6 +83,7 @@
     <Compile Include="Stats\StuffCategoryValueClass.cs" />
     <Compile Include="Patches\RecipeWorkerCounter_CountProducts.cs" />
     <Compile Include="AS_ModSettings.cs" />
+    <Compile Include="Listing_StandardExt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,4 +2,7 @@
 <LanguageData>
 	<AS_Mod.CategoryLabel>Advanced Stocking</AS_Mod.CategoryLabel>
 	<AS_Mod.MaxOverstackRatio.Label>Max overstack ratio (Currently x{0})</AS_Mod.MaxOverstackRatio.Label>
+	<AS_Mod.MaxOverlayLimit.Label>Max rack limit (Currently {0})</AS_Mod.MaxOverlayLimit.Label>
+	<AS_MOD.OverlaysReduceStacklimit.Label>Racks reduce max stacklimits</AS_MOD.OverlaysReduceStacklimit.Label>
+	<AS_MOD.OverlaysReduceStacklimit.Tooltip>Determines whether the number of racks a shelf is configured for impacts stacklimit of those items placed on the shelf. If true, the max overstack ratio will be divided by the number of racks.</AS_MOD.OverlaysReduceStacklimit.Tooltip>
 </LanguageData>

@@ -19,10 +19,6 @@ namespace AdvancedStocking
 
 		public override bool TryMakePreToilReservations()
 		{
-			Log.Message(this.TargetA.ToString() + " " + this.pawn.CanReserve(this.TargetA) + " " +
-			            this.TargetB.ToString() + " " + this.pawn.CanReserve(this.TargetB) + " " +
-			            this.TargetC.ToString() + " " + this.pawn.CanReserve(this.TargetC));
-
 			return this.pawn.Reserve(this.job.targetA, this.job, 1, -1, null) && this.pawn.Reserve(this.job.targetB, this.job, 1, -1, null) &&
 				this.pawn.Reserve(this.job.targetC, this.job, 1, -1, null);
 		}

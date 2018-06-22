@@ -317,8 +317,6 @@ namespace AdvancedStocking
 			return 1;
 		}
 		
-	//	public int GetStackLimit(ThingDef thingDef) => stackLimits.TryGetValue(thingDef, out int value) ? value : 1;
-		
 		public ThingDef GetSingleThingDefOrNull()
 		{
 			if(this.settings.filter.AllowedDefCount == 1)
@@ -416,6 +414,8 @@ namespace AdvancedStocking
 				if (this.settings.filter.AllowedDefCount > mode.numAllowedThingDefs && mode.numAllowedThingDefs != -1)
 					continue;
 				foreach (var thingDef in this.settings.filter.AllowedThingDefs) {
+                    if (mode.onlyStackLimitOf1 && thingDef.stackLimit != 1)
+                        goto Next_Mode;
 					if (mode.disallowedThingDefs?.Contains(thingDef) ?? false)
 						goto Next_Mode;
 					if (mode.disallowedThingCategories?.Any(cat => cat.DescendantThingDefs.Contains(thingDef)) ?? false)
@@ -432,9 +432,10 @@ namespace AdvancedStocking
 			}
 
 		//	Log.Message(this.ToString() + " set organize mode " + currentOrganizeMode.defName);
-			this.overstackRatioLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverstackRatio);
-            if (settings.filter.AllowedThingDefs.Any()) //max requires something present
-                this.heaviestAllowedThingMass = settings.filter.AllowedThingDefs.Max(def => def.GetStatValueAbstract(StatDefOf.Mass, null));
+            if (settings.filter.AllowedThingDefs.Any(thingDef => thingDef != null)) //max requires something present
+                this.heaviestAllowedThingMass = settings.filter.AllowedThingDefs
+                    .Where(def => def != null)  //If mods are unloaded sometimes ThingDef will be null
+                    .Max(def => def.GetStatValueAbstract(StatDefOf.Mass, null));
             else
                 this.heaviestAllowedThingMass = 5000f;  //that should be big enough
             RecalcOverlays();
@@ -449,15 +450,22 @@ namespace AdvancedStocking
             maxOverlayLimit = Math.Max(maxOverlayLimit, 1); //ensure at least 1                                           
 			if (overlayWasAtMaximum || OverlayLimit > maxOverlayLimit)
 				OverlayLimit = maxOverlayLimit;
-			RecalcStackLimits();
+            else
+			    RecalcStackLimits();
 		}
 	
 		public void RecalcStackLimits()
 		{
+            this.overstackRatioLimitCached = this.GetStatValue(StockingStatDefOf.MaxOverstackRatio);
+        
 			int overlays = InRackMode ? OverlayLimit : 1;
 			float allowedMassPerThing = MaxStockWeight / overlays;
-			foreach (var thingDef in settings.filter.AllowedThingDefs) {
-				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatioLimitCached);
+            float overstackRatio = AS_Mod.settings.overlaysReduceStacklimit
+                                        ? overstackRatioLimitCached / overlays
+                                        : overstackRatioLimitCached;
+            //Sometimes mod removal or other things can cause a null ThingDef to work its way through
+			foreach (var thingDef in settings.filter.AllowedThingDefs.Where(def => def != null)) {
+				int overstackLimit = (int)((float)thingDef.stackLimit * overstackRatio); 
 				int massLimit = (int)(allowedMassPerThing / StockingUtility.cachedThingDefMasses[thingDef]);
 				int newMaxStackLimit = Math.Min(overstackLimit, massLimit);
 		

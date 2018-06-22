@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- Shelf SpecialStatEntries -->
   <MaxStackLimitStat.Label>Max Stack Limit ({0})</MaxStackLimitStat.Label>
   <MaxStackLimitStat.Text>Represents the stack limit for {0} on this shelf. The maximum value is calculated from\n1. Normal StackLimit = {1}\n2. Max Overstack Ratio = x{2}\n3. Overstack Limit = {1} x{2} = {3}\n4. MaxMassPerRackedThing = MaxStockWeight / RackLimit = {4}\n5. MassStackLimit = MaxMassPerRackedThing / NormalThingMass = {5}\n6. MaxStackLimit = Minimum(OverstackLimit, MassLimit) = {6}</MaxStackLimitStat.Text>
   <StackLimitStat.Label>Stacklimit ({0})</StackLimitStat.Label>
@@ -10,6 +11,16 @@
   <MaxOverlayLimit.Constrained.ReportText>Greatest number of racks allowable based upon the items this shelf can store. Some things are just too heavy for more.</MaxOverlayLimit.Constrained.ReportText>
   <OverlayLimitStatLabel>Rack Limit</OverlayLimitStatLabel>
   <OverlayLimitStatReportText>Represents the number of items capable of being racked on the same shelf square</OverlayLimitStatReportText>
+
+  <!-- StatWorker explanation fragments -->
+  <StatWorker.OverlayLimit.Desc.MinValue>Minimum of</StatWorker.OverlayLimit.Desc.MinValue>
+  <StatWorker.OverlayLimit.Desc.ModSettings>Mod Rack Limit: {0}</StatWorker.OverlayLimit.Desc.ModSettings>
+  <StatWorker.OverlayLimit.Desc.OrgModeSettings>Configured for ({0}): {1}</StatWorker.OverlayLimit.Desc.OrgModeSettings>
+
+  <StatWorker.OverstackLimit.Desc.MinValue>Minimum of</StatWorker.OverstackLimit.Desc.MinValue>
+  <StatWorker.OverstackLimit.Desc.ModSettings>Mod Overstack Limit: {0}</StatWorker.OverstackLimit.Desc.ModSettings>
+  <StatWorker.OverstackLimit.Desc.OrgModeSettings>Configured for ({0}): {1}</StatWorker.OverstackLimit.Desc.OrgModeSettings>
+
   <StatReport_StuffDef_Fallover.ThingDef>Made of {0}</StatReport_StuffDef_Fallover.ThingDef>
   <StatReport_StuffDef_Fallover.ThingCatDef>Made with type of {0}</StatReport_StuffDef_Fallover.ThingCatDef>
   <StatReport_StuffDef_Fallover.StuffCatDef>Is {0}</StatReport_StuffDef_Fallover.StuffCatDef>

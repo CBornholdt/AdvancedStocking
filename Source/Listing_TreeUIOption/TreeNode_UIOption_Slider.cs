@@ -12,6 +12,7 @@ namespace AdvancedStocking
 		Func<float> minGetter;
 		float roundTo;
 		Func<string> labelGetter;
+        string editBuffer;
 
 		public TreeNode_UIOption_Slider(string label, Func<float> valGetter, Action<float> valSetter, Func<float> minGetter
 										, Func<float> maxGetter, float roundTo = 1f
@@ -46,25 +47,43 @@ namespace AdvancedStocking
 			GameFont font = Text.Font;
 			Text.Font = GameFont.Small;
 			Rect labelRect = new Rect(area);
+            labelRect.xMax -= area.width * 0.15f;
 			labelRect.height = lineHeight;
-			Rect sliderRect = new Rect(labelRect);
 
 			bool active = this.isActive?.Invoke() ?? true;
             float val = valGetter();
-
 			string centerLabel = (this.labelGetter == null) ? this.label : this.labelGetter();
 			Widgets.Label(labelRect, centerLabel + ": " + val);
+            
+            Rect sliderRect = new Rect(labelRect);
 			sliderRect.y += lineHeight;
 			sliderRect.xMin += 5;
 			sliderRect.xMax -= 5;
 
             //Disable the slider by setting min/max to val
-			valSetter(Widgets.HorizontalSlider(sliderRect, val
+            int newValue = (int)Widgets.HorizontalSlider(sliderRect, val
 			                                   , active ? minGetter() : val
 			                                   , active ? maxGetter() : val
-			                                   , false, null, null, null, roundTo: 1f));
-
+			                                   , false, null, null, null, roundTo: 1f);
+          
 			area.height = 2 * lineHeight;
+
+            Rect textEntryRect = new Rect(area);
+            textEntryRect.xMin = sliderRect.xMax + 2;
+            textEntryRect.yMin += lineHeight / 2;
+            textEntryRect.height = lineHeight;
+
+            int newValue2 = (int)val;
+            Widgets.TextFieldNumeric<int>(textEntryRect, ref newValue2, ref editBuffer
+                                , active ? minGetter() : val, active ? maxGetter() : val);
+
+            if (newValue != (int)val) {
+                valSetter(newValue);
+                editBuffer = newValue.ToString();
+            }
+            if (newValue2 != (int)val)
+                valSetter(newValue2);                              
+            
 			Widgets.DrawHighlightIfMouseover (area);
 
 			if (!this.tipText.NullOrEmpty ()) {
