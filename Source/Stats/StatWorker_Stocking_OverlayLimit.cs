@@ -8,10 +8,14 @@ namespace AdvancedStocking
 {
 	public class StatWorker_Stocking_OverlayLimit : StatWorker_Stocking
 	{
-		public override float GetValueUnfinalized(StatRequest req, bool applyPostProcess = true)
+        public override bool IsDisabledFor(Thing thing)
+        {
+            return base.IsDisabledFor(thing) && !((thing as Building_Shelf)?.InRackMode ?? false);
+        }
+
+        public override float GetValueUnfinalized(StatRequest req, bool applyPostProcess = true)
 		{
-			Building_Shelf shelf = req.Thing as Building_Shelf;
-            return Mathf.Min((float)shelf.CurrentOrganizeMode.overlayLimit, AS_Mod.settings.maxOverlayLimit);
+            return (float)(req.Thing as Building_Shelf)?.MaxOverlayLimit;
 		}
 
         public override string GetExplanationUnfinalized(StatRequest req, ToStringNumberSense numberSense)
@@ -19,11 +23,13 @@ namespace AdvancedStocking
             StringBuilder stringBuilder = new StringBuilder();
             Building_Shelf shelf = req.Thing as Building_Shelf;
 
-            stringBuilder.AppendLine("StatWorker.OverlayLimit.Desc.MinValue".Translate());
             stringBuilder.AppendLine("StatWorker.OverlayLimit.Desc.ModSettings".Translate(AS_Mod.settings.maxOverlayLimit));
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine("StatWorker.OverlayLimit.Desc.OrgModeSettings".Translate(shelf.CurrentOrganizeMode.label
-                                                                                        , shelf.CurrentOrganizeMode.overlayLimit));
+            if (shelf.MaxOverlayLimit < AS_Mod.settings.maxOverlayLimit && shelf.HeaviestAllowedThing != null)
+                stringBuilder.AppendLine("StatWorker.OverlayLimit.Desc.MassContraint"
+                    .Translate(shelf.HeaviestAllowedThing.LabelCap
+                            , shelf.HeaviestAllowedThing.GetStatValueAbstract(StatDefOf.Mass)
+                            , shelf.GetStatValue(StockingStatDefOf.MaxStockWeight)));
+            
             return stringBuilder.ToString();                                                                                                                               
         }
 	}

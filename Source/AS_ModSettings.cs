@@ -9,6 +9,7 @@ namespace AdvancedStocking
         public float maxOverstackRatio = 10f;
         public float maxOverlayLimit = 10f;
         public bool overlaysReduceStacklimit = true;
+        public bool overlaysReduceStacklimitPartially = false;
 
         public override void ExposeData()
         {
@@ -31,15 +32,27 @@ namespace AdvancedStocking
         public override void DoSettingsWindowContents(Rect inRect)
         {
             var listing = new Listing_Standard();
-            listing.Begin(inRect.ContractedBy(100));
+            Rect paneRect = inRect.ContractedBy(100);
+            listing.Begin(paneRect);
             
             listing.Label("AS_Mod.MaxOverstackRatio.Label".Translate(settings.maxOverstackRatio.ToString()));
             settings.maxOverstackRatio = listing.Slider(settings.maxOverstackRatio, 0.25f, 20f, 0.1f);
+            Rect overstackRect = new Rect(0, 0, paneRect.width, listing.CurHeight);
+            Widgets.DrawHighlightIfMouseover(overstackRect);
+            TooltipHandler.TipRegion(overstackRect, new TipSignal("AS_Mod.MaxOverstackRatio.Tooltip".Translate()));
+
             listing.Label("AS_Mod.MaxOverlayLimit.Label".Translate(settings.maxOverlayLimit.ToString()));
             settings.maxOverlayLimit = listing.Slider(settings.maxOverlayLimit, 1f, 20f, 1f);
+            Rect overlayRect = new Rect(0, overstackRect.yMax, paneRect.width, listing.CurHeight - overstackRect.height);
+            Widgets.DrawHighlightIfMouseover(overlayRect);
+            TooltipHandler.TipRegion(overlayRect, new TipSignal("AS_Mod.MaxOverlayLimit.Tooltip".Translate()));
+            
             listing.ColumnWidth = listing.ColumnWidth / 2;
             listing.CheckboxLabeled("AS_MOD.OverlaysReduceStacklimit.Label".Translate(), ref settings.overlaysReduceStacklimit
                                     , "AS_MOD.OverlaysReduceStacklimit.Tooltip".Translate());
+            if (settings.overlaysReduceStacklimit)
+                listing.CheckboxLabeled("AS_MOD.OverlaysReduceStacklimit.Partially.Label".Translate()
+                    , ref settings.overlaysReduceStacklimitPartially, "AS_MOD.OverlaysReduceStacklimit.Partially.Tooltip".Translate());
             listing.End();
         }
 

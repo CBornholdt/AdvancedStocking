@@ -57,12 +57,10 @@
     <Compile Include="Stats\StatWorker_Stocking.cs" />
     <Compile Include="Stats\StatWorker_Stocking_OverlayLimit.cs" />
     <Compile Include="Stats\StatWorker_Stocking_OverstackRatio.cs" />
-    <Compile Include="Stats\ShelfOrganizeModeDef.cs" />
     <Compile Include="StockingUtility.cs" />
     <Compile Include="Jobs\JobDriver_FillEmptyStock.cs" />
     <Compile Include="Jobs\WorkGiver_FillEmptyStock.cs" />
     <Compile Include="Jobs\WorkGiver_CombineStock.cs" />
-    <Compile Include="Jobs\WorkGiver_PushFullStock.cs" />
     <Compile Include="Listing_TreeUIOption\FloatMenuButton.cs" />
     <Compile Include="StockingGameComponent.cs" />
     <Compile Include="Jobs\JobDriver_CombineThings.cs" />
@@ -98,9 +96,6 @@
     </None>
     <None Include="..\Defs\JobDefs\StockingJobDefs.xml">
       <Link>Defs\JobDefs\StockingJobDefs.xml</Link>
-    </None>
-    <None Include="..\Defs\ShelfOrganizeModeDefs\shelfOrganizeModes.xml">
-      <Link>Defs\ShelfOrganizeModeDefs\shelfOrganizeModes.xml</Link>
     </None>
     <None Include="..\Defs\StatDefs\stocking_statdefs.xml">
       <Link>Defs\StatDefs\stocking_statdefs.xml</Link>

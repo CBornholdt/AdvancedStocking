@@ -16,10 +16,4 @@
     	<reportString>stocking TargetA.</reportString>
     	<suspendable>false</suspendable>
  	</JobDef>
- 	 <JobDef>
-    	<defName>PushFullStock</defName>
-    	<driverClass>JobDriver_HaulToCell</driverClass>
-    	<reportString>unloading TargetA.</reportString>
-    	<suspendable>false</suspendable>
- 	</JobDef>
 </Defs>

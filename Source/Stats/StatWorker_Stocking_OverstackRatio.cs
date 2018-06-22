@@ -10,8 +10,7 @@ namespace AdvancedStocking
 	{
 		public override float GetValueUnfinalized(StatRequest req, bool applyPostProcess = true)
 		{
-			Building_Shelf shelf = req.Thing as Building_Shelf;
-			return Mathf.Min(shelf.CurrentOrganizeMode.overstackRatioLimit, AS_Mod.settings.maxOverstackRatio);
+			return (float)(req.Thing as Building_Shelf)?.OverstackLimitPerOverlay;
 		}
         
         public override string GetExplanationUnfinalized(StatRequest req, ToStringNumberSense numberSense)
@@ -19,11 +18,15 @@ namespace AdvancedStocking
             StringBuilder stringBuilder = new StringBuilder();
             Building_Shelf shelf = req.Thing as Building_Shelf;
 
-            stringBuilder.AppendLine("StatWorker.OverstackLimit.Desc.MinValue".Translate());
             stringBuilder.AppendLine("StatWorker.OverstackLimit.Desc.ModSettings".Translate(AS_Mod.settings.maxOverstackRatio));
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine("StatWorker.OverstackLimit.Desc.OrgModeSettings".Translate(shelf.CurrentOrganizeMode.label
-                                                                                        , shelf.CurrentOrganizeMode.overstackRatioLimit));
+
+            if (AS_Mod.settings.overlaysReduceStacklimit) {
+                if (AS_Mod.settings.overlaysReduceStacklimitPartially)
+                    stringBuilder.AppendLine("StatWorker.OverstackLimit.Desc.OverlayReduction.Partial"
+                            .Translate(shelf.OverlayLimit * 2f / 3f + 1f / 3f));
+                else
+                    stringBuilder.AppendLine("StatWorker.OverstackLimit.Desc.OverlayReduction".Translate(shelf.OverlayLimit));
+            }
             return stringBuilder.ToString();                                                                                                                               
         }
 	}
