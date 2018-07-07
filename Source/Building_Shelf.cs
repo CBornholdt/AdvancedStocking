@@ -276,16 +276,13 @@ namespace AdvancedStocking
 			Scribe_Values.Look<StockingPriority> (ref this.OrganizeStockPriority, "organizeStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 
+            //This prevents StackLimits from being nulled if loaded in an existing game
 			if (Scribe.mode == LoadSaveMode.Saving || Scribe.EnterNode("StackLimits")) {
 				if(Scribe.mode != LoadSaveMode.Saving)
 					Scribe.ExitNode();
 				Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
 								ref this.stackLimitsExposeHelper1, ref this.stackLimitsExposeHelper2);
 			}
-
-	/*		//Loaded mod to existing game, stackLimits was nulled by Scribe_Collections.Look
-			if (Scribe.mode == LoadSaveMode.PostLoadInit && this.stackLimits == null)
-				this.stackLimits = new Dictionary<ThingDef, int>();		*/
 		}
 
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
@@ -520,7 +517,7 @@ namespace AdvancedStocking
 			}
 		}
 
-		static StoragePriority DecrementStoragePriority(StoragePriority p) {
+		static public StoragePriority DecrementStoragePriority(StoragePriority p) {
 			StoragePriority r = StoragePriority.Low;
 			switch (p) {
 			case StoragePriority.Unstored:
@@ -543,7 +540,7 @@ namespace AdvancedStocking
 			return r;
 		}
 
-		static StoragePriority IncrementStoragePriority(StoragePriority p){
+		static public StoragePriority IncrementStoragePriority(StoragePriority p){
 			StoragePriority r = StoragePriority.Critical;
 			switch (p) {
 			case StoragePriority.Unstored:

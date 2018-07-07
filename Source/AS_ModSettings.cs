@@ -14,7 +14,10 @@ namespace AdvancedStocking
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<float>(ref this.maxOverstackRatio, "MaxOverstackRatio");
+            Scribe_Values.Look<float>(ref this.maxOverstackRatio, "MaxOverstackRatio", 10f);
+            Scribe_Values.Look<float>(ref this.maxOverlayLimit, "MaxOverlayLimit", 10f);
+            Scribe_Values.Look<bool>(ref this.overlaysReduceStacklimit, "OverlaysReduceStackLimit", true);
+            Scribe_Values.Look<bool>(ref this.overlaysReduceStacklimitPartially, "OverlaysReduceStackLimitPartially", false);
         }
     }
 
