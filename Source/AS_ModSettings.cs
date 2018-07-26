@@ -62,8 +62,9 @@ namespace AdvancedStocking
         public override void WriteSettings()
         {
             base.WriteSettings();
-            foreach (var shelf in Find.Maps.SelectMany(map => map.listerBuildings.AllBuildingsColonistOfClass<Building_Shelf>()))
-                shelf.RecalcOverlays();
+            if(Current.Game != null && Current.ProgramState == ProgramState.Playing)
+                foreach (var shelf in Find.Maps.SelectMany(map => map.listerBuildings.AllBuildingsColonistOfClass<Building_Shelf>()))
+                    shelf.RecalcOverlays();
         }
     }
 }
