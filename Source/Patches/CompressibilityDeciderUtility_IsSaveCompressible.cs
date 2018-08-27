@@ -9,9 +9,8 @@ namespace AdvancedStocking
 	public static class CompressibilityDeciderUtility_IsSaveCompressible
 	{
 		public static void Postfix(Thing t, ref bool __result)
-		{
-			if (__result && t.PositionHeld.GetSlotGroup(t.MapHeld)?.parent is Building_Shelf)
-				__result = false;
+		{   //If on shelf don't compress
+            __result = __result && t.GetShelf() == null;
 		}
 	}
 }

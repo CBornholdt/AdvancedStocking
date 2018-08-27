@@ -28,6 +28,7 @@ namespace AdvancedStocking
 			}
 		}
 
+        //Not replacing with Reservation based StackLimits to prevent errors if stackLimit is returned as 0
 		static int TransformStacklimitIfOnShelf(int stackLimit, Thing thing)
 		{
 			Map map = thing.MapHeld;

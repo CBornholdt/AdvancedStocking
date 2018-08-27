@@ -86,6 +86,27 @@ namespace AdvancedStocking
 					opts.Add(item4);
 				}
 			}
+            AddReservationActionsIfOnlySingleItem(c, pawn.MapHeld, opts);
 		}
+
+        static public void AddReservationActionsIfOnlySingleItem(IntVec3 cell, Map map, List<FloatMenuOption> opts)
+        {
+            var shelf = cell.GetShelf(map);
+            if(shelf == null)
+                return;
+            var itemsAtCell = cell.GetThingList(map).Where(thing => thing.def.category == ThingCategory.Item).ToList();
+            if(itemsAtCell.Count == 1) {
+                var item = itemsAtCell[0];
+                ThingDef reservedItem = shelf.GetReservationAt(cell);
+                if(reservedItem == null)
+                    opts.Add(new FloatMenuOption("AS.AddReservation.FloatOption".Translate(item.def.LabelCap)
+                                                    , () => shelf.AddReservation(item)));
+                else if(reservedItem == item.def)
+                    opts.Add(new FloatMenuOption("AS.RemoveReservation.FloatOption".Translate(item.def.LabelCap)
+                                                    , () => shelf.RemoveReservation(item)));
+                else
+                    opts.Add(new FloatMenuOption("AS.AddReservation.AlreadyReserved.FloatOption".Translate(item.def.LabelCap, reservedItem.LabelCap), null));
+            } 
+        }
 	}
 }

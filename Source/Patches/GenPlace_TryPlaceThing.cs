@@ -32,10 +32,7 @@ namespace AdvancedStocking
 		//Have the map, might as well save the lookup ...
 		static int TransformStacklimitIfDestIsShelf(int stackLimit, Thing thing, IntVec3 cell, Map map)
 		{
-			SlotGroup slotGroup = cell.GetSlotGroup(map);
-			if (slotGroup?.parent != null && slotGroup.parent is Building_Shelf shelf)
-				return shelf.GetStackLimit(thing);
-			return stackLimit;
+            return thing.GetShelf()?.GetStackLimit(thing, cell) ?? stackLimit;
 		}		
 	}
 }

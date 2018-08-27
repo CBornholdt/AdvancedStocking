@@ -28,6 +28,8 @@ namespace AdvancedStocking
 			}
 		}
 
+        //I ignore reservations here, as the logic should have already prevented the Job via StoreUtility.NoStorageBlockersIn
+        //  and Setting the count to 0 here will cause errors ... I may need to revisit this
 		static int TransformStacklimitIfDestIsShelf(int stackLimit, Thing thing, SlotGroup slotGroup)
 		{
 			if (slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)

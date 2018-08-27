@@ -36,10 +36,7 @@ namespace AdvancedStocking
 			Map map = thing.MapHeld;
 			if (map == null)	//Is occasionally called on newly created items before they get a map ...
 				return stackLimit;
-			SlotGroup slotGroup = cell.GetSlotGroup(map);
-			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)
-				return shelf.GetStackLimit(thing);
-			return stackLimit;
+            return cell.GetShelf(map)?.GetStackLimit(thing, cell) ?? stackLimit;
 		}		
 	}
 }

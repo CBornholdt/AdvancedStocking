@@ -49,6 +49,12 @@ namespace AdvancedStocking
 		public SignalManager filterChangedSignalManager = new SignalManager();
 		public SignalManager itemsHeldChangedSignalManager = new SignalManager();
 
+        private Dictionary<IntVec3, ThingDef> reservedCells = new Dictionary<IntVec3, ThingDef>();
+
+        public IEnumerable<IntVec3> AllReservedCells => slotGroup.CellsList.Where(cell => reservedCells.ContainsKey(cell));
+
+        public IEnumerable<IntVec3> AllUnreservedCells => slotGroup.CellsList.Where(cell => !reservedCells.ContainsKey(cell));
+
 		public bool CanShelfBeStocked {
 			get {
 				return !this.IsForbidden(Faction.OfPlayer);
@@ -91,6 +97,9 @@ namespace AdvancedStocking
 				}
 			}
 		}
+        
+        public bool IsCellReservedByOtherThing(IntVec3 cell, ThingDef def) =>
+            reservedCells.TryGetValue(cell, out ThingDef reserved) && reserved != def;
 		
 		public float MaxStockWeight {
 			get { return this.GetStatValue(StockingStatDefOf.MaxStockWeight); }
@@ -122,7 +131,7 @@ namespace AdvancedStocking
 		public bool PawnShouldOrganizeAfterFilling {
 			get { return this.autoOrganizeAfterFilling; }
 			set { this.autoOrganizeAfterFilling = value; }
-		}			
+		}		
 
 		public override IEnumerable<StatDrawEntry> SpecialDisplayStats {
 			get {
@@ -141,8 +150,19 @@ namespace AdvancedStocking
 			}
 		}
 
-		//Methods
-		public bool CanCombineAnything()
+        //Methods
+        public void AddCellReservation(IntVec3 cell, ThingDef def) =>
+            reservedCells[cell] = def;
+
+        public void AddReservation(Thing thing)
+        {
+            if(thing.GetShelf() != this)
+                Log.Error($"Attempted to reserve { thing } at { thing.Position } but that is not on this shelf");
+            else
+                AddCellReservation(thing.PositionHeld, thing.def);
+        }
+
+        public bool CanCombineAnything()
 		{
 			return CanCombineThings(out Thing t1, out Thing t2)
                 && !Map.reservationManager.IsReservedByAnyoneOf(t1, Faction.OfPlayer)
@@ -277,7 +297,7 @@ namespace AdvancedStocking
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 
             //This prevents StackLimits from being nulled if loaded in an existing game
-			if (Scribe.mode == LoadSaveMode.Saving || Scribe.EnterNode("StackLimits")) {
+			if(Scribe.mode == LoadSaveMode.Saving || Scribe.EnterNode("StackLimits")) {
 				if(Scribe.mode != LoadSaveMode.Saving)
 					Scribe.ExitNode();
 				Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
@@ -288,16 +308,28 @@ namespace AdvancedStocking
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
 		
 		public int GetMaxStackLimit(ThingDef thingDef) => maxStackLimits.TryGetValue(thingDef, out int value) ? value : 1;
+        
+        public ThingDef GetReservationAt(IntVec3 cell) =>
+            reservedCells.TryGetValue(cell, out ThingDef def) ? def : null;
 		
 		public int GetStackLimit(Thing thing) => GetStackLimit(thing.def);
 
+        public int GetStackLimit(Thing thing, IntVec3 cell) => GetStackLimit(thing.def, cell);
+
 		public int GetStackLimit(ThingDef thingDef)
 		{
-			if (stackLimits.TryGetValue(thingDef, out int value))
+			if(stackLimits.TryGetValue(thingDef, out int value))
 				return value;
 			Log.Warning("AdvancedStocking.GetStackLimit Could not find " + thingDef.LabelCap + " custom stacklimit. Returning 1");
 			return 1;
 		}
+        
+        public int GetStackLimit(ThingDef thingDef, IntVec3 cell)
+        {
+            if (IsCellReservedByOtherThing(cell, thingDef))
+                return 0;
+            return GetStackLimit(thingDef);
+        }
 		
 		public ThingDef GetSingleThingDefOrNull()
 		{
@@ -331,6 +363,11 @@ namespace AdvancedStocking
 
 			Signal filterChanged = new Signal("FilterChanged", new object[1] { this });
 			filterChangedSignalManager.SendSignal(filterChanged);
+
+            var cellsAndThingDefs = reservedCells.ToList();
+            for(int i = 0; i < cellsAndThingDefs.Count; i++)
+                if(!settings.filter.Allows(cellsAndThingDefs[i].Value))
+                    reservedCells.Remove(cellsAndThingDefs[i].Key);
 		}
 
 		public override void Notify_LostThing (Thing lostItem) {
@@ -442,11 +479,18 @@ namespace AdvancedStocking
                     stackLimits[thingDef] = newMaxStackLimit;
 			}
 		}
+
+        public void RemoveCellReservation(IntVec3 cell) =>
+            reservedCells.Remove(cell);
+
+        public void RemoveReservation(Thing t) => RemoveCellReservation(t.PositionHeld);
 		
 		private void ResetPriorityCycle() {
 			this.canUpcycle = IsFull();
 			this.canDowncycle = !this.canUpcycle;
 		}
+
+
 
 		public void SetStackLimit(ThingDef thingDef, int stackLimit)
 		{
