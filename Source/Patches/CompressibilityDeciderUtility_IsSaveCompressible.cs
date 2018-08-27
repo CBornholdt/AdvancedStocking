@@ -6,8 +6,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(Verse.CompressibilityDeciderUtility))]
-	[HarmonyPatch(nameof(Verse.CompressibilityDeciderUtility.IsSaveCompressible))]
 	public static class CompressibilityDeciderUtility_IsSaveCompressible
 	{
 		public static void Postfix(Thing t, ref bool __result)

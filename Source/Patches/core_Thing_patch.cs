@@ -18,7 +18,7 @@ namespace AdvancedStocking
 			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.advancedstocking");
 
 			harmony.Patch (AccessTools.Method (typeof(Verse.Thing), "TryAbsorbStack"), null, 
-				new HarmonyMethod (typeof(AdvancedStocking.HarmonyPatches).GetMethod("TryAbsorbStack_Postfix")), null);
+				new HarmonyMethod (typeof(Thing_TryAbsorbStack).GetMethod("Postfix")), null);
 
 			harmony.Patch(AccessTools.Method(typeof(Verse.Thing), "SpawnSetup"), null, null, 
 				new HarmonyMethod(typeof(AdvancedStocking.HarmonyPatches).GetMethod("SpawnSetup_Transpiler")));
@@ -28,18 +28,17 @@ namespace AdvancedStocking
 
 			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettingsClipboard), "CopyPasteGizmosFor"), null, 
 				new HarmonyMethod (typeof(AdvancedStocking.StockingSettingsClipboard).GetMethod("CopyPasteGizmosFor_Postfix")), null);
+                
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))
+                , new HarmonyMethod(typeof(AdvancedStocking.ApparelTracker_Wear).GetMethod("Prefix")), null, null);
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.CompressibilityDeciderUtility), nameof(CompressibilityDeciderUtility.IsSaveCompressible))
+                , null, new HarmonyMethod (typeof(CompressibilityDeciderUtility_IsSaveCompressible).GetMethod("Postfix")), null);
+                
+            harmony.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")
+                , null, new HarmonyMethod (typeof(FloatMenuMakerMap_AddHumanlikeOrders).GetMethod("Postfix")), null);
 
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
-		}
-
-		//TODO move this to a separate transpiler because I lose the stackCount added during the original method
-		public static void TryAbsorbStack_Postfix(Thing __instance, Thing other, bool respectStackLimit, ref bool __result) {
-			if (__instance == null || __instance.def.category != ThingCategory.Item || !__instance.Spawned)
-				return;
-			SlotGroup slotGroup = __instance.PositionHeld.GetSlotGroup (__instance.MapHeld);
-			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf) {
-				shelf.Notify_ReceivedMoreOfAThing (__instance, 0);
-			}
 		}
 
 		public static IEnumerable<CodeInstruction> SpawnSetup_Transpiler(IEnumerable<CodeInstruction> instructions)

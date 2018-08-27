@@ -8,8 +8,6 @@ using System.Collections.Generic;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(RimWorld.FloatMenuMakerMap))]
-	[HarmonyPatch("AddHumanlikeOrders")]	
 	public class FloatMenuMakerMap_AddHumanlikeOrders
 	{
 		public static void Postfix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
