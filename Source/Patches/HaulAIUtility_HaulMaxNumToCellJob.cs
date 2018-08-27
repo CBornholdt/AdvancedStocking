@@ -10,8 +10,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(Verse.AI.HaulAIUtility))]
-	[HarmonyPatch(nameof(Verse.AI.HaulAIUtility.HaulMaxNumToCellJob))]
 	static class HaulAIUtility_HaulMaxNumToCellJob
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

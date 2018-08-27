@@ -9,8 +9,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(RecipeWorkerCounter))]
-	[HarmonyPatch(nameof(RecipeWorkerCounter.CountProducts))]
 	static class RecipeWorkerCounter_CountProducts
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

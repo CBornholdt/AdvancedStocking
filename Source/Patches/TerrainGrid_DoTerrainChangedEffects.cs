@@ -5,8 +5,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(Verse.TerrainGrid))]
-	[HarmonyPatch("DoTerrainChangedEffects")]
 	public static class TerrainGrid_DoTerrainChangedEffects
 	{
 		public static void Postfix(TerrainGrid __instance, IntVec3 c)
@@ -16,6 +14,5 @@ namespace AdvancedStocking
 
 			(map.slotGroupManager.SlotGroupAt(c)?.parent as Building_Shelf)?.RecalcMaxStockWeight();
 		}
-
 	}
 }

@@ -9,8 +9,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(Verse.ThingUtility))]
-	[HarmonyPatch("TryAbsorbStackNumToTake")]
 	static class ThingUtility_TryAbsorbStackNumToTake
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

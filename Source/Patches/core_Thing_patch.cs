@@ -15,16 +15,16 @@ namespace AdvancedStocking
 		static HarmonyPatches() {
 		//	HarmonyInstance.DEBUG = true;
 		
-			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.advancedstocking");
+			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.furiouslyeloquent.advancedstocking");
 
 			harmony.Patch (AccessTools.Method (typeof(Verse.Thing), "TryAbsorbStack"), null, 
 				new HarmonyMethod (typeof(Thing_TryAbsorbStack).GetMethod("Postfix")), null);
 
 			harmony.Patch(AccessTools.Method(typeof(Verse.Thing), "SpawnSetup"), null, null, 
-				new HarmonyMethod(typeof(AdvancedStocking.HarmonyPatches).GetMethod("SpawnSetup_Transpiler")));
+				new HarmonyMethod(typeof(Thing_SpawnSetup).GetMethod("Transpiler")));
 
 			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettings), "set_Priority"),
-				new HarmonyMethod(typeof(AdvancedStocking.HarmonyPatches).GetMethod("set_Priority_Prefix")), null, null);
+				new HarmonyMethod(typeof(StorageSettings_set_Priority).GetMethod("Prefix")), null, null);
 
 			harmony.Patch(AccessTools.Method(typeof(RimWorld.StorageSettingsClipboard), "CopyPasteGizmosFor"), null, 
 				new HarmonyMethod (typeof(AdvancedStocking.StockingSettingsClipboard).GetMethod("CopyPasteGizmosFor_Postfix")), null);
@@ -37,53 +37,24 @@ namespace AdvancedStocking
                 
             harmony.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")
                 , null, new HarmonyMethod (typeof(FloatMenuMakerMap_AddHumanlikeOrders).GetMethod("Postfix")), null);
-
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
-		}
-
-		public static IEnumerable<CodeInstruction> SpawnSetup_Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			List<CodeInstruction> codes = instructions.ToList ();
-			FieldInfo thingDefStacklimit = AccessTools.Field (typeof(ThingDef), nameof(ThingDef.stackLimit));
-			MethodInfo spawnSetupHelper = AccessTools.Method (typeof(HarmonyPatches), 
-										nameof(HarmonyPatches.SpawnSetupHelper_IgnoreOverstack));
-
-			for(int i = 0; i < codes.Count; i++) {
-
-				if((i + 1) < codes.Count && codes[i].opcode == OpCodes.Ldfld && codes[i].operand == thingDefStacklimit 
-					&& codes[i + 1].opcode == OpCodes.Ble) {
-					yield return codes [i];
-					yield return codes [i + 1];
-					yield return new CodeInstruction (OpCodes.Ldarg_0);	//Leave Thing on stack
-					yield return new CodeInstruction(OpCodes.Ldarg_1); //Leave Thing, Map on stack
-					yield return new CodeInstruction (OpCodes.Ldarg_2); //Leave Thing, Map, Bool on stack
-					yield return new CodeInstruction (OpCodes.Call, spawnSetupHelper);	//Consume 3, leave bool
-					yield return new CodeInstruction (OpCodes.Brtrue, codes[i+1].operand); //Consume bool
-					i++;
-				}
-				else
-					yield return codes [i];
-			}
-		}
-
-		//This will get called after a large butcher job or when the pawn attempts to place a larger than normal
-		//	stackSize from inventory onto the stack
-		//If true, will Ignore the Overstack check in in SpawnSetup
-		public static bool SpawnSetupHelper_IgnoreOverstack(Thing thing, Map map, bool respawningAfterLoad)
-		{
-			if (respawningAfterLoad) {
-				Current.Game.GetComponent<StockingGameComponent>().AddThingForOverstackCheck(thing);
-				return true;
-			}
-			else
-				return thing.PositionHeld.GetSlotGroup(map).parent is Building_Shelf;
-		}
-
-		public static void set_Priority_Prefix(StorageSettings __instance, ref StoragePriority value)
-		{
-			Building_Shelf shelf = __instance.owner as Building_Shelf;
-			if(value != __instance.Priority)
-				shelf?.Notify_PriorityChanging(value);
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.GenPlace), "TryPlaceDirect"), null, null, 
+                new HarmonyMethod(typeof(GenPlace_TryPlaceDirect).GetMethod("Transpiler")));
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.AI.HaulAIUtility), "TryPlaceDirect"), null, null, 
+                new HarmonyMethod(typeof(HaulAIUtility_HaulMaxNumToCellJob).GetMethod("Transpiler")));
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountProducts)), null, null, 
+                new HarmonyMethod(typeof(RecipeWorkerCounter_CountProducts).GetMethod("Transpiler")));
+                
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.StoreUtility), "NoStorageBlockersIn"), null, null, 
+                new HarmonyMethod(typeof(StoreUtility_NoStorageBlockersIn).GetMethod("Transpiler")));  
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.TerrainGrid), "DoTerrainChangedEffects")
+                , null, new HarmonyMethod (typeof(TerrainGrid_DoTerrainChangedEffects).GetMethod("Postfix")), null);
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.ThingUtility), nameof(ThingUtility.TryAbsorbStackNumToTake)), null, null, 
+                new HarmonyMethod(typeof(ThingUtility_TryAbsorbStackNumToTake).GetMethod("Transpiler")));
 		}
 	}
 }

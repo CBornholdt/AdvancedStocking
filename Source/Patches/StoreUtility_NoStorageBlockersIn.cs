@@ -10,8 +10,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(RimWorld.StoreUtility))]
-	[HarmonyPatch("NoStorageBlockersIn")]
 	static class StoreUtility_NoStorageBlockersIn
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

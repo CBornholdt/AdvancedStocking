@@ -10,8 +10,6 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	[HarmonyPatch(typeof(Verse.GenPlace))]
-	[HarmonyPatch("TryPlaceDirect")]
 	static class GenPlace_TryPlaceDirect
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

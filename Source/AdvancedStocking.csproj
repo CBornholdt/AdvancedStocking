@@ -85,6 +85,8 @@
     <Compile Include="Listing_StandardExt.cs" />
     <Compile Include="Patches\ApparelTracker_Wear.cs" />
     <Compile Include="Patches\Thing_TryAbsorbStack.cs" />
+    <Compile Include="Patches\Thing_SpawnSetup.cs" />
+    <Compile Include="Patches\StorageSettings_set_Priority.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
