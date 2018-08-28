@@ -23,7 +23,7 @@ namespace AdvancedStocking
 		{
 			int textHeight = (int) Text.CalcHeight(this.label, area.width - lineHeight);
 			//Set height of area to be integral units of lineHeight
-			area.height = (textHeight % lineHeight == 0) ? textHeight : textHeight + (lineHeight - textHeight % lineHeight);
+			area.height = (textHeight % (int)lineHeight == 0) ? textHeight : textHeight + ((int)lineHeight - textHeight % (int)lineHeight);
 			Widgets.DrawHighlightIfMouseover (area);
 
 			if (!this.tipText.NullOrEmpty ()) {
@@ -53,7 +53,7 @@ namespace AdvancedStocking
 			Widgets.Checkbox(cbRect.xMin, cbRect.yMin, ref value, lineHeight, (!this.isActive?.Invoke() ?? false));
 			setter(value);
 
-			return labelRect.yMax;
+			return area.yMax;
 		}
 	}
 }

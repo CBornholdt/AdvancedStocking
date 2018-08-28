@@ -67,7 +67,6 @@
     <Compile Include="Stats\StatWorker_Stocking.cs" />
     <Compile Include="Stats\StatWorker_Stocking_OverlayLimit.cs" />
     <Compile Include="Stats\StatWorker_Stocking_OverstackRatio.cs" />
-    <Compile Include="StockingUtility.cs" />
     <Compile Include="Jobs\JobDriver_FillEmptyStock.cs" />
     <Compile Include="Jobs\WorkGiver_FillEmptyStock.cs" />
     <Compile Include="Jobs\WorkGiver_CombineStock.cs" />
@@ -99,6 +98,9 @@
     <Compile Include="Patches\StoreUtility_IsInValidStorage.cs" />
     <Compile Include="Extensions\ThingExt.cs" />
     <Compile Include="Extensions\CellExt.cs" />
+    <Compile Include="Listing_TreeUIOption\TreeNode_UIOption_ReservedItem.cs" />
+    <Compile Include="Utilities\StockingUtility.cs" />
+    <Compile Include="Utilities\ReservationUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -107,6 +109,7 @@
     <Folder Include="Jobs\" />
     <Folder Include="Patches\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\About\About.xml">

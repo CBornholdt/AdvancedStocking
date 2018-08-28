@@ -27,6 +27,11 @@ namespace AdvancedStocking
 			return label;
 		}
 
+        public void Remove()
+        {
+            Listing_TreeUIOption.optionsToRemove.Add(this);
+        }
+
 		public virtual float Draw(Rect area, float lineHeight)
 		{
 			int textHeight = (int)Text.CalcHeight (label, area.width - lineHeight);

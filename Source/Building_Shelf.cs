@@ -51,6 +51,8 @@ namespace AdvancedStocking
 
         private Dictionary<IntVec3, ThingDef> reservedCells = new Dictionary<IntVec3, ThingDef>();
 
+        public List<KeyValuePair<IntVec3, ThingDef>> AllReservations => reservedCells.ToList();
+
         public IEnumerable<IntVec3> AllReservedCells => slotGroup.CellsList.Where(cell => reservedCells.ContainsKey(cell));
 
         public IEnumerable<IntVec3> AllUnreservedCells => slotGroup.CellsList.Where(cell => !reservedCells.ContainsKey(cell));
@@ -490,8 +492,6 @@ namespace AdvancedStocking
 			this.canUpcycle = IsFull();
 			this.canDowncycle = !this.canUpcycle;
 		}
-
-
 
 		public void SetStackLimit(ThingDef thingDef, int stackLimit)
 		{

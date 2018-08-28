@@ -34,4 +34,6 @@
 	<OverlayLimit.ToolTip>Select the number of items that can be placed on the same square. Note, this impacts the maximum stacklimit of each of those items; as your racks increase, your stacklimits will decrease.</OverlayLimit.ToolTip>
 	<StackLimit.Label>{0} (max {1})</StackLimit.Label>
 	<StackLimit.ToolTip>The maximum number that can be placed in stack.</StackLimit.ToolTip>
+    <AS.ReservedItem.ToolTip>This represents an item that has its place reserved on the highlighted cell {0}. Press the close button remove reservation</AS.ReservedItem.ToolTip>
+    <AS.ReservationsRootNode.Label>Reservations</AS.ReservationsRootNode.Label>
 </LanguageData>

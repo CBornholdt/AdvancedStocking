@@ -12,6 +12,9 @@ namespace AdvancedStocking
 		private Vector2 scrollPosition;
 		private readonly Vector2 closeButtonSize = new Vector2(16, 16);
 
+        static public Listing_TreeUIOption currentListing;
+        static public List<TreeNode_UIOption> optionsToRemove = new List<TreeNode_UIOption>();
+
 		public Listing_TreeUIOption(List<TreeNode_UIOption> rootOptions, GameFont font = GameFont.Medium, float lineHeight = 30 )
 		{
 			this.rootOptions = rootOptions;
@@ -26,6 +29,7 @@ namespace AdvancedStocking
 
 		public override void Begin(Rect rect)
 		{
+            currentListing = this;
 			Rect viewRect = new Rect (0, 0, rect.width - closeButtonSize.x, CurHeight);	
 			Widgets.BeginScrollView (rect, ref this.scrollPosition, viewRect, true);
 			Rect rect2 = new Rect (0, 0, viewRect.width, CurHeight);
@@ -63,7 +67,25 @@ namespace AdvancedStocking
 		{
 			base.End();
 			Widgets.EndScrollView();
+            PerformOptionRemoval(); //Performs removals requested by the options themselves AFTER drawing
+            ReservationUtility.HighlightCells();
 		}
+
+        public void PerformOptionRemoval()
+        {
+            foreach(var option in optionsToRemove) {
+                if(option.parentNode == null) {
+                    Log.Message("here");
+                    rootOptions.Remove(option);
+                }
+                else {
+                    option.parentNode.children.Remove(option);
+                    Log.Message("there");
+                }
+            }
+
+            optionsToRemove.Clear();
+        }
 
 		protected Rect RemainingAreaIndented(int indentLevel = 0)
 		{
@@ -73,4 +95,13 @@ namespace AdvancedStocking
 			return r;
 		}
 	}
+
+    public static class ListingNodeExt
+    {
+        public static void AddAsChildTo(this TreeNode_UIOption child, TreeNode_UIOption parent)
+        {
+            parent.children.Add(child);
+            child.parentNode = parent;
+        }
+    }
 }
