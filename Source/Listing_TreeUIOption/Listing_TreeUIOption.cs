@@ -75,12 +75,10 @@ namespace AdvancedStocking
         {
             foreach(var option in optionsToRemove) {
                 if(option.parentNode == null) {
-                    Log.Message("here");
                     rootOptions.Remove(option);
                 }
                 else {
                     option.parentNode.children.Remove(option);
-                    Log.Message("there");
                 }
             }
 

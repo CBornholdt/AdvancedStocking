@@ -13,17 +13,15 @@ namespace AdvancedStocking
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), "stackLimit");
+			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), nameof(ThingDef.stackLimit));
 			MethodInfo helper = AccessTools.Method(typeof(ThingUtility_TryAbsorbStackNumToTake), 
 				nameof(ThingUtility_TryAbsorbStackNumToTake.TransformStacklimitIfOnShelf));
-			bool patched = false;
 
 			foreach (var code in instructions) {
 				yield return code;
-				if (code.opcode == OpCodes.Ldfld && code.operand == stackLimitField && !patched) {
+				if (code.opcode == OpCodes.Ldfld && code.operand == stackLimitField) {
 					yield return new CodeInstruction(OpCodes.Ldarg_0);  //int, Thing on stack
 					yield return new CodeInstruction(OpCodes.Call, helper); //Consumes 2 and returns int
-					patched = true;
 				}
 			}
 		}
@@ -34,10 +32,8 @@ namespace AdvancedStocking
 			Map map = thing.MapHeld;
 			if (map == null || !thing.PositionHeld.InBounds(map))
 				return stackLimit;
-			SlotGroup slotGroup = thing.PositionHeld.GetSlotGroup(thing.MapHeld);
-			if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf shelf)
-				return shelf.GetStackLimit(thing);
-			return stackLimit;
+            //Log.Message($"Stacklimit for {thing.Label} = { thing.GetShelf()?.GetStackLimit(thing) ?? stackLimit }");
+            return thing.GetShelf()?.GetStackLimit(thing) ?? stackLimit;
 		}		
 	}
 }

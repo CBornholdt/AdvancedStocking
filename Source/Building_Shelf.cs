@@ -294,16 +294,18 @@ namespace AdvancedStocking
 			Scribe_Values.Look<bool> (ref this.autoOrganizeAfterFilling, "autoOrganizeAfterFilling", false);
 			Scribe_Values.Look<bool> (ref this.inForbiddenMode, "inForbiddenMode", false);
 			Scribe_Values.Look<int>(ref this.overlayLimit, "OverlaysAllowed", 1);
+            Scribe_Values.Look<int>(ref this.maxOverlayLimit, "MaxOverlaysAllowed", 0);
 			Scribe_Values.Look<StockingPriority> (ref this.OrganizeStockPriority, "organizeStockPriority", StockingPriority.None);
 			Scribe_Values.Look<StockingPriority> (ref this.FillEmptyStockPriority, "fillEmptyStockPriority", StockingPriority.None);
 
-            //This prevents StackLimits from being nulled if loaded in an existing game
-			if(Scribe.mode == LoadSaveMode.Saving || Scribe.EnterNode("StackLimits")) {
-				if(Scribe.mode != LoadSaveMode.Saving)
-					Scribe.ExitNode();
-				Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
+			Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
 								ref this.stackLimitsExposeHelper1, ref this.stackLimitsExposeHelper2);
-			}
+
+            if(Scribe.mode == LoadSaveMode.PostLoadInit) {
+                if(stackLimits == null)
+                    stackLimits = new Dictionary<ThingDef, int>();
+               // Log.Message($"Overlays {OverlayLimit}\n {stackLimits.ToStringSafeEnumerable()}");
+            }
 		}
 
 		public int GetMaxStackLimit(Thing thing) => GetMaxStackLimit(thing.def);
@@ -327,8 +329,11 @@ namespace AdvancedStocking
         
         public int GetStackLimit(ThingDef thingDef, IntVec3 cell)
         {
-            if (IsCellReservedByOtherThing(cell, thingDef))
+            if(IsCellReservedByOtherThing(cell, thingDef)) {
+         //       Log.Message("0");
                 return 0;
+            }
+          //  Log.Message("StackLimit: " + GetStackLimit(thingDef).ToString());
             return GetStackLimit(thingDef);
         }
 		
@@ -382,6 +387,9 @@ namespace AdvancedStocking
 
 		public virtual void Notify_PriorityChanging(StoragePriority newPriority)
 		{
+            if(!this.Spawned)   //During Building_Storage.PostMake, Priority is changed and causes an error
+                return;
+        
 			if (!this.justCycled)
 				ResetPriorityCycle();
 			this.justCycled = false;
@@ -442,11 +450,12 @@ namespace AdvancedStocking
             float heaviestMass = this.heaviestAllowedThing?.GetStatValueAbstract(StatDefOf.Mass) ?? 5000f;
 			maxOverlayLimit = Math.Min((int)AS_Mod.settings.maxOverlayLimit
                                       , (int)(this.GetStatValue(StockingStatDefOf.MaxStockWeight) / heaviestMass));
-            maxOverlayLimit = Math.Max(maxOverlayLimit, 1); //ensure at least 1                                           
+            maxOverlayLimit = Math.Max(maxOverlayLimit, 1); //ensure at least 1
+          //Log.Message($"{overlayWasAtMaximum} {OverlayLimit} {maxOverlayLimit} {heaviestMass}");                                          
 			if (overlayWasAtMaximum || OverlayLimit > maxOverlayLimit)
 				OverlayLimit = maxOverlayLimit;
-            else
-			    RecalcStackLimits();
+            
+			RecalcStackLimits();
 		}
 	
 		public void RecalcStackLimits()

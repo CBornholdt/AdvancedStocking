@@ -10,7 +10,7 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	static class GenPlace_TryPlaceDirect
+	public static class GenPlace_TryPlaceDirect
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
@@ -30,9 +30,17 @@ namespace AdvancedStocking
 		}
 
 		//Have the map, might as well save the lookup ...
-		static int TransformStacklimitIfDestIsShelf(int stackLimit, Thing thing, IntVec3 cell, Map map)
+		public static int TransformStacklimitIfDestIsShelf(int stackLimit, Thing thing, IntVec3 cell, Map map)
 		{
-            return thing.GetShelf()?.GetStackLimit(thing, cell) ?? stackLimit;
+            return cell.GetShelf(map)?.GetStackLimit(thing, cell) ?? stackLimit;
 		}		
 	}
+    
+    public static class GenPlace_TryPlaceThing
+    {
+        static public void Postfix(bool __result, Thing thing, IntVec3 center, Map map, ThingPlaceMode mode)
+        {
+            Log.Message($"TryPlaceThing {thing.ToString()} in cell { center } using mode { mode } with result { __result }");
+        }
+    }  
 }

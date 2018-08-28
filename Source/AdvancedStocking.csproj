@@ -85,7 +85,7 @@
     <Compile Include="Patches\HaulAIUtility_HaulToCellStorageJob.cs" />
     <Compile Include="Patches\StoreUtility_NoStorageBlockersIn.cs" />
     <Compile Include="Patches\CompressibilityDeciderUtility_IsSaveCompressible.cs" />
-    <Compile Include="Patches\GenPlace_TryPlaceThing.cs" />
+    <Compile Include="Patches\GenPlace_TryPlaceDirect.cs" />
     <Compile Include="Stats\ThingValueClass.cs" />
     <Compile Include="Stats\StuffCategoryValueClass.cs" />
     <Compile Include="Patches\RecipeWorkerCounter_CountProducts.cs" />
@@ -101,6 +101,7 @@
     <Compile Include="Listing_TreeUIOption\TreeNode_UIOption_ReservedItem.cs" />
     <Compile Include="Utilities\StockingUtility.cs" />
     <Compile Include="Utilities\ReservationUtility.cs" />
+    <Compile Include="Patches\GenPlace_HaulPlaceBlockersIn.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
