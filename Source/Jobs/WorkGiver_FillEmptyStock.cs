@@ -32,7 +32,7 @@ namespace AdvancedStocking
 				return false;
 			}
 
-			foreach(SlotGroup sg in pawn.Map?.slotGroupManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
+			foreach(SlotGroup sg in pawn.Map?.haulDestinationManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
 				if(sg.Settings.Priority > shelf.settings.Priority 
 					|| ((sg.Settings.Priority == shelf.settings.Priority) && (sg.parent is Building_Shelf))
 					|| sg.parent == shelf)
@@ -57,7 +57,7 @@ namespace AdvancedStocking
 			if (shelf == null)
 				return null;
 
-			foreach(SlotGroup sg in pawn.Map?.slotGroupManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
+			foreach(SlotGroup sg in pawn.Map?.haulDestinationManager.AllGroupsListInPriorityOrder ?? Enumerable.Empty<SlotGroup>()) 
 				if(sg.Settings.Priority > shelf.settings.Priority 
 					|| ((sg.Settings.Priority == shelf.settings.Priority) && (sg.parent is Building_Shelf)))
 					continue;
@@ -105,7 +105,7 @@ namespace AdvancedStocking
 
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal (Pawn pawn)
 		{
-			List<SlotGroup> slotGroups = pawn.Map?.slotGroupManager?.AllGroupsListForReading;
+			List<SlotGroup> slotGroups = pawn.Map?.haulDestinationManager?.AllGroupsListForReading;
 			if(slotGroups == null)
 				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) {

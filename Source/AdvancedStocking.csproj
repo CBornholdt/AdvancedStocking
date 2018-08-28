@@ -28,8 +28,18 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="mscorlib">
+      <HintPath>..\..\..\..\..\usr\lib\mono\2.0-api\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\..\..\..\..\usr\lib\mono\2.0-api\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\usr\lib\mono\2.0-api\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>..\..\..\..\..\usr\lib\mono\2.0-api\System.Xml.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -39,8 +49,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>..\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\RimWorld\Mods\AdvancedStockign\Assemblies\0Harmony.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -70,11 +79,11 @@
     <Compile Include="Stats\StatPart_StuffDef_Fallover.cs" />
     <Compile Include="Stats\StatPart_Floor.cs" />
     <Compile Include="Listing_TreeUIOption\TreeNode_UIOption_Slider.cs" />
-    <Compile Include="Patches\core_Thing_patch.cs" />
+    <Compile Include="Patches\HarmonyPatches.cs" />
     <Compile Include="Patches\TerrainGrid_DoTerrainChangedEffects.cs" />
     <Compile Include="Patches\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="Patches\ThingUtility_TryAbsorbStackNumToTake.cs" />
-    <Compile Include="Patches\HaulAIUtility_HaulMaxNumToCellJob.cs" />
+    <Compile Include="Patches\HaulAIUtility_HaulToCellStorageJob.cs" />
     <Compile Include="Patches\StoreUtility_NoStorageBlockersIn.cs" />
     <Compile Include="Patches\CompressibilityDeciderUtility_IsSaveCompressible.cs" />
     <Compile Include="Patches\GenPlace_TryPlaceThing.cs" />
@@ -118,11 +127,17 @@
     <None Include="..\Languages\English\Keyed\stocking_gizmos.xml">
       <Link>Keyed\stocking_gizmos.xml</Link>
     </None>
-    <None Include="..\Languages\English\Keyed\stocking_stats.xml">
-      <Link>Keyed\stocking_stats.xml</Link>
-    </None>
     <None Include="..\Patches\shelf_patch.xml">
       <Link>Patches\shelf_patch.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\settings.xml">
+      <Link>Keyed\settings.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\stocking_commands.xml">
+      <Link>Keyed\stocking_commands.xml</Link>
+    </None>
+    <None Include="..\Languages\English\Keyed\stocking_stats.xml">
+      <Link>Keyed\stocking_stats.xml</Link>
     </None>
   </ItemGroup>
   <ProjectExtensions>

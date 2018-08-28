@@ -64,7 +64,7 @@ namespace AdvancedStocking
 		public int CurrentOverlaysUsed {
 			get {
 				return Math.Max(1, slotGroup.CellsList
-					.Select(cell => Map.thingGrid.ThingsListAtFast(cell).Count(thing => thing.def.EverStoreable))
+					.Select(cell => Map.thingGrid.ThingsListAtFast(cell).Count(thing => thing.def.EverStorable(willMinifyIfPossible: false)))
 					.OrderByDescending(count => count)
 					.FirstOrFallback());
 			}
@@ -133,21 +133,20 @@ namespace AdvancedStocking
 			set { this.autoOrganizeAfterFilling = value; }
 		}		
 
-		public override IEnumerable<StatDrawEntry> SpecialDisplayStats {
-			get {
-				foreach (var entry in base.SpecialDisplayStats)
-					yield return entry;
+		public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
+        {
+			foreach (var entry in base.SpecialDisplayStats())
+				yield return entry;
 
-				IEnumerable<ThingDef> thingDefsToDisplay = null;
-				if (settings.filter.AllowedDefCount <= MAX_UNHELD_STACKLIMITS_TO_DISPLAY)
-					thingDefsToDisplay = settings.filter.AllowedThingDefs;
-				else
-					thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();
+			IEnumerable<ThingDef> thingDefsToDisplay = null;
+			if (settings.filter.AllowedDefCount <= MAX_UNHELD_STACKLIMITS_TO_DISPLAY)
+				thingDefsToDisplay = settings.filter.AllowedThingDefs;
+			else
+				thingDefsToDisplay = slotGroup.HeldThings.Select(thing => thing.def).Distinct();
 
-				int i = -1;
-				foreach (var thingDef in thingDefsToDisplay) 
-					yield return CreateStacklimitStatEntry(thingDef, displayPriority: i--);
-			}
+			int i = -1;
+			foreach (var thingDef in thingDefsToDisplay) 
+				yield return CreateStacklimitStatEntry(thingDef, displayPriority: i--);		
 		}
 
         //Methods
@@ -180,7 +179,7 @@ namespace AdvancedStocking
 			for(int i = 0; i < cellCount; i++) {
 				for(int j = 0; j < things[i].Count; j++) { 
 					source = things [i] [j];
-					if (!source.def.EverStoreable)
+					if (!source.def.EverStorable(willMinifyIfPossible: false))
 						continue;
 					for (int k = 0; k < cellCount; k++) {
 						for(int l = 0; l < things[k].Count; l++) {
@@ -214,13 +213,13 @@ namespace AdvancedStocking
             }
                 
 			foreach(IntVec3 cell in slotGroup.CellsList) {
-				var things = Map.thingGrid.ThingsListAtFast(cell).Where(t => t.def.EverStoreable);
+				var things = Map.thingGrid.ThingsListAtFast(cell).Where(t => t.def.EverStorable(willMinifyIfPossible: false));
 				if (things.Count() == 1) {
 					Thing potential = things.Single ();
 					foreach (IntVec3 cell2 in slotGroup.CellsList) {
 						if (cell == cell2)
 							continue;
-						var destThings = Map.thingGrid.ThingsListAtFast (cell2).Where (t => t.def.EverStoreable);
+						var destThings = Map.thingGrid.ThingsListAtFast (cell2).Where (t => t.def.EverStorable(willMinifyIfPossible: false));
 						int count = destThings.Count();
 						if (count > 0 && count < overlaysAllowed) {
 							thing = potential;
@@ -345,7 +344,7 @@ namespace AdvancedStocking
 		public bool IsEmpty() 
 		{
 			foreach(IntVec3 cell in slotGroup?.CellsList ?? Enumerable.Empty<IntVec3>())
-				if(cell.GetThingList(this.Map).Any(t => t.def.EverStoreable))
+				if(cell.GetThingList(this.Map).Any(t => t.def.EverStorable(willMinifyIfPossible: false)))
 					return false;
 			return true;	
 		}
@@ -353,7 +352,8 @@ namespace AdvancedStocking
 		public bool IsFull()	// Some things can be null due to issues with hooking the StorageSettings Priority setter function
 		{
 			foreach(IntVec3 cell in slotGroup?.CellsList ?? Enumerable.Empty<IntVec3>())
-				if(!cell.GetThingList(this.Map).Any(t => t.def.EverStoreable && t.stackCount >= t.def.stackLimit))
+				if(!cell.GetThingList(this.Map).Any(t => t.def.EverStorable(willMinifyIfPossible: false) 
+                                                        && t.stackCount >= t.def.stackLimit))
 					return false;
 			return true;
 		}
@@ -413,7 +413,8 @@ namespace AdvancedStocking
         
 		public float OverlayWorkNeeded(IntVec3 destCell)
 		{
-			return BASE_OVERLAY_WORK * Mathf.Min(Map.thingGrid.ThingsListAtFast (destCell).Count (t => t.def.EverStoreable), 5);
+			return BASE_OVERLAY_WORK * Mathf.Min(Map.thingGrid.ThingsListAtFast (destCell)
+                                            .Count (t => t.def.EverStorable(willMinifyIfPossible: false)), 5);
 		}
 
 		public void OverstackThings(Thing sourceStock, Thing destStock)

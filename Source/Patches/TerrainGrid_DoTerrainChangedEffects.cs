@@ -12,7 +12,7 @@ namespace AdvancedStocking
 			Map map = (Map)typeof(TerrainGrid).
 				GetField("map", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
 
-			(map.slotGroupManager.SlotGroupAt(c)?.parent as Building_Shelf)?.RecalcMaxStockWeight();
+			(map.haulDestinationManager.SlotGroupAt(c)?.parent as Building_Shelf)?.RecalcMaxStockWeight();
 		}
 	}
 }

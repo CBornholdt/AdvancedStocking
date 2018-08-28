@@ -18,7 +18,7 @@ namespace AdvancedStocking
 			}
 		}
 
-		public override bool TryMakePreToilReservations(){
+		public override bool TryMakePreToilReservations(bool errorOnFailed){
 			return this.pawn.Reserve(this.job.targetA, this.job, 1, -1, null) && this.pawn.Reserve(this.job.targetB, this.job, 1, -1, null) &&
 					   this.pawn.Reserve(this.job.targetC, this.job, 1, -1, null);
 		}
@@ -60,5 +60,5 @@ namespace AdvancedStocking
 				defaultCompleteMode = ToilCompleteMode.Instant
 			};
 		}
-	}
+    }
 }

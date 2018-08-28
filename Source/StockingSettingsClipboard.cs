@@ -49,7 +49,7 @@ namespace AdvancedStocking
                 defaultLabel = "CommandCopyStockingSettingsLabel".Translate(),
                 defaultDesc = "CommandCopyStockingSettingsDesc".Translate(),
                 action = delegate {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                     StockingSettingsClipboard.Copy(shelf);
                 },
                 hotKey = KeyBindingDefOf.Misc4
@@ -63,7 +63,7 @@ namespace AdvancedStocking
                 defaultLabel = "CommandPasteStockingSettingsLabel".Translate(),
                 defaultDesc = "CommandPasteStockingSettingsDesc".Translate(),
                 action = delegate {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                     StockingSettingsClipboard.PasteInto(shelf);
                 },
                 hotKey = KeyBindingDefOf.Misc5

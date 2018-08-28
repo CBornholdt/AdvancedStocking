@@ -10,13 +10,13 @@ using Harmony;
 
 namespace AdvancedStocking
 {
-	static class HaulAIUtility_HaulMaxNumToCellJob
+	static class HaulAIUtility_HaulToCellStorageJob
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo stackLimitField = AccessTools.Field(typeof(ThingDef), "stackLimit");
-			MethodInfo helper = AccessTools.Method(typeof(HaulAIUtility_HaulMaxNumToCellJob), 
-				nameof(HaulAIUtility_HaulMaxNumToCellJob.TransformStacklimitIfDestIsShelf));
+			MethodInfo helper = AccessTools.Method(typeof(HaulAIUtility_HaulToCellStorageJob), 
+				nameof(HaulAIUtility_HaulToCellStorageJob.TransformStacklimitIfDestIsShelf));
 
 			foreach (var code in instructions) {
 				yield return code;

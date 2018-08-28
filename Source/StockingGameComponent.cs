@@ -15,7 +15,7 @@ namespace AdvancedStocking
 		{
 			thingsToCheck = new List<Thing> ();
 			StockingUtility.cachedThingDefMasses = new Dictionary<ThingDef, float> ();
-			foreach (var thingDef in DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.EverStoreable))
+			foreach (var thingDef in DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.EverStorable(willMinifyIfPossible: false)))
 				StockingUtility.cachedThingDefMasses.Add (thingDef, thingDef.GetStatValueAbstract (StatDefOf.Mass));
 		}
 
@@ -27,7 +27,7 @@ namespace AdvancedStocking
 		public override void LoadedGame ()
 		{
 			foreach (var thing in thingsToCheck) {
-				var slotGroup = thing.Map.slotGroupManager.SlotGroupAt (thing.Position);
+				var slotGroup = thing.Map.haulDestinationManager.SlotGroupAt (thing.Position);
 				if (slotGroup != null && slotGroup.parent != null && slotGroup.parent is Building_Shelf)
 					continue;
 				Log.Error (string.Concat (new object[] {

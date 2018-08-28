@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<LanguageData>
+  <AS.AddReservation.FloatOption>Reserve shelf space for {0}</AS.AddReservation.FloatOption>
+  <AS.RemoveReservation.FloatOption>Remove shelf space reservation for {0}</AS.RemoveReservation.FloatOption>
+  <AS.AddReservation.AlreadyReserved.FloatOption>Cannot reserve shelf space for {0}, already reserved for {1}</AS.AddReservation.AlreadyReserved.FloatOption>
+</LanguageData>

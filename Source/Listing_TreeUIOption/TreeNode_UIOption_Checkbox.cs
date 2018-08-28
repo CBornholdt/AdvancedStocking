@@ -41,10 +41,10 @@ namespace AdvancedStocking
 			if ((this.isActive?.Invoke() ?? true) && Widgets.ButtonInvisible(labelRect)) {
 				setter(!getter());
 				if (getter()) {
-					SoundDefOf.CheckboxTurnedOn.PlayOneShotOnCamera (null);
+					SoundDefOf.Checkbox_TurnedOn.PlayOneShotOnCamera (null);
 				}
 				else {
-					SoundDefOf.CheckboxTurnedOff.PlayOneShotOnCamera (null);
+					SoundDefOf.Checkbox_TurnedOff.PlayOneShotOnCamera (null);
 				}
 			}
 

@@ -48,11 +48,11 @@ namespace AdvancedStocking
 			}   */
 			percentageWet = (float)terrainUnderShelf.Count(terrain => terrain.driesTo != null) / (float)terrainUnderShelf.Count;
 			percentageDiggable = (float)terrainUnderShelf
-				.Count(terrain => terrain.affordances.Contains(TerrainAffordance.Diggable)) / (float)terrainUnderShelf.Count;
+				.Count(terrain => terrain.affordances.Contains(TerrainAffordanceDefOf.Diggable)) / (float)terrainUnderShelf.Count;
 			percentageGrowable = (float)terrainUnderShelf
-				.Count(terrain => terrain.affordances.Contains(TerrainAffordance.GrowSoil)) / (float)terrainUnderShelf.Count;
+				.Count(terrain => terrain.affordances.Contains(TerrainAffordanceDefOf.GrowSoil)) / (float)terrainUnderShelf.Count;
 			percentageRough = (float)terrainUnderShelf
-                .Count(terrain => !terrain.affordances.Contains(TerrainAffordance.SmoothHard)) / (float)terrainUnderShelf.Count;
+                .Count(terrain => !terrain.affordances.Contains(TerrainAffordanceDefOf.SmoothableStone)) / (float)terrainUnderShelf.Count;
 			percentageMetal = (float)terrainUnderShelf
 				.Count(terrain => terrain.costList?.First().thingDef.stuffProps?.categories.Contains(StuffCategoryDefOf.Metallic) ?? false)
 				/ (float)terrainUnderShelf.Count;

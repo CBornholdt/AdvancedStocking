@@ -22,11 +22,9 @@
 	<parts>
       <li Class="StatPart_Quality">
         <factorAwful>0.2</factorAwful>
-        <factorShoddy>0.7</factorShoddy>
         <factorPoor>0.85</factorPoor>
         <factorNormal>1</factorNormal>
         <factorGood>1.25</factorGood>
-        <factorSuperior>1.5</factorSuperior>
         <factorExcellent>1.75</factorExcellent>
         <factorMasterwork>2</factorMasterwork>
         <factorLegendary>2.5</factorLegendary>

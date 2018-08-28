@@ -42,7 +42,7 @@ namespace AdvancedStocking
 
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal (Pawn pawn)
 		{
-			List<SlotGroup> slotGroups = pawn?.Map?.slotGroupManager?.AllGroupsListForReading;
+			List<SlotGroup> slotGroups = pawn?.Map?.haulDestinationManager.AllGroupsListForReading;
 			if(slotGroups == null)
 				yield break;
 			for (int i = 0; i < slotGroups.Count; i++) 
