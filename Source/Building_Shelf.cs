@@ -50,6 +50,8 @@ namespace AdvancedStocking
 		public SignalManager itemsHeldChangedSignalManager = new SignalManager();
 
         private Dictionary<IntVec3, ThingDef> reservedCells = new Dictionary<IntVec3, ThingDef>();
+        private List<IntVec3> reservedCellsHelper1;
+        private List<ThingDef> reservedCellsHelper2;
 
         public List<KeyValuePair<IntVec3, ThingDef>> AllReservations => reservedCells.ToList();
 
@@ -300,10 +302,14 @@ namespace AdvancedStocking
 
 			Scribe_Collections.Look<ThingDef, int>(ref this.stackLimits, "StackLimits", LookMode.Def, LookMode.Value,
 								ref this.stackLimitsExposeHelper1, ref this.stackLimitsExposeHelper2);
+            Scribe_Collections.Look<IntVec3, ThingDef>(ref this.reservedCells, "ReservedCells", LookMode.Value, LookMode.Def
+                                , ref this.reservedCellsHelper1, ref this.reservedCellsHelper2);
 
             if(Scribe.mode == LoadSaveMode.PostLoadInit) {
                 if(stackLimits == null)
                     stackLimits = new Dictionary<ThingDef, int>();
+                if(reservedCells == null)
+                    reservedCells = new Dictionary<IntVec3, ThingDef>();
                // Log.Message($"Overlays {OverlayLimit}\n {stackLimits.ToStringSafeEnumerable()}");
             }
 		}
