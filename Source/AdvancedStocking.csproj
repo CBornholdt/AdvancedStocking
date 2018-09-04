@@ -102,6 +102,7 @@
     <Compile Include="Utilities\StockingUtility.cs" />
     <Compile Include="Utilities\ReservationUtility.cs" />
     <Compile Include="Patches\GenPlace_HaulPlaceBlockersIn.cs" />
+    <Compile Include="Patches\GenSpawn_Spawn.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

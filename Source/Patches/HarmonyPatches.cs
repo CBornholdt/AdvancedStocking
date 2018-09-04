@@ -13,7 +13,7 @@ namespace AdvancedStocking
 	static class HarmonyPatches
 	{
 		static HarmonyPatches() {
-            HarmonyInstance.DEBUG = true;
+           // HarmonyInstance.DEBUG = true;
 		
 			HarmonyInstance harmony = HarmonyInstance.Create ("rimworld.furiouslyeloquent.advancedstocking");
 
@@ -43,6 +43,9 @@ namespace AdvancedStocking
                 
             harmony.Patch(AccessTools.Method(typeof(Verse.GenPlace), "TryPlaceDirect"), null, null, 
                 new HarmonyMethod(typeof(GenPlace_TryPlaceDirect), "Transpiler"));
+                
+            harmony.Patch(AccessTools.Method(typeof(Verse.GenSpawn), "Spawn", new Type[6] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool) }), null, null, 
+                new HarmonyMethod(typeof(GenSpawn_Spawn), "Transpiler"));  
             
             //For logging/debugging    
          /*   harmony.Patch(AccessTools.Method(typeof(Verse.GenPlace), "TryPlaceThing", new Type[7] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(ThingPlaceMode), typeof(Thing).MakeByRefType(), typeof(Action<Thing, int>), typeof(Predicate<IntVec3>) }), null, 
